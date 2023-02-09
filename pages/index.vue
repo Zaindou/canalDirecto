@@ -1,102 +1,21 @@
 <template>
-  <v-stepper v-model="e1">
-    <v-stepper-header>
-      <v-stepper-step :complete="e1 > 1" step="1">
-        <v-icon large color="darken-2">
-          mdi-account
-        </v-icon>
-      </v-stepper-step>
 
-      <v-divider></v-divider>
-
-      <v-stepper-step :complete="e1 > 2" step="2">
-        OTP
-      </v-stepper-step>
-
-      <v-divider></v-divider>
-
-      <v-stepper-step :complete="e1 > 3" step="3">
-        Tus Finanzas
-      </v-stepper-step>
-      <v-divider></v-divider>
-
-      <v-stepper-step :complete="e1 === 4" step="4">
-        ¿Felicidades?
-      </v-stepper-step>
-    </v-stepper-header>
-
-    <v-stepper-items>
-      <v-stepper-content step="1">
-        <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
-
-        <v-btn color="primary" @click="e1 = 2">
-          Continuar
-        </v-btn>
-      </v-stepper-content>
-
-      <v-stepper-content step="2">
-        <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
-
-        <v-btn text>
-          Atrás
-        </v-btn>
-
-        <v-btn color="primary" @click="e1 = 3">
-          Continuar
-        </v-btn>
-      </v-stepper-content>
-
-      <v-stepper-content step="3">
-        <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
-        <v-btn text>
-          Atrás
-        </v-btn>
-        <v-btn color="primary" @click="e1 = 4">
-          Continuar
-        </v-btn>
-      </v-stepper-content>
-      <v-stepper-content step="4">
-        <!-- <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card> -->
-        <Datepicker/>
-
-        <v-btn text @click="e1 = 1">
-          Cancelar
-        </v-btn>
-        <!-- botón alineado al centro -->
-        <v-btn type="submit" color="primary" class="mx-auto">
-          Enviar
-        </v-btn>
-
-      </v-stepper-content>
-    </v-stepper-items>
-  </v-stepper>
+<!-- contenedor que tenga dos secciones en una ira una imagen y otra el stepper -->
+<v-container>
+    <v-row>
+        <v-col cols="12" sm="15" md="0">
+          <Stepper/>
+        </v-col>
+    </v-row>
+</v-container>
 </template>
-<script>
-import Datepicker from '~/components/Datepicker.vue'
-export default {
-  components: { Datepicker },
-  data() {
-    return {
-      head: {
-        title: 'Diagnostico'
-      },
-      e1: 4
-    }
-  }
-}
-</script>
 
 <style>
-.v-stepper {
-  width: 50%;
-  margin: 0 auto;
-  margin-top: 120px;
+
+.v-container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
 }
 
-@media (max-width: 600px) {
-  .v-stepper {
-    width: 100%;
-    margin-top: 60px;
-  }
-}
 </style>
