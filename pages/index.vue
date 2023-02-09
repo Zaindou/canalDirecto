@@ -2,7 +2,9 @@
   <v-stepper v-model="e1">
     <v-stepper-header>
       <v-stepper-step :complete="e1 > 1" step="1">
-        Datos personales
+        <v-icon large color="darken-2">
+          mdi-account
+        </v-icon>
       </v-stepper-step>
 
       <v-divider></v-divider>
@@ -35,8 +37,6 @@
       <v-stepper-content step="2">
         <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
 
-
-
         <v-btn text>
           Atrás
         </v-btn>
@@ -56,15 +56,14 @@
         </v-btn>
       </v-stepper-content>
       <v-stepper-content step="4">
-        <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
+        <!-- <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card> -->
+        <Datepicker/>
 
         <v-btn text @click="e1 = 1">
           Cancelar
         </v-btn>
-
-
         <!-- botón alineado al centro -->
-        <v-btn color="primary" @click="e1 = 1" class="mx-auto">
+        <v-btn type="submit" color="primary" class="mx-auto">
           Enviar
         </v-btn>
 
@@ -73,20 +72,21 @@
   </v-stepper>
 </template>
 <script>
+import Datepicker from '~/components/Datepicker.vue'
 export default {
-  data(){
+  components: { Datepicker },
+  data() {
     return {
-      head : {
-        title: 'Diagnostico Stepper TEST'
+      head: {
+        title: 'Diagnostico'
       },
-      e1: 1
+      e1: 4
     }
   }
 }
 </script>
 
 <style>
-
 .v-stepper {
   width: 50%;
   margin: 0 auto;
@@ -99,5 +99,4 @@ export default {
     margin-top: 60px;
   }
 }
-
 </style>

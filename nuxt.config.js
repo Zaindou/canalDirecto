@@ -4,7 +4,7 @@ export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - Diagnostico financiero',
-    title: 'canal-directo',
+    // title: 'canal-directo',
     htmlAttrs: {
       lang: 'es'
     },
