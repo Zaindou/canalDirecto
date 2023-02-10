@@ -29,7 +29,7 @@
                 <!-- <v-card class="mb-12" color="grey lighten-1" height="400px"></v-card> -->
 
                 <v-btn block class="ma-4" color="primary" @click="e1 = 2">
-                    Continuar
+                    Siguiente paso
                     <v-icon dark right>
                         mdi-checkbox-marked-circle
                     </v-icon>
@@ -39,37 +39,37 @@
             </v-stepper-content>
 
             <v-stepper-content step="2">
+                <v-card class="mb-12" color="grey lighten-1" height="50px"></v-card>
                 <Otp />
-                <!-- <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card> -->
-
-                <v-btn text>
-                    Atrás
-                </v-btn>
-
-                <v-btn color="primary" @click="e1 = 3">
-                    Continuar
+                <v-card class="mb-12" color="grey lighten-1" height="50px"></v-card>
+                <v-btn block class="ma-4" color="primary" @click="e1 = 3">
+                    Confirmar código OTP
+                    <v-icon dark right>
+                        mdi-message-processing
+                    </v-icon>
                 </v-btn>
             </v-stepper-content>
 
             <v-stepper-content step="3">
-                <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
-                <v-btn text>
-                    Atrás
-                </v-btn>
-                <v-btn color="primary" @click="e1 = 4">
-                    Continuar
+                <Step3 />
+                <!-- <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card> -->
+                <v-btn block class="ma-4" color="primary" @click="e1 = 4">
+                    Solicitar mi diagnostico
+                    <v-icon dark right>
+                        <!-- mdi-checkbox-marked-circle -->
+                        mdi-account-search
+                    </v-icon>
                 </v-btn>
             </v-stepper-content>
             <v-stepper-content step="4">
-                <!-- <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card> -->
-                <Datepicker />
+                <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
 
-                <v-btn text @click="e1 = 1">
-                    Cancelar
-                </v-btn>
                 <!-- botón alineado al centro -->
-                <v-btn type="submit" color="primary" class="mx-auto">
-                    Enviar
+                <v-btn block class="ma-4" color="primary">
+                    ¡Listo!
+                    <v-icon dark right>
+                        mdi-checkbox-marked-circle
+                    </v-icon>
                 </v-btn>
 
             </v-stepper-content>
@@ -93,15 +93,15 @@ export default {
 
 <style>
 .v-stepper {
-    width: 50%;
+    width: 55%;
     margin: 0 auto;
-    margin-top: 120px;
+    margin-top: 10px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 720px) {
     .v-stepper {
         width: 100%;
-        margin-top: 60px;
+        margin-top: 10px;
     }
 }
 </style>

@@ -1,5 +1,6 @@
 <template>
     
-<center><h4>¡Realiza tu diagnostico financiero 100% gratís</h4></center>
+<v-card class="mb-12" color="grey lighten-1" height="70px"></v-card>
+
 
 </template>

@@ -3,8 +3,8 @@
         <v-col >
             <v-dialog ref="dialog" v-model="modal" :return-value.sync="date" persistent width="290px" >
                 <template v-slot:activator="{ on, attrs }">
-                    <v-text-field v-model="date" label="Seleccionar fecha de expedición" readonly
-                        v-bind="attrs" v-on="on" outlined></v-text-field>
+                    <v-text-field v-model="date" label="Fecha de expedición" readonly
+                        v-bind="attrs" v-on="on" prepend-inner-icon="mdi-calendar" hide-details required outlined></v-text-field>
                 </template>
                 <v-date-picker v-model="date" scrollable locale="es-co">
                     <v-spacer></v-spacer>

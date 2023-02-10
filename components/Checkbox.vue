@@ -1,32 +1,41 @@
 <template>
-    <v-sheet class="pa-1">
-        <v-switch v-model="switch1" label="" inset></v-switch>
-    </v-sheet>
+    <div class="switch-container">
+        <label class="switch-label">Aceptas los <a id="linkTerms" href="hola">términos y condiciones legales</a></label>
+        <v-switch v-model="switch1" required inset></v-switch>
+    </div>
 </template>
 
 <script>
 export default {
     data() {
-
         return {
-            switch1: true,
-        }
+            switch1: false,
+        };
     },
-
     methods: {
         change() {
-            this.switch1 = !this.switch1
-        }
-    }
-
-
-}
+            this.switch1 = !this.switch1;
+        },
+    },
+};
 </script>
 
 <style>
-/* Qué le texto del checkbox este a la  izquierda */
-.v-input--selection-controls__ripple {
-    left: 0;
-    right: auto;
+.switch-container {
+    display: flex;
+    align-items: center;
 }
+
+.switch-label {
+    margin-right: 1em;
+    text-align: center;
+}
+
+
+#linkTerms {
+    /* color: #3f51b5; */
+    text-decoration: none;
+}
+
+
 </style>

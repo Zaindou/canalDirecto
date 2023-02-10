@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar
+    <!-- <v-app-bar
       :clipped-left="clipped"
       fixed
       app
@@ -8,7 +8,7 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title>{{ title }}</v-toolbar-title>
       <v-spacer />
-    </v-app-bar>
+    </v-app-bar> -->
     
     <v-main>
       <v-container>
