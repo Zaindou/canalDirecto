@@ -6,13 +6,13 @@
         </v-col>
         <v-col class="d-flex" cols="12" sm="12" v-if="ahorros === 'SI'">
             <v-text-field v-model="formattedValue" label="Valor de tus ahorros" @input="formatValue" @blur="formatValue"
-                prepend-inner-icon="mdi-piggy-bank-outline" outlined required />
+                prepend-inner-icon="mdi-piggy-bank-outline" hide-details outlined required />
         </v-col>
 
         <v-container>
-            <p class="p">Para terminar, por favor, indícanos tu <b>objetivo.</b> <br>Una vez no tengas reportes
-                negativos en centrales de riesgo. </p>
-            <p class="p">¿Cuál seria tu <b>meta financiera</b>?</p>
+            <p class="p">Para terminar, por favor, indícanos tu <b>objetivo.</b>  </p>
+            <p class="p">Una vez no tengas reportes
+                negativos en centrales de riesgo. <br>¿Cuál seria tu  <b>meta financiera</b>?</p>
 
         </v-container>
 

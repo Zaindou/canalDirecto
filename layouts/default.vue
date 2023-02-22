@@ -12,17 +12,21 @@
     
     <v-main>
       <v-container>
-        <Nuxt />
+        <Snackbar></Snackbar>
+        <Nuxt />       
       </v-container>
     </v-main>
 
-    <footer><Footer /></footer>
+    <!-- <footer><Footer /></footer> -->
 
   </v-app>
 </template>
 
 <script>
+import Snackbar from '~/components/Snackbar.vue'
+
 export default {
+  components: { Snackbar },
   name: 'DefaultLayout',
   data () {
     return {

@@ -1,12 +1,6 @@
-<template>
-
-    <!-- contenedor que tenga dos secciones en una ira una imagen y otra el stepper -->
+<template><!-- contenedor que tenga dos secciones en una ira una imagen y otra el stepper -->
     <v-container>
-        <img
-        src="/qnt-logo-normal.png"
-        alt="logo-qnt"
-        class="mx-auto"
-      >
+        <img class="mx-auto">
         <Stepper />
     </v-container>
 </template>
