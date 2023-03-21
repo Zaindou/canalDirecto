@@ -3,11 +3,11 @@
         <v-container>
             <v-row>
                 <v-col class="d-flex" cols="12" sm="12">
-                    <v-select :items="tipoDeIdentificacion" v-model="identificacionSelect" label="Tipo de identificación"
+                    <v-select :items="tipoDeIdentificacion" v-model="tipoIdentificacion" label="Tipo de identificación"
                         hide-details required outlined></v-select>
                 </v-col>
                 <v-col cols="12" md="6">
-                    <v-text-field type="number" v-model="numeroDeCedula" :rules="ccRules" label="Número de identificación"
+                    <v-text-field type="number" v-model="numeroIdentificacion" :rules="ccRules" label="Número de identificación"
                         prepend-inner-icon="mdi-card-account-details" hide-details required outlined
                         autocomplete></v-text-field>
                 </v-col>
@@ -30,12 +30,12 @@
                 </v-col>
 
                 <v-col cols="12" md="6">
-                    <v-text-field type="number" v-model="numeroDeCelular" :rules="clRules" label="Número de celular"
+                    <v-text-field type="number" v-model="numeroCelular" :rules="clRules" label="Número de celular"
                         prepend-inner-icon="mdi-cellphone" required outlined hide-details></v-text-field>
                 </v-col>
 
                 <v-col cols="12" md="6">
-                    <v-text-field v-model="email" :rules="emailRules" label="Correo Electrónico"
+                    <v-text-field v-model="correoElectronico" :rules="emailRules" label="Correo Electrónico"
                         prepend-inner-icon="mdi-email" outlined placeholder="rebancarizandome@qnt.com.co"
                         hide-details></v-text-field>
                 </v-col>
@@ -59,13 +59,13 @@ export default {
 
     data: () => ({
         valid: false,
-        identificacionSelect: 'CC',
-        numeroDeCedula: '',
+        tipoIdentificacion: 'CC',
+        numeroIdentificacion: '',
         fechaExpedicion: '',
         primerNombre: '',
         primerApellido: '',
-        numeroDeCelular: '',
-        email: '',
+        numeroCelular: '',
+        correoElectronico: '',
         terminosCondiciones: true,
 
         showAlert: false,
@@ -94,7 +94,7 @@ export default {
     }),
     methods: {
         submitForm() {
-            if (this.primerNombre == '' || this.primerApellido == '' || this.numeroDeCedula == '' || this.fechaExpedicion == '' || this.numeroDeCelular == '' || this.email == '' || this.terminosCondiciones === false) {
+            if (this.primerNombre == '' || this.primerApellido == '' || this.numeroIdentificacion == '' || this.fechaExpedicion == '' || this.numeroCelular == '' || this.correoElectronico == '' || this.terminosCondiciones === false) {
                 this.valid = false;
                 this.showAlert = true;
             } else {
@@ -103,14 +103,14 @@ export default {
             if (this.valid === true) {
                 this.$emit('form-submitted',
                     {
-                        primerNombre: this.primerNombre,
-                        primerApellido: this.primerApellido,
-                        numeroDeCedula: this.numeroDeCedula,
-                        fechaExpedicion: this.fechaExpedicion,
-                        identificacionSelect: this.identificacionSelect,
-                        numeroDeCelular: this.numeroDeCelular,
-                        email: this.email,
-                        terminosCondiciones: this.terminosCondiciones,
+                        primer_nombre: this.primerNombre,
+                        primer_apellido: this.primerApellido,
+                        numero_identificacion: this.numeroIdentificacion,
+                        fecha_expedicion: this.fechaExpedicion,
+                        tipo_identificacion: this.tipoIdentificacion,
+                        numero_celular: this.numeroCelular,
+                        correo_electronico: this.correoElectronico,
+                        terminos_condiciones: this.terminosCondiciones,
                     });
             }
         },

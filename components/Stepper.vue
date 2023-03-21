@@ -6,8 +6,12 @@
                 max-width="900" class="mb-8"></v-img>
         </v-card>
 
-        <p class="titlediag">Bienvenid@ a tu diagnóstico financiero 100% gratuito.</p>
-        <p class="subtitlediag mb-7">Conoce tu información reportada en centrales de riesgo sin costo.</p>
+        <div>
+            <template v-if="e1 === 1">
+                <p class="titlediag">Bienvenid@ a tu diagnóstico financiero 100% gratuito.</p>
+                <p class="subtitlediag">Conoce tu información reportada en centrales de riesgo sin costo.</p>
+            </template>
+        </div>
 
         <v-divider></v-divider>
         <v-stepper-header>
@@ -56,13 +60,8 @@
                     <v-col cols="12">
                         <Otp @otp-entered="handleOtpEntered" />
                     </v-col>
-                    <v-col cols="6">
-                        <div v-if="!isResendEnabled">OTP enviado. Espera {{ resendCountdown }} segundos para volver a
-                            enviarla.</div>
-                        <v-btn :disabled="!isResendEnabled" color="primary" class="mb-6" @click="submitForm">Reenviar otp</v-btn>
-                    </v-col>
                 </v-row>
-                <v-btn block color="primary" @click="verifyOtp">
+                <v-btn block color="primary" @click="verifyOtp" :loading="loading4">
                     Confirmar código OTP
                     <v-icon dark right>
                         mdi-message-processing
@@ -122,33 +121,20 @@ export default {
 
             otp: null,
 
-            resendCountdown: 0,
-            isOTPResent: false,
-            resendInterval: null
 
         }
     },
-    computed: {
-        isResendEnabled() {
-            return this.resendCountdown <= 0
-        },
-
-        resendButtonLabel() {
-            return this.isResendEnabled ? 'Reenviar OTP' : `Reenviar OTP en ${this.resendCountdown} segundos`
-        }
-
-    },
-
     methods: {
-        handleSubmit(formData) {
+        async handleSubmit(formData) {
             this.loading4 = true;
-            axios.post('diagnostico/Stepone/', formData).then(response => {
+            await axios.post('diagnostico/Stepone/', formData).then(response => {
                 if (response.status >= 200 && response.status < 300) {
                     console.log('Este es el response', response.data)
-                    this.$notifier.showMessage({ content: 'OTP Enviado.', color: 'success' })
+                    this.$notifier.showMessage({ content: '¡Hemos enviado un código de verificación!', color: 'success' })
                     this.e1 = 2
                     this.loading4 = false;
                 } else {
+                    console.log(response.data)
                     this.$notifier.showMessage({ content: 'Error al enviar el OTP.', color: 'error' })
                     this.loading4 = false;
                     this.e1 = 1
@@ -164,6 +150,7 @@ export default {
                     this.e1 = 1
                 } else {
                     this.$notifier.showMessage({ content: 'Error al enviar el OTP.', color: 'error' })
+                    console.log(error.response.data)
                     this.loading4 = false;
                     this.e1 = 1
                 }
@@ -183,33 +170,35 @@ export default {
             // console.log('Este es el otp', otp)
             this.otp = otp
         },
-        verifyOtp() {
-            // console.log(`Código OTP ingresado: ${this.otp}`)
-            // console.log('Este es el numero de celular', this.$refs.step1.numeroDeCelular)
-            axios.post('diagnostico/otp/', { phone_number: this.$refs.step1.numeroDeCelular, otp: this.otp }).then(response => {
-                console.log('Este es el response', response.data)
+        async verifyOtp() {
+            this.loading4 = true;
+            console.log(`Código OTP ingresado: ${this.otp}`)
+            console.log('Este es el numero de celular', this.$refs.step1.numeroCelular)
+            await axios.post('diagnostico/otp/', { phone_number: this.$refs.step1.numeroCelular, otp: this.otp }).then(response => {
+
                 if (response.status >= 200 && response.status < 300) {
-                    this.$notifier.showMessage({ content: 'OTP Verificado.', color: 'success' })
+                    this.$notifier.showMessage({ content: '¡Tu código de verificación es correcto ;)!', color: 'success' })
                     this.e1 = 3
+                    this.loading4 = false;
                 } else {
-                    this.$notifier.showMessage({ content: 'Error al verificar el OTP.', color: 'error' })
+                    this.$notifier.showMessage({ content: 'Error al verificar el código de verificación.', color: 'error' })
+                    this.e1 = 2
+                    this.loading4 = false;
                 }
             })
+                .catch(error => {
+                    if (error.response.status >= 400 && error.response.status < 500) {
+                        this.$notifier.showMessage({ content: 'Tu código de verificación es incorrecto.', color: 'error' })
+                        this.e1 = 2
+                        this.loading4 = false;
+                    } else {
+                        this.$notifier.showMessage({ content: `Error inesperado: código de estatus ${error.response.status}`, color: 'error' })
+                        this.e1 = 2
+                        console.log(error.response.data)
+                        this.loading4 = false;
+                    }
+                })
         },
-        startResendCountdown() {
-            this.resendCountdown = 180 // 3 minutos
-            this.resendInterval = setInterval(() => {
-                this.resendCountdown--
-                if (this.resendCountdown <= 0) {
-                    clearInterval(this.resendInterval)
-                }
-            }, 1000)
-        },
-        stopResendCountdown() {
-            clearInterval(this.resendInterval)
-            this.resendInterval = null
-        },
-
     }
 }
 </script>
@@ -249,10 +238,11 @@ export default {
     }
 
     .subtitlediag {
-        font-size: 0.7rem !important;
+        font-size: 1rem !important;
         color: #747171;
         text-align: center;
         line-height: 1;
+        padding: 5px;
     }
 }
 
@@ -275,15 +265,16 @@ export default {
 }
 
 .titlediag {
-    font-size: 1rem !important;
+    font-size: 1.2rem !important;
     font-weight: bold;
     color: #7e7e7e;
     text-align: center;
-    line-height: 0;
+    margin: 10px;
+    /* line-height: 0; */
 }
 
 .subtitlediag {
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: semibold;
     color: #747171;
     text-align: center;

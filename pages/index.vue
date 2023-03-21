@@ -1,4 +1,4 @@
-<template><!-- contenedor que tenga dos secciones en una ira una imagen y otra el stepper -->
+<template>
     <v-container>
         <img class="mx-auto">
         <Stepper />
@@ -6,11 +6,11 @@
 </template>
 
 <style>
-.v-container {
+/* .v-container {
     width: 100%;
     margin: 0 auto;
     padding: 0;
-}
+} */
 
 /* center img */
 img {
