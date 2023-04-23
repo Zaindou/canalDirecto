@@ -1,38 +1,33 @@
 <template>
     <v-stepper v-model="e1" class="stepper-full-width">
 
-        <v-card>
-            <v-img src="https://qnt.com.co/wp-content/uploads/2023/02/banner-canaldirecto.jpg" max-height="200"
-                max-width="900" class="mb-8"></v-img>
-        </v-card>
-
-        <div>
-            <template v-if="e1 === 1">
-                <p class="titlediag">Bienvenid@ a tu diagnóstico financiero 100% gratuito.</p>
-                <p class="subtitlediag">Conoce tu información reportada en centrales de riesgo sin costo.</p>
-            </template>
+        <div class="image-container">
+            <v-img src="../QNT-MOBILE.webp" max-width="900" class="mb-1 mobile-image" alt="QNT"></v-img>
+            <v-img src="../QNT_PC.webp" max-width="900" class="mb-1 desktop-image" alt="QNT"></v-img>
         </div>
 
         <v-divider></v-divider>
         <v-stepper-header>
-            <v-stepper-step icon="mdi-account" :complete="e1 > 1" step="1">
-                <v-icon large color="darken-2">
-                </v-icon>
+            <v-stepper-step :complete="e1 > 1" step="1" aria-hidden="true">
+                <v-icon large :color="iconColor(1)">mdi-face-recognition</v-icon>
             </v-stepper-step>
 
             <v-divider></v-divider>
 
             <v-stepper-step :complete="e1 > 2" step="2">
+                <v-icon large :color="iconColor(2)">mdi-shield-lock-outline</v-icon>
             </v-stepper-step>
 
             <v-divider></v-divider>
 
             <v-stepper-step :complete="e1 > 3" step="3">
+                <v-icon large :color="iconColor(3)">mdi-piggy-bank-outline</v-icon>
             </v-stepper-step>
 
             <v-divider></v-divider>
 
             <v-stepper-step :complete="e1 === 4" step="4">
+                <v-icon large :color="iconColor(4)">mdi-tooltip-check-outline</v-icon>
             </v-stepper-step>
 
         </v-stepper-header>
@@ -48,12 +43,11 @@
                     </div>
                     <Modal title="Términos y condiciones" :content="modalContent" ref="modal"></Modal>
                 </v-col>
-                <v-btn block color="primary" @click="submitForm" :disabled="!terminosCondiciones" :loading="loading4">
-                    Siguiente paso
-                    <v-icon dark right>mdi-checkbox-marked-circle</v-icon>
+                <v-btn block color="primary" @click="submitForm" :disabled="!terminosCondiciones" :loading="loading4"
+                    class="buttonsteps">
+                    Siguiente
                 </v-btn>
             </v-stepper-content>
-
 
             <v-stepper-content step="2">
                 <v-row>
@@ -61,37 +55,23 @@
                         <Otp @otp-entered="handleOtpEntered" />
                     </v-col>
                 </v-row>
-                <v-btn block color="primary" @click="verifyOtp" :loading="loading4">
-                    Confirmar código OTP
-                    <v-icon dark right>
-                        mdi-message-processing
-                    </v-icon>
+                <v-btn block color="primary" @click="verifyOtp" :loading="loading4" class="buttonsteps">
+                    Validar código OTP
                 </v-btn>
             </v-stepper-content>
 
             <v-stepper-content step="3">
-                <Step3 />
-                <!-- <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card> -->
-                <v-btn block color="primary" @click="e1 = 4">
-                    Solicitar mi diagnostico
-                    <v-icon dark right>
-                        <!-- mdi-checkbox-marked-circle -->
-                        mdi-account-search
-                    </v-icon>
+                <Step3 ref="step3" @submit="handleSubmit3" :numero-identificacion="numero_identificacion" />
+                <v-btn block color="primary" @click="submitForm3" class="buttonsteps">
+                    Solicitar diagnóstico
                 </v-btn>
             </v-stepper-content>
 
             <v-stepper-content step="4">
-                <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
-
-                <!-- botón alineado al centro -->
-                <v-btn block color="primary">
-                    ¡Listo!
-                    <v-icon dark right>
-                        mdi-checkbox-marked-circle
-                    </v-icon>
+                <Step4></Step4>
+                <v-btn block color="primary" class="buttonsteps" @click="finalizeAndRedirect">
+                    ¡Finalizar!
                 </v-btn>
-
             </v-stepper-content>
         </v-stepper-items>
     </v-stepper>
@@ -102,39 +82,47 @@ import axios from 'axios'
 import Alerts from '~/components/commons/Alerts.vue';
 import Modal from '~/components/commons/Modal.vue';
 import Otp from '~/components/Otp.vue';
+import Step3 from '~/components/Step3.vue';
+import Step4 from '~/components/Step4.vue';
 
 
 export default {
-    components: { Alerts, Modal, Otp },
+    components: { Alerts, Modal, Otp, Step3, Step4 },
     data() {
         return {
             head: {
                 title: 'Diagnostico'
             },
+
             e1: 1,
 
             terminosCondiciones: false,
 
-            modalContent: 'Mmm ¿Igual esto nadie lo lee? o Sí, pero no me importa.',
+            modalContent: 'Términos y condiciones',
 
             loading4: false,
 
             otp: null,
 
+            numero_identificacion: null,
 
         }
     },
     methods: {
         async handleSubmit(formData) {
             this.loading4 = true;
+            this.numero_identificacion = formData.numero_identificacion
             await axios.post('diagnostico/Stepone/', formData).then(response => {
+
                 if (response.status >= 200 && response.status < 300) {
                     console.log('Este es el response', response.data)
+                    localStorage.setItem("auth_token", response.data.token);
+                    this.$axios.setToken(response.data.token, "Token");
                     this.$notifier.showMessage({ content: '¡Hemos enviado un código de verificación!', color: 'success' })
                     this.e1 = 2
                     this.loading4 = false;
                 } else {
-                    console.log(response.data)
+                    // console.log(response.data)
                     this.$notifier.showMessage({ content: 'Error al enviar el OTP.', color: 'error' })
                     this.loading4 = false;
                     this.e1 = 1
@@ -149,12 +137,44 @@ export default {
                     this.loading4 = false;
                     this.e1 = 1
                 } else {
-                    this.$notifier.showMessage({ content: 'Error al enviar el OTP.', color: 'error' })
-                    console.log(error.response.data)
+                    this.$notifier.showMessage({ content: `${error.response.data.detail}`, color: 'error' })
                     this.loading4 = false;
                     this.e1 = 1
                 }
             })
+        },
+        async handleSubmit3(formData) {
+            const token = localStorage.getItem("auth_token");
+
+            const config = {
+                headers: {
+                    Authorization: `Token ${token}`,
+                },
+            }
+
+            this.loading4 = true;
+            await axios.post('diagnostico/Stepthree/', formData, config).then(response => {
+                if (response.status >= 200 && response.status < 301)
+                    this.$notifier.showMessage({ content: '¡Hemos cargado tus datos financieros correctamente ;)!', color: 'success' })
+                this.e1 = 4
+                this.loading4 = false;
+            }
+            ).catch(error => {
+                if (error.response.status >= 400 && error.response.status < 500) {
+                    this.$notifier.showMessage({ content: `${error.response.data.detail}`, color: 'error' })
+                    this.loading4 = false;
+                    this.e1 = 3
+                } else {
+                    this.$notifier.showMessage({ content: `${error.response.data.detail}`, color: 'error' })
+                    // console.log(error.response.data)
+                    this.loading4 = false;
+                    this.e1 = 3
+                }
+            })
+
+        },
+        submitForm3() {
+            this.$refs.step3.submitForm3()
         },
         submitForm() {
             if (!this.terminosCondiciones) {
@@ -167,15 +187,18 @@ export default {
             this.$refs.modal.openModal()
         },
         handleOtpEntered(otp) {
-            // console.log('Este es el otp', otp)
             this.otp = otp
         },
         async verifyOtp() {
-            this.loading4 = true;
-            console.log(`Código OTP ingresado: ${this.otp}`)
-            console.log('Este es el numero de celular', this.$refs.step1.numeroCelular)
-            await axios.post('diagnostico/otp/', { phone_number: this.$refs.step1.numeroCelular, otp: this.otp }).then(response => {
+            const data = {
+                phone_number: this.$refs.step1.numeroCelular,
+                numero_identificacion: this.numero_identificacion,
+                primer_apellido: this.$refs.step1.primerApellido,
+                otp: this.otp
+            }
 
+            this.loading4 = true;
+            await axios.post('diagnostico/otp/', data).then(response => {
                 if (response.status >= 200 && response.status < 300) {
                     this.$notifier.showMessage({ content: '¡Tu código de verificación es correcto ;)!', color: 'success' })
                     this.e1 = 3
@@ -194,12 +217,113 @@ export default {
                     } else {
                         this.$notifier.showMessage({ content: `Error inesperado: código de estatus ${error.response.status}`, color: 'error' })
                         this.e1 = 2
-                        console.log(error.response.data)
+                        // console.log(error.response.data)
                         this.loading4 = false;
                     }
                 })
         },
-    }
+
+        iconColor(step) {
+            let color;
+            if (this.e1 === step) {
+                color = '#2B81D6';
+            } else if (this.e1 > step) {
+                color = '#87BD29';
+            } else if (this.e1 === 4) {
+                color = '#87BD29';
+            } else {
+                color = '';
+            }
+            return color;
+        },
+        saveStepToLocalStorage() {
+            localStorage.setItem('step', this.e1);
+            localStorage.setItem('numero_identificacion', this.numero_identificacion);
+            localStorage.setItem('email', this.$refs.step1.correoElectronico);
+            localStorage.setItem('phone', this.$refs.step1.numeroCelular);
+            localStorage.setItem('firstName', this.$refs.step1.primerNombre);
+        },
+
+        getStepFromLocalStorage() {
+            const step = localStorage.getItem('step');
+            const stepMap = {
+                '1': 1,
+                '2': 2,
+                '3': 3,
+                '4': 4
+            }
+
+            if (step && stepMap.hasOwnProperty(step)) {
+                this.e1 = stepMap[step];
+            }
+        },
+
+        getIdentificationFromLocalStorage() {
+            const identification = localStorage.getItem('numero_identificacion');
+
+            if (identification) {
+                this.numero_identificacion = identification;
+            }
+        },
+
+        getEmailPhoneAndNameFromLocalStorage() {
+            const email = localStorage.getItem('email');
+            const phone = localStorage.getItem('phone');
+            const firstName = localStorage.getItem('firstName');
+
+            if (email) {
+                this.$refs.step1.correoElectronico = email;
+            }
+
+            if (phone) {
+                this.$refs.step1.numeroCelular = phone;
+            }
+
+            if (firstName) {
+                this.$refs.step1.primerNombre = firstName;
+            }
+        },
+        finalizeAndRedirect() {
+            localStorage.clear();
+            window.location.href = "https://www.qnt.com.co";
+        },
+
+        showTimeoutWarning() {
+            this.$notifier.showMessage({ content: 'Tu sesión está a punto de expirar, por favor completa el formulario.', color: 'warning', icon: 'mdi-alert-circle' })
+        },
+
+        showCloseWarning() {
+            this.$notifier.showMessage({ content: 'Tu sesión ha expirado, por favor completa el formulario.', color: 'error', icon: 'mdi-alert-circle' })
+        }
+
+    },
+    mounted() {
+        this.getStepFromLocalStorage();
+        this.getIdentificationFromLocalStorage();
+        this.getEmailPhoneAndNameFromLocalStorage();
+
+        setTimeout(() => {
+            this.showTimeoutWarning();
+        }, 10 * 60 * 1000); // 10 minutes
+
+        setTimeout(() => {
+            localStorage.clear();
+            location.reload()
+            this.showCloseWarning();
+        }, 15 * 60 * 1000); // 15 minutes
+    },
+
+    beforeDestroy() {
+        this.saveStepToLocalStorage();
+    },
+
+    watch: {
+        e1() {
+            this.saveStepToLocalStorage();
+        },
+    },
+
+
 }
 </script>
 
@@ -209,9 +333,11 @@ export default {
     margin: 0 auto;
 }
 
+
 @media (max-width: 767px) {
     .v-stepper {
         width: 100%;
+        margin: 0 auto;
     }
 
     .rounded-bg {
@@ -244,6 +370,26 @@ export default {
         line-height: 1;
         padding: 5px;
     }
+
+    .v-stepper:not(.v-stepper--vertical) .v-stepper__label {
+        display: flex !important;
+    }
+
+    .buttonsteps {
+        font-weight: bold;
+        border-radius: 5px;
+        padding: 20px !important;
+    }
+
+    .mobile-image {
+        display: block !important;
+    }
+
+    .desktop-image {
+        display: none !important;
+    }
+
+
 }
 
 .rounded-bg {
@@ -279,5 +425,27 @@ export default {
     color: #747171;
     text-align: center;
     line-height: 1;
+}
+
+.v-stepper:not(.v-stepper--vertical) .v-stepper__step__step {
+    display: none;
+}
+
+.buttonsteps {
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 20px !important;
+}
+
+.image-container {
+    position: relative;
+}
+
+.mobile-image {
+    display: none !important;
+}
+
+.desktop-image {
+    display: block !important;
 }
 </style>

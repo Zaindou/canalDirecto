@@ -1,4 +1,4 @@
-<template>
+<template >
     <v-container>
         <img class="mx-auto">
         <Stepper />
@@ -6,17 +6,31 @@
 </template>
 
 <style>
-/* .v-container {
-    width: 100%;
-    margin: 0 auto;
-    padding: 0;
-} */
+@media screen and (max-width: 959px) {
+
+    /* Estilos para dispositivos móviles (xs y sm) */
+    .container {
+        padding: 0 !important;
+    }
+
+    /* center img */
+    img {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 0px;
+    }
+}
 
 /* center img */
 img {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 40px;
+    margin-bottom: 0px;
+}
+
+.v-main__wrap {
+    background-color: whitesmoke !important;
 }
 </style>

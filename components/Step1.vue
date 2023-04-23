@@ -2,14 +2,15 @@
     <v-form v-model="valid">
         <v-container>
             <v-row>
-                <v-col class="d-flex" cols="12" sm="12">
+                <!-- <v-col><span class="compartir-informacion">Compartenos la siguiente información, por favor:</span></v-col> -->
+                <v-col class="d-flex mt-1" cols="12" sm="12">
                     <v-select :items="tipoDeIdentificacion" v-model="tipoIdentificacion" label="Tipo de identificación"
                         hide-details required outlined></v-select>
                 </v-col>
                 <v-col cols="12" md="6">
-                    <v-text-field type="number" v-model="numeroIdentificacion" :rules="ccRules" label="Número de identificación"
-                        prepend-inner-icon="mdi-card-account-details" hide-details required outlined
-                        autocomplete></v-text-field>
+                    <v-text-field type="number" v-model="numeroIdentificacion" :rules="ccRules"
+                        label="Número de identificación" prepend-inner-icon="mdi-card-account-details" hide-details required
+                        outlined autocomplete></v-text-field>
                 </v-col>
 
                 <v-col cols="12" md="6">
@@ -42,15 +43,12 @@
             </v-row>
         </v-container>
         <Alerts v-if="showAlert" :message="'Por favor completa todos los campos.'" type="error" />
-
-</v-form>
+    </v-form>
 </template>
 
 <script>
 import Checkbox from './Checkbox.vue';
 import Alerts from '~/components/commons/Alerts.vue';
-
-
 
 export default {
     components: {
@@ -122,6 +120,9 @@ export default {
                 const [_, day, month, year] = inputDate.match(regex)
                 this.fechaExpedicion = `${day}/${month}/${year}`
             }
+        },
+        updateIdentificationNumber(value) {
+            this.numeroIdentificacion = value.numeroIdentificacion
         }
     },
     computed: {

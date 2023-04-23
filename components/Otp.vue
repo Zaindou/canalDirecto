@@ -1,23 +1,43 @@
-1<template>
+<template>
     <div>
         <div class="ma-auto position-relative" style="max-width: 500px">
-            <p class="p1">Hemos enviado un <b class="b-green">código de verificación</b> a tu correo y/o celular, para validar tu identidad.</p>
+            <p class="p1">Hemos enviado un <b class="b-green">código de verificación</b> a tu correo y/o celular, para
+                validar tu identidad.</p>
             <v-otp-input length="5" type="number" @input="$emit('otp-entered', $event)" placeholder="0"></v-otp-input>
         </div>
         <v-container class="resendotp">
-            <p v-if="showResendBtn" class="p2">¿No has recibido el código de verificación? </p>
-            <button v-if="showResendBtn" class="btn" @click="resendOTP"><b>¡Clic aquí!</b></button>
-            <p v-else class="p2">Podrás reenviar tu código nuevamente en: <b>{{ remainingTime }}</b> segundos.</p>
+            <v-row class="align-center">
+                <v-col cols="auto" class="text-center col-step-otp">
+                    <v-icon class="p-icon" size="30">mdi-history</v-icon>
+                </v-col>
+                <v-col>
+                    <p v-if="showResendBtn" class="p2">
+                        ¿No llegó el código temporal? Para reenviarlo por favor haz
+                        <span>
+                            <button class="btn" @click="resendOTP">
+                                <b>¡clic aquí!</b>
+                            </button>
+                        </span>
+                    </p>
+                    <p v-else class="p2">
+                        Podrás reenviar tu código nuevamente en:
+                        <b>{{ remainingTime }}</b> segundos.
+                    </p>
+                </v-col>
+            </v-row>
         </v-container>
     </div>
 </template>
+
 <script>
+import axios from 'axios';
+
 export default {
     data() {
         return {
             otp: '',
             showResendBtn: false,
-            remainingTime: 10,
+            remainingTime: 180,
             timer: null,
         }
     },
@@ -28,18 +48,47 @@ export default {
         onComplete(value) {
             this.$emit('otp-entered', this.otp)
         },
+
+
         resendOTP() {
-            // Send request to resend OTP here
-            this.showResendBtn = false
-            this.remainingTime = 10
-            clearInterval(this.timer)
+
+            const token = localStorage.getItem("auth_token");
+
+            const config = {
+                headers: {
+                    Authorization: `Token ${token}`,
+                },
+            }
+
+            const data = {
+                numero_celular: localStorage.getItem('phone'),
+                correo_electronico: localStorage.getItem('email'),
+                primer_nombre: localStorage.getItem('firstName'),
+            };
+
+            axios.post('diagnostico/resendOtp/', data, config)
+                .then(response => {
+                    this.$notifier.showMessage({ content: `${response.data.message}`, color: 'success' })
+                })
+                .catch(error => {
+                    if (error.response.status === 409) {
+                        // Redirige al paso 1 en caso de recibir el error HTTP 409
+                        this.$router.push({ name: 'Step1' });
+                    } else {
+                        this.$notifier.showMessage({ content: `${error.response.data.message}`, color: 'error' })
+                    }
+                });
+
+            this.showResendBtn = false;
+            this.remainingTime = 180;
+            clearInterval(this.timer);
             this.timer = setInterval(() => {
-                this.remainingTime--
+                this.remainingTime--;
                 if (this.remainingTime === 0) {
-                    clearInterval(this.timer)
-                    this.showResendBtn = true
+                    clearInterval(this.timer);
+                    this.showResendBtn = true;
                 }
-            }, 1000)
+            }, 1000);
         },
     },
     mounted() {
@@ -65,50 +114,35 @@ export default {
 }
 
 .p1 {
-    font-size: 1rem;
+    color: #3b3b3b;
+    font-size: 0.9rem !important;
     font-weight: 400;
-    text-align: center; 
-    /* line-height: 1.5; */
-    color: #747171;
+    text-align: center;
 }
 
 .p2 {
+    align-items: center;
+    color: #115b7a;
     font-size: 1rem;
     font-weight: 400;
-    align-items: center;
-    text-align: center;
-    color: #ffffff;}
+    padding: 15px 0px 0px 0px !important;
+
+}
 
 .b-green {
-    color: #19b921;
+    color: #87BD29;
 }
 
 .resendotp {
-    background-color: rgba(37, 146, 219, 0.7);
+    background-color: #E1F4FC;
     border-radius: 5px;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
     margin-top: 30px;
     max-width: 500px;
-    padding: 0.8rem;
+    padding: 15px !important;
 }
 
-.btn {
-    /* background-color: rgba(red, green, blue, 0.5); */
-    border-radius: 5px;
-    border: none;
-    color: #ffffff;
-    cursor: pointer;
-    display: inline-block;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 0.5;
-    margin: 0 auto;
-    max-width: 500px;
-    padding: 0.5rem;
-    text-align: center;
-    text-decoration: none;
-    width: 100%;
-}
-
-
+/* .col {
+    padding: 10px !important;
+} */
 </style>
