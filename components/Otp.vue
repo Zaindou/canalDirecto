@@ -37,7 +37,7 @@ export default {
         return {
             otp: '',
             showResendBtn: false,
-            remainingTime: 180,
+            remainingTime: 18,
             timer: null,
         }
     },
@@ -66,7 +66,7 @@ export default {
                 primer_nombre: localStorage.getItem('firstName'),
             };
 
-            axios.post('diagnostico/resendOtp/', data, config)
+            axios.post('diagnostico/otp/resend', data, config)
                 .then(response => {
                     this.$notifier.showMessage({ content: `${response.data.message}`, color: 'success' })
                 })
@@ -80,7 +80,7 @@ export default {
                 });
 
             this.showResendBtn = false;
-            this.remainingTime = 180;
+            this.remainingTime = 18;
             clearInterval(this.timer);
             this.timer = setInterval(() => {
                 this.remainingTime--;

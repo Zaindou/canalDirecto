@@ -71,6 +71,7 @@ export default {
             formattedSavings: "",
             formattedExpenses: "",
             selectedOption: null,
+            defaultFormattedSaving: 0,
 
             options: [
                 'Solicitar tarjeta de crédito',
@@ -86,6 +87,7 @@ export default {
                 { text: 'NO', value: false },],
         }
     },
+
     methods: {
         formatIncome() {
             let value = this.formattedIncome.replace(/\D/g, '')
@@ -102,6 +104,16 @@ export default {
             value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
             this.formattedSavings = value
         },
+
+        defaultValue() {
+            if (this.ahorros === "NO") {
+                this.formattedSavings = 0
+            } else {
+                this.formattedSavings = this.defaultValue
+            }
+
+        },
+
         submitForm3() {
             const ahorrosValue = this.ahorrosOpciones.find(option => option.text === this.ahorros).value;
 
@@ -114,7 +126,8 @@ export default {
                 valor_ahorros: this.formattedSavings
             })
         }
-    }
+
+    },
 }
 </script>
 

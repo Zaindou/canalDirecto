@@ -1,9 +1,11 @@
 <template>
     <v-stepper v-model="e1" class="stepper-full-width">
-
+        <Loader v-if="loading4"></Loader>
         <div class="image-container">
-            <v-img src="../QNT-MOBILE.webp" max-width="900" class="mb-1 mobile-image" alt="QNT"></v-img>
-            <v-img src="../QNT_PC.webp" max-width="900" class="mb-1 desktop-image" alt="QNT"></v-img>
+            <v-img v-if="e1 != 4" src="../QNT-MOBILE.webp" max-width="900" class="mb-1 mobile-image" alt="QNT"></v-img>
+            <v-img v-if="e1 != 4" src="../QNT_PC.webp" max-width="900" class="mb-1 desktop-image" alt="QNT"></v-img>
+            <v-img v-if="e1 == 4" src="../QNT_4.webp" max-width="900" class="desktop-image" alt="QNT"></v-img>
+
         </div>
 
         <v-divider></v-divider>
@@ -37,14 +39,14 @@
                 <Step1 ref="step1" @form-submitted="handleSubmit" />
                 <v-col>
                     <div class="switch-container rounded-bg">
-                        <label class="switch-label" outlined @click="openModal">Acepta los <a id="linkTerms">términos y
+                        <label class="switch-label" outlined @click="TermsAndConditionsRedirect">Acepta los <a
+                                id="linkTerms">términos y
                                 condiciones legales</a></label>
                         <v-switch v-model="terminosCondiciones" required inset></v-switch>
                     </div>
                     <Modal title="Términos y condiciones" :content="modalContent" ref="modal"></Modal>
                 </v-col>
-                <v-btn block color="primary" @click="submitForm" :disabled="!terminosCondiciones" :loading="loading4"
-                    class="buttonsteps">
+                <v-btn block color="primary" @click="submitForm" :disabled="!terminosCondiciones" class="buttonsteps">
                     Siguiente
                 </v-btn>
             </v-stepper-content>
@@ -55,7 +57,7 @@
                         <Otp @otp-entered="handleOtpEntered" />
                     </v-col>
                 </v-row>
-                <v-btn block color="primary" @click="verifyOtp" :loading="loading4" class="buttonsteps">
+                <v-btn block color="primary" @click="verifyOtp" class="buttonsteps">
                     Validar código OTP
                 </v-btn>
             </v-stepper-content>
@@ -68,7 +70,7 @@
             </v-stepper-content>
 
             <v-stepper-content step="4">
-                <Step4></Step4>
+                <Step4 :clientData="clientData" :productos="productos"></Step4>
                 <v-btn block color="primary" class="buttonsteps" @click="finalizeAndRedirect">
                     ¡Finalizar!
                 </v-btn>
@@ -81,13 +83,14 @@
 import axios from 'axios'
 import Alerts from '~/components/commons/Alerts.vue';
 import Modal from '~/components/commons/Modal.vue';
+import Loader from '~/components/commons/Loader.vue';
 import Otp from '~/components/Otp.vue';
 import Step3 from '~/components/Step3.vue';
 import Step4 from '~/components/Step4.vue';
 
 
 export default {
-    components: { Alerts, Modal, Otp, Step3, Step4 },
+    components: { Alerts, Modal, Otp, Step3, Step4, Loader },
     data() {
         return {
             head: {
@@ -110,38 +113,39 @@ export default {
     },
     methods: {
         async handleSubmit(formData) {
-            this.loading4 = true;
-            this.numero_identificacion = formData.numero_identificacion
-            await axios.post('diagnostico/Stepone/', formData).then(response => {
+            try {
+                this.loading4 = true;
+                this.numero_identificacion = formData.numero_identificacion
+                const response = await axios.post('diagnostico/register', formData);
+
+                console.log(formData)
 
                 if (response.status >= 200 && response.status < 300) {
                     console.log('Este es el response', response.data)
                     localStorage.setItem("auth_token", response.data.token);
+                    localStorage.setItem("numero_identificacion", formData.numero_identificacion);
                     this.$axios.setToken(response.data.token, "Token");
-                    this.$notifier.showMessage({ content: '¡Hemos enviado un código de verificación!', color: 'success' })
-                    this.e1 = 2
-                    this.loading4 = false;
+
+                    if (response.data.status_code === "NEW_DIAGNOSTIC") {
+                        this.$notifier.showMessage({ content: '¡Hemos enviado un código de verificación!', color: 'success' })
+                        this.e1 = 2;
+                    } else if (response.data.status_code === "REDIRECT_TO_DIAGNOSTIC") {
+                        this.$notifier.showMessage({ content: '¡Bienvenido de nuevo, te redirigimos a tu diagnóstico!', color: 'success' })
+
+                        this.e1 = 4;
+                        await this.fetchData();
+
+                    }
                 } else {
-                    // console.log(response.data)
-                    this.$notifier.showMessage({ content: 'Error al enviar el OTP.', color: 'error' })
-                    this.loading4 = false;
-                    this.e1 = 1
+                    this.$notifier.showMessage({ content: 'Error al enviar el OTP.', color: 'error' });
+                    this.e1 = 1;
                 }
-            }).catch(error => {
-                if (error.response.data.message === 'Ya te encuentras en un proceso de diagnóstico.') {
-                    this.$notifier.showMessage({ content: `${error.response.data.message}`, color: 'error' })
-                    this.loading4 = false;
-                    this.e1 = 1
-                } else if (error.response.status >= 400 && error.response.status < 500) {
-                    this.$notifier.showMessage({ content: `${error.response.data.message}`, color: 'error' })
-                    this.loading4 = false;
-                    this.e1 = 1
-                } else {
-                    this.$notifier.showMessage({ content: `${error.response.data.detail}`, color: 'error' })
-                    this.loading4 = false;
-                    this.e1 = 1
-                }
-            })
+            } catch (error) {
+                this.$notifier.showMessage({ content: `${error.response.data.message}`, color: 'error' });
+                this.e1 = 1;
+            } finally {
+                this.loading4 = false;
+            }
         },
         async handleSubmit3(formData) {
             const token = localStorage.getItem("auth_token");
@@ -153,10 +157,12 @@ export default {
             }
 
             this.loading4 = true;
-            await axios.post('diagnostico/Stepthree/', formData, config).then(response => {
-                if (response.status >= 200 && response.status < 301)
+            await axios.post('diagnostico/register/financial', formData, config).then(async response => {
+                if (response.status >= 200 && response.status < 301) {
                     this.$notifier.showMessage({ content: '¡Hemos cargado tus datos financieros correctamente ;)!', color: 'success' })
-                this.e1 = 4
+                    await this.fetchData();
+                    this.e1 = 4
+                }
                 this.loading4 = false;
             }
             ).catch(error => {
@@ -166,15 +172,30 @@ export default {
                     this.e1 = 3
                 } else {
                     this.$notifier.showMessage({ content: `${error.response.data.detail}`, color: 'error' })
-                    // console.log(error.response.data)
                     this.loading4 = false;
                     this.e1 = 3
                 }
             })
-
         },
         submitForm3() {
             this.$refs.step3.submitForm3()
+        },
+
+        async fetchData() {
+            let token, cedula;
+            if (process.client) {
+                token = localStorage.getItem("auth_token");
+                cedula = localStorage.getItem("numero_identificacion");
+            }
+
+            const response = await axios.get(`/diagnostico/client-data/${cedula}`, {
+                headers: {
+                    Authorization: `Token ${token}`
+                }
+            });
+
+            this.clientData = response.data.informacionCliente;
+            this.productos = response.data.wazeQnt;
         },
         submitForm() {
             if (!this.terminosCondiciones) {
@@ -198,7 +219,7 @@ export default {
             }
 
             this.loading4 = true;
-            await axios.post('diagnostico/otp/', data).then(response => {
+            await axios.post('diagnostico/otp/verify', data).then(response => {
                 if (response.status >= 200 && response.status < 300) {
                     this.$notifier.showMessage({ content: '¡Tu código de verificación es correcto ;)!', color: 'success' })
                     this.e1 = 3
@@ -283,6 +304,10 @@ export default {
                 this.$refs.step1.primerNombre = firstName;
             }
         },
+        TermsAndConditionsRedirect() {
+            window.open('https://www.qnt.com.co/terminos-y-condiciones/', '_blank');
+        },
+
         finalizeAndRedirect() {
             localStorage.clear();
             window.location.href = "https://www.qnt.com.co";
@@ -307,8 +332,8 @@ export default {
         }, 10 * 60 * 1000); // 10 minutes
 
         setTimeout(() => {
-            localStorage.clear();
-            location.reload()
+            // localStorage.clear();
+            // location.reload()
             this.showCloseWarning();
         }, 15 * 60 * 1000); // 15 minutes
     },
@@ -331,6 +356,7 @@ export default {
 .v-stepper {
     width: 50%;
     margin: 0 auto;
+    padding: 0 !important;
 }
 
 
@@ -338,6 +364,7 @@ export default {
     .v-stepper {
         width: 100%;
         margin: 0 auto;
+        padding: 0 !important;
     }
 
     .rounded-bg {
@@ -449,3 +476,5 @@ export default {
     display: block !important;
 }
 </style>
+
+

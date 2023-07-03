@@ -14,10 +14,19 @@
                 </v-col>
 
                 <v-col cols="12" md="6">
-                    <v-text-field v-mask="'##/##/####'" placeholder="DD/MM/AAAA" v-model.lazy="fechaExpedicion"
-                        label="Fecha de expedición" @input="formatDate" :rules="dateRules" prepend-inner-icon="mdi-calendar"
-                        outlined hide-details></v-text-field>
-                    <!-- <Datepicker /> -->
+                    <div>
+                        <v-menu ref="menu" v-model="menu" :close-on-content-click="false" transition="scale-transition"
+                            offset-y min-width="auto">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-text-field v-mask="'##/##/####'" placeholder="DD/MM/AAAA" v-model.lazy="formattedDate"
+                                    label="Fecha de expedición" @input="formatDate" :rules="dateRules"
+                                    prepend-inner-icon="mdi-calendar" readonly outlined hide-details v-bind="attrs"
+                                    v-on="on"></v-text-field>
+                            </template>
+                            <v-date-picker v-model="fechaExpedicion" :active-picker.sync="activePicker" :max="getMaxDate"
+                                min="1950-01-01" locale="es" @input="menu = false" @change="save"></v-date-picker>
+                        </v-menu>
+                    </div>
                 </v-col>
 
                 <v-col cols="12" md="6">
@@ -68,6 +77,13 @@ export default {
 
         showAlert: false,
 
+        activePicker: null,
+        date: null,
+        menu: false,
+
+        formattedDate: '',
+
+
         tipoDeIdentificacion: [
             { text: 'Cédula de ciudadanía', value: 'CC' },
             { text: 'Cédula de extranjería', value: 'CE' },],
@@ -89,8 +105,40 @@ export default {
             v => v.length >= 10 || 'El número de celular debe tener al menos 10 dígitos.',
             v => v.length <= 10 || 'El número de celular debe tener máximo 10 dígitos.',
         ],
+
+        dateRules: [
+            v => !!v || 'La fecha es requerida',
+            v => /^\d{2}\/\d{2}\/\d{4}$/.test(v) || 'El formato de la fecha debe ser DD/MM/AAAA',
+        ],
     }),
+
+    computed: {
+        getMaxDate() {
+            return new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10);
+        }
+    },
+
+    watch: {
+        fechaExpedicion(newVal) {
+            this.formattedDate = this.formatDate(newVal);
+        },
+    },
+
     methods: {
+        updateIdentificationNumber(value) {
+            this.numeroIdentificacion = value.numeroIdentificacion
+        },
+
+        formatDate(date) {
+            if (!date) return '';
+            const [year, month, day] = date.split('-');
+            return `${day}/${month}/${year}`;
+        },
+        save(date) {
+            this.fechaExpedicion = date;
+            this.formattedDate = this.formatDate(date);
+        },
+
         submitForm() {
             if (this.primerNombre == '' || this.primerApellido == '' || this.numeroIdentificacion == '' || this.fechaExpedicion == '' || this.numeroCelular == '' || this.correoElectronico == '' || this.terminosCondiciones === false) {
                 this.valid = false;
@@ -104,7 +152,7 @@ export default {
                         primer_nombre: this.primerNombre,
                         primer_apellido: this.primerApellido,
                         numero_identificacion: this.numeroIdentificacion,
-                        fecha_expedicion: this.fechaExpedicion,
+                        fecha_expedicion: this.formattedDate,
                         tipo_identificacion: this.tipoIdentificacion,
                         numero_celular: this.numeroCelular,
                         correo_electronico: this.correoElectronico,
@@ -112,31 +160,8 @@ export default {
                     });
             }
         },
-        formatDate() {
-            const inputDate = this.fechaExpedicion
-            const regex = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/
-
-            if (regex.test(inputDate)) {
-                const [_, day, month, year] = inputDate.match(regex)
-                this.fechaExpedicion = `${day}/${month}/${year}`
-            }
-        },
-        updateIdentificationNumber(value) {
-            this.numeroIdentificacion = value.numeroIdentificacion
-        }
     },
-    computed: {
-        dateRules() {
-            return [
-                (v) =>
-                    /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.test(v) ||
-                    'Debe ingresar una fecha en formato dd/mm/aaaa',
-                v => !!v || 'La fecha es requerida.',
-                v => v.length >= 10 || 'La fecha debe tener el formato dd/mm/aaaa.',
-                v => v.length <= 10 || 'La fecha debe tener el formato dd/mm/aaaa.',
-            ]
-        }
-    }
+
 }
 </script>
 

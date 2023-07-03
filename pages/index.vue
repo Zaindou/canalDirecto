@@ -1,36 +1,34 @@
-<template >
-    <v-container>
-        <img class="mx-auto">
+import $ from 'jquery';
+<template>
+    <v-container class="remove-padding">
         <Stepper />
     </v-container>
 </template>
+<script>
 
-<style>
-@media screen and (max-width: 959px) {
+export default {
+    data() {
+        return {
+            head: {
+                title: 'Canal Directo'
+            },
 
-    /* Estilos para dispositivos móviles (xs y sm) */
-    .container {
+        }
+    }
+}
+</script>
+
+
+<style scoped>
+@media (max-width: 790px) {
+    .remove-padding {
         padding: 0 !important;
     }
+}
 
-    /* center img */
-    img {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        margin-bottom: 0px;
+@media (min-width: 790px) {
+    .remove-padding {
+        padding: 40px !important;
     }
-}
-
-/* center img */
-img {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 0px;
-}
-
-.v-main__wrap {
-    background-color: whitesmoke !important;
 }
 </style>

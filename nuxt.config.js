@@ -3,7 +3,7 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - Diagnostico financiero',
+    titleTemplate: 'QNT - Diagnóstico financiero',
     // title: 'canal-directo',
     htmlAttrs: {
       lang: 'es'
@@ -15,7 +15,9 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+        {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200',  crossorigin: ''}
     ]
   },
 
