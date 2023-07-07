@@ -37,7 +37,7 @@ export default {
         return {
             otp: '',
             showResendBtn: false,
-            remainingTime: 18,
+            remainingTime: 180,
             timer: null,
         }
     },
@@ -80,7 +80,7 @@ export default {
                 });
 
             this.showResendBtn = false;
-            this.remainingTime = 18;
+            this.remainingTime = 180;
             clearInterval(this.timer);
             this.timer = setInterval(() => {
                 this.remainingTime--;

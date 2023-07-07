@@ -1,11 +1,12 @@
 <template>
         <div class="principal-container">
-                <div class="banner-text">
-                        <p><b>¡Felicitaciones, {{ clientData.nombre_completo }}!</b> este es tu diagnóstico
-                                financiero QNT,
-                                ten en cuenta
-                                las siguientes recomendaciones para mejorar tu perfil crediticio.</p>
-                </div>
+                <v-alert border="left" color="grey lighten-4" class="banner-text">
+                        <b>¡Felicitaciones, {{ clientData.nombre_completo }}!</b> <br>Este es tu diagnóstico
+                        financiero QNT,
+                        ten en cuenta
+                        las siguientes recomendaciones para mejorar tu perfil crediticio.
+
+                </v-alert>
                 <h3 style="color:#2B81D6;" class="mb-1"><v-icon id="product-icon" large>mdi-notebook-outline</v-icon> Resumen de
                         tu
                         diagnóstico</h3>
@@ -19,7 +20,7 @@
                                                 {{ clientData.puntaje_crediticio }}
                                                 <v-list-item-title><b>Objetivo financiero</b></v-list-item-title>
                                                 {{ clientData.objetivo_financiero }}
-                                                <v-list-item-title><b>% de avance hacia tu
+                                                <v-list-item-title><b>Avance hacia tu
                                                                 objetivo:</b></v-list-item-title>
                                                 {{ clientData.porcentaje_avance_actual }}%
                                                 <v-list-item-title><b>Calificación de riesgo</b></v-list-item-title>
@@ -50,9 +51,9 @@
                                 </v-list-item>
                         </v-list>
                 </v-card>
-                <h3 style="color:#2B81D6;" class="mb-1"><v-icon id="product-icon" large>mdi-pencil-outline</v-icon>
+                <h3 style="color:#2B81D6;" class="mb-1"> <v-icon id="product-icon" large>mdi-pencil-outline</v-icon>
                         Recomendaciones financieras</h3>
-                <v-card class="mt-5 mb-5">
+                <v-card class="mb-5">
                         <v-card-text>
                                 <v-list>
                                         <v-list-item v-for="tip in clientData.tips_financieros" :key="tip.id">
@@ -68,7 +69,7 @@
                         tus
                         productos vigentes</h3>
 
-                <v-expansion-panels accordion hover-focus>
+                <v-expansion-panels accordion hover-focus class="mb-5">
                         <v-expansion-panel v-for="producto in productos" :key="producto.id">
                                 <v-expansion-panel-header>
                                         <div>
@@ -96,10 +97,12 @@
                         </v-expansion-panel>
                 </v-expansion-panels>
 
+                <h3 style="color:#2B81D6;" class="mb-1"><v-icon id="product-icon"
+                                large>mdi-checkbox-marked-circle-outline</v-icon> Estado actual
+                </h3>
 
-                <v-card class="pa-3 mt-3 mb-3 card-estado-actual" outlined>
-                        <center><span class="product-icon material-symbols-outlined">cardiology</span></center>
-                        <center id="entityname" class="mb-2">Estado actual</center>
+                <v-card class="pa-5 mb-5 card-estado-actual" outlined>
+
                         <v-row>
                                 <v-col cols="12" sm="6" class="py-1">
                                         <strong>Tus Ingresos SIN prestaciones / aportes a salud:</strong>
@@ -133,23 +136,25 @@
                         </v-row>
                 </v-card>
 
-                <div class="mb-5 card-alert">
-                        <div class="card-icon-alert">
-                                <span class="material-symbols-outlined">emergency_home</span>
-                        </div>
-                        <div class="card-content">
-                                <p><strong>Advertencia: </strong>Recuerda que las recomendaciones presentadas son de expertos
-                                        economistas, sin embargo ten en cuenta únicamente tu comportamiento y no
-                                        incluye los ingresos o gastos de tu núcleo familiar.
-                                </p>
-                        </div>
-                </div>
-                <h3 style="color:#2B81D6;" class="mb-5"><v-icon id="product-icon" large>mdi-star-outline</v-icon>
+                <v-alert color="light-blue darken-1" dark icon="mdi-alert-outline" border="left" prominent>
+                        <strong>Recuerda</strong> <br>Las recomendaciones presentadas son de expertos economistas, sin embargo
+                        tiene en cuenta únicamente tu comportamiento y no
+                        incluye los ingresos o gastos de tu núcleo familiar. </v-alert>
+                <h3 style="color:#2B81D6;" class="mb-5"><v-icon id="product-icon" large>mdi-wallet-plus-outline</v-icon>
                         Recomendaciones
                         para alcanzar tu objetivo financiero</h3>
+
+                <div v-if="messageOfferClient()">
+
+                        <v-alert color="light-green" dark icon="mdi-party-popper" border="left" prominent>
+                                <strong>¡FELICIDADES!</strong> <br>
+                                Tenemos una oferta para ti.</v-alert>
+                </div>
+
                 <v-expansion-panels class="mb-3">
                         <v-expansion-panel v-for="(producto, index) in productos" :key="index"
                                 v-if="producto.es_producto_qnt && producto.ofertas">
+
                                 <v-expansion-panel-header>
                                         <div>
                                                 <span id="entityname">{{ producto.entidad }}</span>
@@ -169,25 +174,27 @@
                                                 <p><strong>Ahorraras:</strong> {{ ((1 - (oferta.monto_final_oferta /
                                                         producto.saldo_total)) * 100).toFixed(2) }}%</p>
                                                 <p><strong>Alcanzaras tu objetivo en:</strong> {{
-                                                        producto.scores_by_term[oferta.plazo].tiempo_meses }} meses</p>
+                                                        roundMonths(producto.scores_by_term[oferta.plazo].tiempo_meses) }} meses
+                                                </p>
                                         </div>
                                         <div class="card-alert-offer">
-                                                <div class="card-icon-alert">
+                                                <!-- <div class="card-icon-alert">
                                                         <span
                                                                 class="material-symbols-outlined card-icon-1-alert">emergency_home</span>
-                                                </div>
+                                                </div> -->
                                                 <div class="card-content">
-                                                        <p><strong>Advertencia: </strong>Si deseas saldar esta obligación,
+                                                        <p>Si deseas saldar esta obligación,
                                                                 recuerda que puedes
-                                                                seleccionar uno de los planes presentados o ajustar un plan de
+                                                                seleccionar uno de los planes presentados o ajustar un
+                                                                plan de
                                                                 acuerdo a tus necesidades,
                                                                 contáctate con nosotros para brindarte una asesoría
                                                                 personalizada.
                                                                 <br>
                                                                 <br>
                                                                 <strong>Whatsapp:</strong>3182876726
-                                                                <br><strong>Teléfono:</strong> 01 8000 180 560
-                                                                <br> <strong>Correo:</strong>Canaldirecto@qnt.com.co
+                                                                <br><strong>Teléfono: </strong> 01 8000 180 560
+                                                                <br> <strong>Correo: </strong>Canaldirecto@qnt.com.co
                                                         </p>
                                                 </div>
                                         </div>
@@ -195,46 +202,56 @@
                         </v-expansion-panel>
                 </v-expansion-panels>
 
-                <h4 style="color:#2B81D6;" class="mb-1"><v-icon id="product-icon"
-                                large>mdi-wallet-plus-outline</v-icon>Obligaciones fuera
-                        de QNT</h4>
-                <v-expansion-panels>
-                        <v-expansion-panel v-for="(producto, index) in productos" :key="index"
-                                v-if="!producto.ofertas || producto.ofertas.length === 0">
-                                <v-expansion-panel-header>
-                                        <div>
-                                                <span id="entityname">{{ producto.entidad }}</span>
-                                                <br>Estado del producto: {{ producto.estado }}
-                                                <br>Part. En mora: {{ producto.participacion_mora }}%
+                <div v-if="othersDebs()">
+                        <h4 style="color:#2B81D6;" class="mb-1">Obligaciones fuera
+                                de QNT</h4>
+                        <v-expansion-panels class="mb-5">
+                                <v-expansion-panel v-for="(producto, index) in productos" :key="index"
+                                        v-if="!producto.ofertas && producto.estado != 'Al día'">
+                                        <v-expansion-panel-header>
+                                                <div>
+                                                        <span id="entityname">{{ producto.entidad }}</span>
+                                                        <br>Estado del producto: {{ producto.estado }}
+                                                        <br>Part. En mora: {{ producto.participacion_mora }}%
 
-                                        </div>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                        <p v-if="producto.contacto">Para ponerte al día con esta obligación, debes contactarte
-                                                con la entidad a:
-                                                <br><strong>Correo:</strong> {{ producto.contacto.correo_contacto }}
-                                                <br><strong>Teléfono:</strong> {{ producto.contacto.numero_contacto }}
-                                        </p>
-                                        <p v-else>No disponemos de información de contacto para esta entidad.</p>
-                                        <p>Si cancelas esta obligación en un solo pago te acercarás aproximadamente <b>{{
-                                                roundPercentage(producto.contacto ? producto.contacto.hacia_objetivo :
-                                                        producto.scores_by_term["1"].hacia_objetivo) }}%</b> a tu objetivo
-                                                financiero en un periodo
-                                                de <b>{{
-                                                        producto.contacto ? producto.contacto.tiempo_meses :
-                                                        producto.scores_by_term["1"].tiempo_meses }}</b> meses
-                                        </p>
-                                </v-expansion-panel-content>
-                        </v-expansion-panel>
-                </v-expansion-panels>
-
-
+                                                </div>
+                                        </v-expansion-panel-header>
+                                        <v-expansion-panel-content>
+                                                <p v-if="producto.contacto">Para ponerte al día con esta obligación, debes
+                                                        contactarte
+                                                        con la entidad a:
+                                                        <br><strong>Correo:</strong> {{ producto.contacto.correo_contacto }}
+                                                        <br><strong>Teléfono:</strong> {{ producto.contacto.numero_contacto }}
+                                                </p>
+                                                <p v-else>No disponemos de información de contacto para esta entidad.</p>
+                                                <p>Si cancelas esta obligación en un solo pago te acercarás aproximadamente
+                                                        <b>{{
+                                                                roundPercentage(producto.contacto ?
+                                                                        producto.contacto.hacia_objetivo :
+                                                                        producto.scores_by_term["1"].aumento_puntaje_objetivo) }}%</b> a
+                                                        tu
+                                                        objetivo
+                                                        financiero en un periodo
+                                                        de <b>{{
+                                                                producto.contacto ? producto.contacto.tiempo_meses :
+                                                                roundMonths(producto.scores_by_term["1"].tiempo_meses) }}</b>
+                                                        meses
+                                                </p>
+                                        </v-expansion-panel-content>
+                                </v-expansion-panel>
+                        </v-expansion-panels>
+                </div>
+                <div v-else>
+                        <v-alert color="light-green" dark icon="mdi-party-popper" border="left" prominent>
+                                <strong>¡FELICIDADES!</strong> <br>
+                                Tienen un buen comportamiento.</v-alert>
+                </div>
 
         </div>
 </template>
 
 
-<!-- <script>
+<script>
 export default {
         props: {
                 clientData: {
@@ -258,14 +275,30 @@ export default {
                                 minimumFractionDigits: 0
                         }).format(value);
 
-
-
-
-
                 },
                 roundPercentage(value) {
                         return parseFloat(value).toFixed(2);
-                }
+                },
+                roundMonths(value) {
+                        return parseFloat(value).toFixed(0);
+                },
+                messageOfferClient() {
+                        for (const i in this.productos) {
+                                if (this.productos[i].es_producto_qnt == true) {
+                                        return true;
+                                } else if (this.productos[i].es_producto_qnt == false && this.productos[i].estado === 'Al día') {
+                                        return false;
+                                }
+                        }
+
+                },
+                othersDebs() {
+                        for (const i in this.productos) {
+                                if (this.productos[i].es_producto_qnt == false && this.productos[i].estado != 'Al día') {
+                                        return true;
+                                }
+                        }
+                },
         },
         computed: {
                 fechaFormateada() {
@@ -278,8 +311,8 @@ export default {
         }
 }
 
-</script> -->
-
+</script>
+<!-- 
 <script>
 import axios from 'axios'
 
@@ -293,7 +326,6 @@ export default {
                         data: null,
                         clientData: {},
                         productos: {},
-                        ofertas: {},
                         isOpen: false,
                 }
         },
@@ -311,7 +343,6 @@ export default {
 
                         this.clientData = response.data.informacionCliente;
                         this.productos = response.data.wazeQnt;
-                        this.ofertas = response.data.wazeQnt[2].ofertas;
                         this.isOpen = false;
 
                 } catch (error) {
@@ -327,6 +358,18 @@ export default {
                 roundPercentage(value) {
                         return parseFloat(value).toFixed(2);
                 }
+                ,
+                roundMonths(value) {
+                        return parseFloat(value).toFixed(0);
+                },
+                messageOfferClient() {
+                        for (const i in this.productos) {
+                                if (this.productos[i].es_producto_qnt == true) {
+                                        return true;
+                                }
+                        }
+                }
+
         },
         computed: {
                 fechaFormateada() {
@@ -335,35 +378,26 @@ export default {
                         const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); // Los meses en JavaScript empiezan desde 0
                         const año = fecha.getFullYear();
                         return `${dia}/${mes}/${año}`;
-                }
+                },
+
         }
 }
 
-</script>
+</script>  -->
 
 
-</script>
 <style scoped>
-/* @media (max-width: 600px) { */
-
-
-
 .principal-container {
-        padding: 15px;
+        padding: 5px;
         position: relative;
 }
 
 
 .banner-text {
-        background-color: #f5f5f5;
-        padding: 20px;
-        border-radius: 5px;
-        margin-bottom: 20px;
-        font-size: 14px;
+        font-size: 16px;
         color: #666;
-        font-weight: 300;
         line-height: 1.5;
-        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12)
+        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12) !important;
 }
 
 .div-table {
@@ -480,7 +514,6 @@ th {
 }
 
 .card-content {
-        flex: 6;
         margin-top: 10px;
         padding: 10px;
         text-align: left;
@@ -499,17 +532,7 @@ th {
 }
 
 
-.material-symbols-outlined {
-        background-color: #113758;
-        font-size: 25px !important;
-        border-radius: 360px;
-        box-shadow: -8px 2px 33px -4px rgba(0, 0, 0, 0.16) !important;
-        color: #ffffff;
-        margin-bottom: 10px !important;
-        margin: auto;
-        padding: 10px;
 
-}
 
 
 .row {
@@ -558,7 +581,7 @@ th {
 .offer-card {
         border-radius: 10px;
         border: 0.5px solid #ccc;
-        line-height: 4px;
+        line-height: 5px;
         margin-top: 10px;
         padding: 20px;
         font-weight: 400;
@@ -619,6 +642,4 @@ th {
 .card-estado-actual {
         box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12)
 }
-
-/* } */
 </style>

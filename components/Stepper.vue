@@ -58,7 +58,7 @@
                     </v-col>
                 </v-row>
                 <v-btn block color="primary" @click="verifyOtp" class="buttonsteps">
-                    Validar código OTP
+                    Confirmar código
                 </v-btn>
             </v-stepper-content>
 
@@ -305,7 +305,7 @@ export default {
             }
         },
         TermsAndConditionsRedirect() {
-            window.open('https://www.qnt.com.co/terminos-y-condiciones/', '_blank');
+            window.open('https://qnt.com.co/tyc-dignostico/', '_blank');
         },
 
         finalizeAndRedirect() {

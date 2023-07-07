@@ -103,27 +103,23 @@ export default {
             let value = this.formattedSavings.replace(/\D/g, '')
             value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
             this.formattedSavings = value
-        },
-
-        defaultValue() {
-            if (this.ahorros === "NO") {
-                this.formattedSavings = 0
-            } else {
-                this.formattedSavings = this.defaultValue
-            }
 
         },
 
         submitForm3() {
-            const ahorrosValue = this.ahorrosOpciones.find(option => option.text === this.ahorros).value;
+            // const ahorrosOption = this.ahorrosOpciones.find(option => option.text === this.ahorros);
+
+            const tieneAhorros = this.ahorros === 'NO' ? 'false' : 'true';
+
+            const ahorrosValue = this.ahorros === 'NO' ? '0' : this.formattedSavings;
 
             this.$emit('submit', {
                 numero_identificacion: this.numeroIdentificacion,
                 ingresos_mensuales: this.formattedIncome,
                 gastos_mensuales: this.formattedExpenses,
-                tienes_ahorros: ahorrosValue,
+                tienes_ahorros: tieneAhorros,
                 objetivo_financiero: this.selectedOption,
-                valor_ahorros: this.formattedSavings
+                valor_ahorros: ahorrosValue
             })
         }
 
