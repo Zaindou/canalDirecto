@@ -16,7 +16,7 @@
                 <v-col cols="12" md="6">
                     <div>
                         <v-menu ref="menu" v-model="menu" :close-on-content-click="false" transition="scale-transition"
-                            offset-y min-width="auto">
+                            offset-y min-width="auto" @show="openDatePicker">
                             <template v-slot:activator="{ on, attrs }">
                                 <v-text-field v-mask="'##/##/####'" placeholder="DD/MM/AAAA" v-model.lazy="formattedDate"
                                     label="Fecha de expedición" @input="formatDate" :rules="dateRules"
@@ -77,9 +77,9 @@ export default {
 
         showAlert: false,
 
-        activePicker: null,
+        activePicker: '',
         date: null,
-        menu: false,
+        menu: true,
 
         formattedDate: '',
 
@@ -138,6 +138,10 @@ export default {
             this.fechaExpedicion = date;
             this.formattedDate = this.formatDate(date);
         },
+        openDatePicker() {
+            this.activePicker = 'YEAR';
+            this.menu = false;
+        },
 
         submitForm() {
             if (this.primerNombre == '' || this.primerApellido == '' || this.numeroIdentificacion == '' || this.fechaExpedicion == '' || this.numeroCelular == '' || this.correoElectronico == '' || this.terminosCondiciones === false) {
@@ -162,10 +166,15 @@ export default {
         },
     },
 
+    mounted() {
+        this.openDatePicker();
+
+    },
+
 }
 </script>
 
-<style>
+<style scoped>
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;

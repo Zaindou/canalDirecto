@@ -1,36 +1,36 @@
 <template>
         <div class="principal-container">
-                <v-alert border="left" color="grey lighten-4" class="banner-text">
-                        <b>¡Felicitaciones, {{ clientData.nombre_completo }}!</b> <br>Este es tu diagnóstico
-                        financiero QNT,
-                        ten en cuenta
-                        las siguientes recomendaciones para mejorar tu perfil crediticio.
-
+                <v-alert border="buttom" color="info" dark class="banner-text">
+                        <h4 class="mb-1"><b>¡Felicitaciones, {{ clientData.nombre_completo }}!</b></h4>
+                        <p>Aquí tienes tu diagnóstico financiero QNT del {{ fechaFormateada }}, en el que encontrarás un
+                                análisis
+                                de tu situación financiera actual y algunas recomendaciones para mejorar tu perfil crediticio.
+                        </p>
                 </v-alert>
                 <h3 style="color:#2B81D6;" class="mb-1"><v-icon id="product-icon" large>mdi-notebook-outline</v-icon> Resumen de
-                        tu
-                        diagnóstico</h3>
+                        tu diagnóstico</h3>
+                <RiskMeter class="mb-3" :score="clientData.puntaje_crediticio" />
+
                 <v-card class="mb-5">
                         <v-list>
                                 <v-list-item>
                                         <v-list-item-content>
-                                                <v-list-item-title><b>Fecha de diagnóstico</b></v-list-item-title>
-                                                {{ fechaFormateada }}
-                                                <v-list-item-title><b>Puntaje de crédito</b></v-list-item-title>
-                                                {{ clientData.puntaje_crediticio }}
                                                 <v-list-item-title><b>Objetivo financiero</b></v-list-item-title>
                                                 {{ clientData.objetivo_financiero }}
-                                                <v-list-item-title><b>Avance hacia tu
-                                                                objetivo:</b></v-list-item-title>
+                                                <v-list-item-title><b>¿Hoy qué tan cerca estas de este
+                                                                objetivo?</b></v-list-item-title>
                                                 {{ clientData.porcentaje_avance_actual }}%
-                                                <v-list-item-title><b>Calificación de riesgo</b></v-list-item-title>
-                                                {{ clientData.calificacion_riesgo }}
+                                        </v-list-item-content>
+                                </v-list-item>
+                                <v-list-item>
+                                        <v-list-item-content>
                                                 <v-list-item-title><b>Recomendación</b></v-list-item-title>
                                                 {{ clientData.recomendacion }}
                                         </v-list-item-content>
                                 </v-list-item>
                         </v-list>
                 </v-card>
+
                 <h3 style="color:#2B81D6;" class="mb-1"><v-icon id="product-icon" large>mdi-currency-usd</v-icon> Información
                         financiera</h3>
                 <v-card class="mb-5">
@@ -43,16 +43,16 @@
                                                 {{ clientData.productos_activos }}
                                                 <v-list-item-title><b>Productos en mora</b></v-list-item-title>
                                                 {{ clientData.productos_mora }}
-                                                <v-list-item-title><b>Saldo total de productos</b></v-list-item-title>
+                                                <v-list-item-title><b>Saldo productos vigentes</b></v-list-item-title>
                                                 {{ formatCurrency(clientData.saldo_total_productos) }}
-                                                <v-list-item-title><b>Saldo total de productos en mora</b></v-list-item-title>
+                                                <v-list-item-title><b>Saldo deudas activas</b></v-list-item-title>
                                                 {{ formatCurrency(clientData.saldo_total_productos_mora) }}
                                         </v-list-item-content>
                                 </v-list-item>
                         </v-list>
                 </v-card>
                 <h3 style="color:#2B81D6;" class="mb-1"> <v-icon id="product-icon" large>mdi-pencil-outline</v-icon>
-                        Recomendaciones financieras</h3>
+                        Recomendaciones financieras para {{ clientData.objetivo_financiero }}</h3>
                 <v-card class="mb-5">
                         <v-card-text>
                                 <v-list>
@@ -82,73 +82,77 @@
 
                                 <v-expansion-panel-content>
                                         <div>
-                                                <strong>Tipo de cuenta:</strong> {{ producto.tipo_producto }}
+                                                <strong>Producto:</strong> {{ producto.tipo_producto }}
 
                                                 <br><strong>Antigüedad (En días):</strong> {{ producto.antiguedad }}
                                                 <br><strong>Días en mora:</strong> {{ producto.dias_en_mora }}
                                                 <br><strong>Saldo total:</strong> {{ formatCurrency(producto.saldo_total) }}
                                                 <br><strong>Cuota promedio:</strong> {{ formatCurrency(producto.cuota) }}
-                                                <br><strong>Participación de tus productos activos:</strong> {{
+                                                <br><strong>Porcentaje del saldo total de tus productos vigentes:</strong> {{
                                                         producto.participacion_al_dia }}%
-                                                <br><strong>Participación de tus productos activos en mora (Deudas): </strong>{{
+                                                <br><strong>Porcentaje del saldo total de tus deudas vigentes: </strong>{{
                                                         producto.participacion_mora }}%
+
                                         </div>
                                 </v-expansion-panel-content>
                         </v-expansion-panel>
                 </v-expansion-panels>
 
                 <h3 style="color:#2B81D6;" class="mb-1"><v-icon id="product-icon"
-                                large>mdi-checkbox-marked-circle-outline</v-icon> Estado actual
+                                large>mdi-checkbox-marked-circle-outline</v-icon> Presupuesto sugerido
                 </h3>
+                <v-alert color="light-blue darken-1" dark border="left" prominent>
+                        <strong>Recuerda</strong> <br>Las recomendaciones se basan en tu comportamiento financiero individual.
+                        No incluyen los ingresos o gastos de tu núcleo familiar. Si compartes gastos e ingresos con otras
+                        personas, ten en cuenta esta información adicional al establecer tu presupuesto. Recuerda que estas
+                        recomendaciones son de expertos economistas y están diseñadas para guiarte hacia una mejor salud
+                        financiera </v-alert>
 
                 <v-card class="pa-5 mb-5 card-estado-actual" outlined>
 
                         <v-row>
                                 <v-col cols="12" sm="6" class="py-1">
-                                        <strong>Tus Ingresos SIN prestaciones / aportes a salud:</strong>
+                                        <strong>Tus ingresos netos:</strong>
                                         <p class="my-0">{{ formatCurrency(clientData.ingresos_sin_prestaciones) }}</p>
                                 </v-col>
 
                                 <v-col cols="12" sm="6" class="py-1">
-                                        <strong>Pagos promedio al mes (Obligaciones vigentes):</strong>
+                                        <strong>Pagos promedio de tus productos</strong>
                                         <p class="my-0">{{ formatCurrency(clientData.pagos_promedio_mes) }}</p>
                                 </v-col>
 
                                 <v-col cols="12" sm="6" class="py-1">
-                                        <strong>Recomendación de tus gastos básicos:</strong>
+                                        <strong>Recomendación gastos básicos:</strong>
                                         <p class="my-0">{{ formatCurrency(clientData.recomendacion_gastos_basicos) }}</p>
                                 </v-col>
 
                                 <v-col cols="12" sm="6" class="py-1">
-                                        <strong>Recomendación de pago de obligaciones (deudas):</strong>
+                                        <strong>Recomendación para pagar tus deudas:</strong>
                                         <p class="my-0">{{ formatCurrency(clientData.recomendacion_pago_deudas) }}</p>
                                 </v-col>
 
                                 <v-col cols="12" sm="6" class="py-1">
-                                        <strong>Disponible para el saldar tus deudas:</strong>
+                                        <strong>Disponible para deudas:</strong>
                                         <p v-if="clientData.disponible_saldar_deudas >= 0" class="my-0">
                                                 {{ formatCurrency(clientData.disponible_saldar_deudas) }}
                                         </p>
                                         <p v-else class="my-0">
-                                                $0 - Debes revisar tus finanzas.
+                                                $0 - Sin disponibilidad para saldar deudas. Prioriza el pago de tus obligaciones
+                                                y libera espacio para abordar el resto de tus deudas.
                                         </p>
                                 </v-col>
                         </v-row>
                 </v-card>
 
-                <v-alert color="light-blue darken-1" dark icon="mdi-alert-outline" border="left" prominent>
-                        <strong>Recuerda</strong> <br>Las recomendaciones presentadas son de expertos economistas, sin embargo
-                        tiene en cuenta únicamente tu comportamiento y no
-                        incluye los ingresos o gastos de tu núcleo familiar. </v-alert>
                 <h3 style="color:#2B81D6;" class="mb-5"><v-icon id="product-icon" large>mdi-wallet-plus-outline</v-icon>
-                        Recomendaciones
-                        para alcanzar tu objetivo financiero</h3>
+                        Comienza tu rebancarización con QNT</h3>
 
                 <div v-if="messageOfferClient()">
 
                         <v-alert color="light-green" dark icon="mdi-party-popper" border="left" prominent>
-                                <strong>¡FELICIDADES!</strong> <br>
-                                Tenemos una oferta para ti.</v-alert>
+                                <strong>¡Felicitaciones!</strong> <br>
+                                QNT Tiene el 18% del saldo total de tus deudas y tenemos una oferta(s) para ti, conócelas a
+                                continuación:</v-alert>
                 </div>
 
                 <v-expansion-panels class="mb-3">
@@ -160,51 +164,64 @@
                                                 <span id="entityname">{{ producto.entidad }}</span>
                                                 <br>Estado del producto: {{ producto.estado }}
                                                 <br>Part. En mora: {{ producto.participacion_mora }}%
+                                                <br>Saldo total del producto: {{ formatCurrency(producto.saldo_total) }}
 
                                         </div>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
                                         <div class="offer-card" v-for="(oferta, i) in producto.ofertas" :key="i">
-                                                <p class="title-offer">Plazo: {{ oferta.plazo }} meses</p>
-                                                <p><strong>Valor a Pagar:</strong> {{ formatCurrency(oferta.monto_final_oferta)
+                                                <p class="title-offer">Puedes pagar este producto en: {{ oferta.plazo }}
+                                                        cuota(s)</p>
+                                                <p><strong>Valor total pagar: </strong> {{
+                                                        formatCurrency(oferta.monto_final_oferta)
                                                 }}</p>
-                                                <p><strong>Cuota Inicial:</strong> {{ formatCurrency(oferta.cuota_inicial) }}
+                                                <p><strong>Tu cuota inicial es de: </strong> {{
+                                                        formatCurrency(oferta.cuota_inicial) }}
                                                 </p>
-                                                <p><strong>Valor Cuota:</strong> {{ formatCurrency(oferta.cuota) }}</p>
-                                                <p><strong>Ahorraras:</strong> {{ ((1 - (oferta.monto_final_oferta /
-                                                        producto.saldo_total)) * 100).toFixed(2) }}%</p>
-                                                <p><strong>Alcanzaras tu objetivo en:</strong> {{
-                                                        roundMonths(producto.scores_by_term[oferta.plazo].tiempo_meses) }} meses
+                                                <p><strong>Valor de la cuota mes a mes:</strong> {{ formatCurrency(oferta.cuota)
+                                                }}</p>
+                                                <p><strong>De esta manera ahorraras:</strong> {{ ((1 -
+                                                        (oferta.monto_final_oferta /
+                                                                producto.saldo_total)) * 100).toFixed(2) }}%</p>
+                                                <p>Si seleccionas este plan avanzaras
+                                                        <b>{{
+                                                                roundPercentage(producto.contacto ?
+                                                                        producto.contacto.hacia_objetivo :
+                                                                        producto.scores_by_term[oferta.plazo].aumento_puntaje_objetivo)
+                                                        }}%</b>
+                                                        para {{ clientData.objetivo_financiero }} y quedaras a un <b>{{
+                                                                roundPercentage(producto.scores_by_term[oferta.plazo].aumento_puntaje)
+                                                        }}</b>% de
+                                                        este objetivo.
+                                                        De acuerdo a la ley 1266 de 2008 de habeas Data tardaras
+                                                        <b>{{
+                                                                producto.contacto ? producto.contacto.tiempo_meses :
+                                                                roundMonths(producto.scores_by_term[oferta.plazo].tiempo_meses)
+                                                        }}</b>
+                                                        meses en eliminar este reporte negativo de las centrales de riesgo.
                                                 </p>
                                         </div>
-                                        <div class="card-alert-offer">
-                                                <!-- <div class="card-icon-alert">
-                                                        <span
-                                                                class="material-symbols-outlined card-icon-1-alert">emergency_home</span>
-                                                </div> -->
-                                                <div class="card-content">
-                                                        <p>Si deseas saldar esta obligación,
-                                                                recuerda que puedes
-                                                                seleccionar uno de los planes presentados o ajustar un
-                                                                plan de
-                                                                acuerdo a tus necesidades,
-                                                                contáctate con nosotros para brindarte una asesoría
-                                                                personalizada.
-                                                                <br>
-                                                                <br>
-                                                                <strong>Whatsapp:</strong>3182876726
-                                                                <br><strong>Teléfono: </strong> 01 8000 180 560
-                                                                <br> <strong>Correo: </strong>Canaldirecto@qnt.com.co
-                                                        </p>
-                                                </div>
-                                        </div>
+                                        <v-alert class="mt-3" type="info" dense text>
+                                                <p>
+                                                        <strong>Comienza tu Rebancarización con QNT</strong>
+                                                </p>
+                                                <p>
+                                                        Si deseas adquirir alguna de nuestras ofertas, por favor escríbenos a
+                                                        nuestro
+                                                        <a href="https://wa.link/bcjlk0" target="_blank"
+                                                                style="color:inherit;">Whatsapp aquí</a>
+                                                        o escríbenos a nuestro correo eléctronico:
+                                                        <a href="mailto:diagnosticofinanciero@qnt.com.co"
+                                                                style="color:inherit;">diagnosticofinanciero@qnt.com.co</a>
+                                                </p>
+                                        </v-alert>
+
                                 </v-expansion-panel-content>
                         </v-expansion-panel>
                 </v-expansion-panels>
 
                 <div v-if="othersDebs()">
-                        <h4 style="color:#2B81D6;" class="mb-1">Obligaciones fuera
-                                de QNT</h4>
+                        <h4 style="color:#2B81D6;" class="mb-1">Deudas sin oferta de QNT</h4>
                         <v-expansion-panels class="mb-5">
                                 <v-expansion-panel v-for="(producto, index) in productos" :key="index"
                                         v-if="!producto.ofertas && producto.estado != 'Al día'">
@@ -213,6 +230,7 @@
                                                         <span id="entityname">{{ producto.entidad }}</span>
                                                         <br>Estado del producto: {{ producto.estado }}
                                                         <br>Part. En mora: {{ producto.participacion_mora }}%
+                                                        <br>Saldo total del producto: {{ formatCurrency(producto.saldo_total) }}
 
                                                 </div>
                                         </v-expansion-panel-header>
@@ -223,19 +241,24 @@
                                                         <br><strong>Correo:</strong> {{ producto.contacto.correo_contacto }}
                                                         <br><strong>Teléfono:</strong> {{ producto.contacto.numero_contacto }}
                                                 </p>
-                                                <p v-else>No disponemos de información de contacto para esta entidad.</p>
-                                                <p>Si cancelas esta obligación en un solo pago te acercarás aproximadamente
+                                                <p v-else>Actualmente no contamos con una oferta desde QNT para que puedas pagar
+                                                        este producto; Sin embargo, te recomendamos contactarte con la entidad
+                                                        {{ producto.entidad }} para que puedas negociar esta deuda.</p>
+                                                <p>Lo que si podemos decirte es que si pagas esta deuda en un solo plazo te
+                                                        acercarás
                                                         <b>{{
                                                                 roundPercentage(producto.contacto ?
                                                                         producto.contacto.hacia_objetivo :
-                                                                        producto.scores_by_term["1"].aumento_puntaje_objetivo) }}%</b> a
-                                                        tu
-                                                        objetivo
-                                                        financiero en un periodo
-                                                        de <b>{{
+                                                                        producto.scores_by_term["1"].aumento_puntaje_objetivo) }}%</b>
+                                                        para {{ clientData.objetivo_financiero }} y quedaras a un <b>{{
+                                                                roundPercentage(producto.scores_by_term["1"].aumento_puntaje)
+                                                        }}</b>% de
+                                                        este objetivo.
+                                                        De acuerdo a la ley 1266 de 2008 de habeas Data tardaras
+                                                        <b>{{
                                                                 producto.contacto ? producto.contacto.tiempo_meses :
                                                                 roundMonths(producto.scores_by_term["1"].tiempo_meses) }}</b>
-                                                        meses
+                                                        meses en eliminar este reporte negativo de las centrales de riesgo.
                                                 </p>
                                         </v-expansion-panel-content>
                                 </v-expansion-panel>
@@ -252,7 +275,11 @@
 
 
 <script>
+import RiskMeter from './commons/RiskMeter.vue';
 export default {
+        components: {
+                RiskMeter
+        },
         props: {
                 clientData: {
                         type: Object,
@@ -394,9 +421,9 @@ export default {
 
 
 .banner-text {
-        font-size: 16px;
-        color: #666;
-        line-height: 1.5;
+        font-size: 12px !important;
+        color: #ffffff !important;
+        line-height: 1.5 !important;
         box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12) !important;
 }
 
@@ -581,7 +608,7 @@ th {
 .offer-card {
         border-radius: 10px;
         border: 0.5px solid #ccc;
-        line-height: 5px;
+        line-height: 1.5;
         margin-top: 10px;
         padding: 20px;
         font-weight: 400;
@@ -641,5 +668,29 @@ th {
 
 .card-estado-actual {
         box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12)
+}
+
+.banner-text {
+        padding: 20px;
+        border-radius: 5px;
+        color: white;
+        font-size: 18px;
+}
+
+.banner-text h4 {
+        font-size: 20px;
+        margin-bottom: 10px;
+}
+
+.v-list-item__title {
+        font-size: 16px;
+        font-weight: 500;
+        color: #636363f5;
+}
+
+.v-list-item__content {
+        font-size: 14px;
+        font-weight: 400;
+        color: #636363f5;
 }
 </style>

@@ -78,7 +78,8 @@ export default {
                 'Solicitar crédito de libre inversión',
                 'Solicitar crédito de educación',
                 'Solicitar crédito de vivienda',
-                'Solicitar crédito de vehículo'
+                'Solicitar crédito de vehículo',
+                'Quiero salir de mis deudas',
             ],
 
             ahorros: "SI",
