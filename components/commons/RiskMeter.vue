@@ -2,7 +2,11 @@
     <v-card class="text-center risk-meter__box" :color="riskColor" dark>
         <div class="risk-meter__score">TU PUNTAJE <br> <span class="big-text"> {{ score }}</span></div>
         <div class="risk-meter__level">
-            <v-icon class="risk-meter__indicator" :style="{ left: `${indicatorPosition}%` }">mdi-circle-slice-8</v-icon>
+            <div class="risk-meter__score-min">150</div>
+            <span class="material-symbols-outlined risk-meter__indicator" :style="{ left: `${indicatorPosition}%` }">
+                arrow_drop_down_circle
+            </span>
+            <div class="risk-meter__score-max">950</div>
         </div>
         <div class="risk-meter__risk">CALIFICACIÓN DE RIESGO <br> <span class="big-text">{{ riskLevel }}</span></div>
         <p class="risk-meter__description">{{ riskDescription }}</p>
@@ -88,6 +92,18 @@ export default {
     position: relative;
     border-radius: 15px;
     overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.risk-meter__score-min,
+.risk-meter__score-max {
+    color: white;
+    opacity: 0.6;
+    font-weight: bold;
+    margin-inline-end: 5px;
+    margin-inline-start: 5px;
 }
 
 .risk-meter__indicator {

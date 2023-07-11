@@ -70,8 +70,9 @@
                         productos vigentes</h3>
 
                 <v-expansion-panels accordion hover-focus class="mb-5">
-                        <v-expansion-panel v-for="producto in productos" :key="producto.id">
-                                <v-expansion-panel-header>
+                        <v-expansion-panel v-for="producto in sortedProducts" :key="producto.id">
+                                <v-expansion-panel-header
+                                        :class="{ 'border-green': producto.estado === 'Al día', 'border-red': producto.estado !== 'Al día' }">
                                         <div>
                                                 <span id="entityname">{{ producto.entidad }}</span>
                                                 <br>Número de producto: {{ producto.producto }}
@@ -334,84 +335,23 @@ export default {
                         const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); // Los meses en JavaScript empiezan desde 0
                         const año = fecha.getFullYear();
                         return `${dia}/${mes}/${año}`;
-                }
+                },
+
+                sortedProducts() {
+                        return [...this.productos].sort((a, b) => {
+                                if (a.estado === 'Al día' && b.estado !== 'Al día') {
+                                        return 1;
+                                } else if (a.estado !== 'Al día' && b.estado === 'Al día') {
+                                        return -1;
+                                } else {
+                                        return 0;
+                                }
+                        });
+                },
         }
 }
 
 </script>
-<!-- 
-<script>
-import axios from 'axios'
-
-
-export default {
-
-        data() {
-                return {
-                        loading: true,
-                        error: null,
-                        data: null,
-                        clientData: {},
-                        productos: {},
-                        isOpen: false,
-                }
-        },
-        async created() {
-                this.loading = true
-                try {
-                        const token = '0cfc4ff8956155c133dfe3b8b3ae577289d956e5'
-                        const cedula = '3278158'
-
-                        const response = await axios.get(`/diagnostico/client-data/${cedula}`, {
-                                headers: {
-                                        Authorization: `Token ${token}`
-                                }
-                        })
-
-                        this.clientData = response.data.informacionCliente;
-                        this.productos = response.data.wazeQnt;
-                        this.isOpen = false;
-
-                } catch (error) {
-                        console.error(error)
-                } finally {
-                        this.loading = false
-                }
-        },
-        methods: {
-                formatCurrency(value) {
-                        return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(value);
-                },
-                roundPercentage(value) {
-                        return parseFloat(value).toFixed(2);
-                }
-                ,
-                roundMonths(value) {
-                        return parseFloat(value).toFixed(0);
-                },
-                messageOfferClient() {
-                        for (const i in this.productos) {
-                                if (this.productos[i].es_producto_qnt == true) {
-                                        return true;
-                                }
-                        }
-                }
-
-        },
-        computed: {
-                fechaFormateada() {
-                        const fecha = new Date(this.clientData.fecha_diagnostico);
-                        const dia = fecha.getDate().toString().padStart(2, '0');
-                        const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); // Los meses en JavaScript empiezan desde 0
-                        const año = fecha.getFullYear();
-                        return `${dia}/${mes}/${año}`;
-                },
-
-        }
-}
-
-</script>  -->
-
 
 <style scoped>
 .principal-container {
@@ -692,5 +632,26 @@ th {
         font-size: 14px;
         font-weight: 400;
         color: #636363f5;
+}
+
+.custom-panel {
+        position: relative;
+}
+
+.custom-panel::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 5px;
+}
+
+.border-green {
+        border-left: 5px solid #81c784 !important;
+}
+
+.border-red {
+        border-left: 5px solid rgb(247, 103, 103) !important;
 }
 </style>
