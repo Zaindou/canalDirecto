@@ -188,7 +188,7 @@
                                                         <b>{{
                                                                 roundPercentage(producto.contacto ?
                                                                         producto.contacto.hacia_objetivo :
-                                                                        producto.scores_by_term[oferta.plazo].aumento_puntaje_objetivo)
+                                                                        producto.scores_by_term[oferta.plazo].hacia_objetivo)
                                                         }}%</b>
                                                         para {{ clientData.objetivo_financiero }} y quedaras a un <b>{{
                                                                 roundPercentage(producto.scores_by_term[oferta.plazo].aumento_puntaje_porcentaje)
@@ -250,7 +250,7 @@
                                                         <b>{{
                                                                 roundPercentage(producto.contacto ?
                                                                         producto.contacto.hacia_objetivo :
-                                                                        producto.scores_by_term["1"].aumento_puntaje_objetivo) }}%</b>
+                                                                        producto.scores_by_term["1"].hacia_objetivo) }}%</b>
                                                         para {{ clientData.objetivo_financiero }} y quedaras a un <b>{{
                                                                 roundPercentage(producto.scores_by_term["1"].aumento_puntaje_porcentaje)
                                                         }}</b>% de
