@@ -191,7 +191,7 @@
                                                                         producto.scores_by_term[oferta.plazo].aumento_puntaje_objetivo)
                                                         }}%</b>
                                                         para {{ clientData.objetivo_financiero }} y quedaras a un <b>{{
-                                                                roundPercentage(producto.scores_by_term[oferta.plazo].aumento_puntaje)
+                                                                roundPercentage(producto.scores_by_term[oferta.plazo].aumento_puntaje_porcentaje)
                                                         }}</b>% de
                                                         este objetivo.
                                                         De acuerdo a la ley 1266 de 2008 de habeas Data tardaras
@@ -252,7 +252,7 @@
                                                                         producto.contacto.hacia_objetivo :
                                                                         producto.scores_by_term["1"].aumento_puntaje_objetivo) }}%</b>
                                                         para {{ clientData.objetivo_financiero }} y quedaras a un <b>{{
-                                                                roundPercentage(producto.scores_by_term["1"].aumento_puntaje)
+                                                                roundPercentage(producto.scores_by_term["1"].aumento_puntaje_porcentaje)
                                                         }}</b>% de
                                                         este objetivo.
                                                         De acuerdo a la ley 1266 de 2008 de habeas Data tardaras
@@ -314,7 +314,11 @@ export default {
                         for (const i in this.productos) {
                                 if (this.productos[i].es_producto_qnt == true) {
                                         return true;
-                                } else if (this.productos[i].es_producto_qnt == false && this.productos[i].estado === 'Al día') {
+                                } else if (this.productos[i].es_producto_qnt == true && this.productos[i].estado === 'Al día') {
+                                        return true;
+                                } else if (this.productos[i].es_producto_qnt == true && this.productos[i].estado != 'Al día') {
+                                        return true;
+                                } else {
                                         return false;
                                 }
                         }
@@ -322,8 +326,12 @@ export default {
                 },
                 othersDebs() {
                         for (const i in this.productos) {
-                                if (this.productos[i].es_producto_qnt == false && this.productos[i].estado != 'Al día') {
+                                if (this.productos[i].es_producto_qnt == false || this.productos[i].estado != 'Al día') {
                                         return true;
+                                } else if (this.productos[i].es_producto_qnt == false && this.productos[i].estado === 'Al día') {
+                                        return false;
+                                } else {
+                                        return false;
                                 }
                         }
                 },
