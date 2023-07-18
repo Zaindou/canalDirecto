@@ -186,13 +186,13 @@
                                                                 producto.saldo_total)) * 100).toFixed(2) }}%</p>
                                                 <p>Si seleccionas este plan avanzaras
                                                         <b>{{
+                                                                roundPercentage(producto.scores_by_term[oferta.plazo].aumento_puntaje_porcentaje)
+                                                        }}%</b>
+                                                        para {{ clientData.objetivo_financiero }} y quedaras a un <b>{{
                                                                 roundPercentage(producto.contacto ?
                                                                         producto.contacto.hacia_objetivo :
                                                                         producto.scores_by_term[oferta.plazo].hacia_objetivo)
-                                                        }}%</b>
-                                                        para {{ clientData.objetivo_financiero }} y quedaras a un <b>{{
-                                                                roundPercentage(producto.scores_by_term[oferta.plazo].aumento_puntaje_porcentaje)
-                                                        }}</b>% de
+                                                        }}%</b> de
                                                         este objetivo.
                                                         De acuerdo a la ley 1266 de 2008 de habeas Data tardaras
                                                         <b>{{
@@ -247,13 +247,14 @@
                                                         {{ producto.entidad }} para que puedas negociar esta deuda.</p>
                                                 <p>Lo que si podemos decirte es que si pagas esta deuda en un solo plazo te
                                                         acercarás
-                                                        <b>{{
-                                                                roundPercentage(producto.contacto ?
-                                                                        producto.contacto.hacia_objetivo :
-                                                                        producto.scores_by_term["1"].hacia_objetivo) }}%</b>
-                                                        para {{ clientData.objetivo_financiero }} y quedaras a un <b>{{
+                                                        <b>{{ clientData.objetivo_financiero }} y quedaras a un <b>{{
                                                                 roundPercentage(producto.scores_by_term["1"].aumento_puntaje_porcentaje)
-                                                        }}</b>% de
+                                                        }}%</b>
+                                                                para
+                                                                {{
+                                                                        roundPercentage(producto.contacto ?
+                                                                                producto.contacto.hacia_objetivo :
+                                                                                producto.scores_by_term["1"].hacia_objetivo) }}%</b> de
                                                         este objetivo.
                                                         De acuerdo a la ley 1266 de 2008 de habeas Data tardaras
                                                         <b>{{
