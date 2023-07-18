@@ -264,7 +264,7 @@
                                 </v-expansion-panel>
                         </v-expansion-panels>
                 </div>
-                <div v-else>
+                <div v-if="messageGoodHistorialCredit()">
                         <v-alert color="light-green" dark icon="mdi-party-popper" border="left" prominent>
                                 <strong>¡FELICIDADES!</strong> <br>
                                 Usted cuenta con un excelente historial de crédito.</v-alert>
@@ -278,6 +278,7 @@
 import RiskMeter from './commons/RiskMeter.vue';
 export default {
         components: {
+
                 RiskMeter
         },
         props: {
@@ -322,10 +323,20 @@ export default {
                                 if (this.productos[i].es_producto_qnt == false && this.productos[i].estado != 'Al día') {
                                         return true;
                                 } else {
-
+                                        return false;
                                 }
                         }
                 },
+                messageGoodHistorialCredit() {
+                        for (const i in this.productos) {
+                                const allProducts = [...this.productos]
+                                console.log(allProducts, "allProducts")
+                                if (allProducts.every(producto => producto.estado == 'Al día')) {
+                                        return true;
+                                }
+                        }
+
+                }
                 // totalPorcentageDebt() {
                 //         for (const i in this.productos) {
                 //                 if (this.productos[i].es_producto_qnt == true) {
