@@ -144,15 +144,13 @@
                                 </v-col>
                         </v-row>
                 </v-card>
-
-                <h3 style="color:#2B81D6;" class="mb-5"><v-icon id="product-icon" large>mdi-wallet-plus-outline</v-icon>
-                        Comienza tu rebancarización con QNT</h3>
-
                 <div v-if="messageOfferClient()">
-
+                        <h3 style="color:#2B81D6;" class="mb-5"><v-icon id="product-icon" large>mdi-wallet-plus-outline</v-icon>
+                                Comienza tu rebancarización con QNT</h3>
                         <v-alert color="light-green" dark icon="mdi-party-popper" border="left" prominent>
                                 <strong>¡Felicitaciones!</strong> <br>
-                                QNT Tiene el 18% del saldo total de tus deudas y tenemos una oferta(s) para ti, conócelas a
+                                QNT Tiene el 0% del saldo total de tus deudas y tenemos una oferta(s)
+                                para ti, conócelas a
                                 continuación:</v-alert>
                 </div>
 
@@ -221,7 +219,7 @@
                         </v-expansion-panel>
                 </v-expansion-panels>
 
-                <div v-if="othersDebs()">
+                <div v-if="othersDebts()">
                         <h4 style="color:#2B81D6;" class="mb-1">Deudas sin oferta de QNT</h4>
                         <v-expansion-panels class="mb-5">
                                 <v-expansion-panel v-for="(producto, index) in productos" :key="index"
@@ -247,14 +245,14 @@
                                                         {{ producto.entidad }} para que puedas negociar esta deuda.</p>
                                                 <p>Lo que si podemos decirte es que si pagas esta deuda en un solo plazo te
                                                         acercarás
-                                                        <b>{{ clientData.objetivo_financiero }} y quedaras a un <b>{{
+                                                        {{ clientData.objetivo_financiero }} y quedaras a un <b>{{
                                                                 roundPercentage(producto.scores_by_term["1"].aumento_puntaje_porcentaje)
                                                         }}%</b>
-                                                                para
-                                                                {{
-                                                                        roundPercentage(producto.contacto ?
-                                                                                producto.contacto.hacia_objetivo :
-                                                                                producto.scores_by_term["1"].hacia_objetivo) }}%</b> de
+                                                        para
+                                                        <b>{{
+                                                                roundPercentage(producto.contacto ?
+                                                                        producto.contacto.hacia_objetivo :
+                                                                        producto.scores_by_term["1"].hacia_objetivo) }}%</b> de
                                                         este objetivo.
                                                         De acuerdo a la ley 1266 de 2008 de habeas Data tardaras
                                                         <b>{{
@@ -269,7 +267,7 @@
                 <div v-else>
                         <v-alert color="light-green" dark icon="mdi-party-popper" border="left" prominent>
                                 <strong>¡FELICIDADES!</strong> <br>
-                                Tienen un buen comportamiento.</v-alert>
+                                Usted cuenta con un excelente historial de crédito.</v-alert>
                 </div>
 
         </div>
@@ -315,27 +313,27 @@ export default {
                         for (const i in this.productos) {
                                 if (this.productos[i].es_producto_qnt == true) {
                                         return true;
-                                } else if (this.productos[i].es_producto_qnt == true && this.productos[i].estado === 'Al día') {
-                                        return true;
-                                } else if (this.productos[i].es_producto_qnt == true && this.productos[i].estado != 'Al día') {
-                                        return true;
-                                } else {
-                                        return false;
                                 }
                         }
 
                 },
-                othersDebs() {
+                othersDebts() {
                         for (const i in this.productos) {
-                                if (this.productos[i].es_producto_qnt == false || this.productos[i].estado != 'Al día') {
+                                if (this.productos[i].es_producto_qnt == false && this.productos[i].estado != 'Al día') {
                                         return true;
-                                } else if (this.productos[i].es_producto_qnt == false && this.productos[i].estado === 'Al día') {
-                                        return false;
                                 } else {
-                                        return false;
+
                                 }
                         }
                 },
+                // totalPorcentageDebt() {
+                //         for (const i in this.productos) {
+                //                 if (this.productos[i].es_producto_qnt == true) {
+                //                         totalPorcentageDebt = this.productos[o].participacion_mora
+                //                         console.log(this.productos[o].participacion_mora)
+                //                 } 
+                //         }
+                // }
         },
         computed: {
                 fechaFormateada() {
