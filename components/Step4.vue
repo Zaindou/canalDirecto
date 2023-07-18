@@ -149,7 +149,9 @@
                                 Comienza tu rebancarización con QNT</h3>
                         <v-alert color="light-green" dark icon="mdi-party-popper" border="left" prominent>
                                 <strong>¡Felicitaciones!</strong> <br>
-                                QNT Tiene el 0% del saldo total de tus deudas y tenemos una oferta(s)
+                                QNT Tiene el <b>{{ roundPercentage(totalPorcentageDebt()) }}%</b> del saldo total de tus deudas
+                                y
+                                tenemos una oferta(s)
                                 para ti, conócelas a
                                 continuación:</v-alert>
                 </div>
@@ -157,7 +159,6 @@
                 <v-expansion-panels class="mb-3">
                         <v-expansion-panel v-for="(producto, index) in productos" :key="index"
                                 v-if="producto.es_producto_qnt && producto.ofertas">
-
                                 <v-expansion-panel-header>
                                         <div>
                                                 <span id="entityname">{{ producto.entidad }}</span>
@@ -328,23 +329,20 @@ export default {
                         }
                 },
                 messageGoodHistorialCredit() {
-                        for (const i in this.productos) {
-                                const allProducts = [...this.productos]
-                                console.log(allProducts, "allProducts")
-                                if (allProducts.every(producto => producto.estado == 'Al día')) {
-                                        return true;
-                                }
+                        const allProducts = [...this.productos]
+                        if (allProducts.every(producto => producto.estado == 'Al día')) {
+                                return true;
                         }
 
+                },
+                totalPorcentageDebt() {
+                        let total = 0;
+                        for (const i in this.productos) {
+                                if (this.productos[i].es_producto_qnt == true)
+                                        total += this.productos[i].participacion_mora;
+                        }
+                        return total;
                 }
-                // totalPorcentageDebt() {
-                //         for (const i in this.productos) {
-                //                 if (this.productos[i].es_producto_qnt == true) {
-                //                         totalPorcentageDebt = this.productos[o].participacion_mora
-                //                         console.log(this.productos[o].participacion_mora)
-                //                 } 
-                //         }
-                // }
         },
         computed: {
                 fechaFormateada() {
