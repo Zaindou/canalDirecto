@@ -159,104 +159,116 @@
                                 tenemos una oferta(s)
                                 para ti, conócelas a
                                 continuación:</v-alert>
-                </div>
-                <div>
-                        <center>
-                                <h4 style="color:#2B81D6;" class="mb-1"><v-icon id="product-icon"
-                                                large>mdi-wallet-plus-outline</v-icon>CONOCE LOS PLANES CON QNT
-                                </h4>
-                        </center>
-                        <v-expansion-panels class="mb-3">
-                                <v-expansion-panel v-for="(producto, index) in productosOferta" :key="index">
-                                        <v-expansion-panel-header>
-                                                <div>
-                                                        <span id="entityname">{{ producto.entidad }}</span>
-                                                        <br>Estado del producto: {{ producto.estado }}
-                                                        <br>Part. En mora: {{ producto.participacion_mora }}%
-                                                        <br>Saldo total del producto: {{ formatCurrency(producto.saldo_total) }}
+                        <div>
+                                <center>
+                                        <h4 style="color:#2B81D6;" class="mb-1"><v-icon id="product-icon"
+                                                        large>mdi-wallet-plus-outline</v-icon>CONOCE LOS PLANES CON QNT
+                                        </h4>
+                                </center>
+                                <v-expansion-panels class="mb-3">
+                                        <v-expansion-panel v-for="(producto, index) in productosOferta" :key="index">
+                                                <v-expansion-panel-header>
+                                                        <div>
+                                                                <span id="entityname">{{ producto.entidad }}</span>
+                                                                <br>Estado del producto: {{ producto.estado }}
+                                                                <br>Part. En mora: {{ producto.participacion_mora }}%
+                                                                <br>Saldo total del producto: {{
+                                                                        formatCurrency(producto.saldo_total) }}
 
-                                                </div>
-                                        </v-expansion-panel-header>
-                                        <v-expansion-panel-content>
-                                                <div>
-                                                        <v-row>
-                                                                <v-col cols="6">
-                                                                        <p class="title-offer">Selecciona el plazo que se ajuste
-                                                                                a tus necesidades financieras</p>
-                                                                </v-col>
-                                                                <v-col cols="6">
-                                                                        <v-select :items="[1, 6, 12, 36]" v-model="selectedTerm"
-                                                                                @change="selectOffer(producto)" solo>
-                                                                        </v-select>
-                                                                </v-col>
-                                                        </v-row>
+                                                        </div>
+                                                </v-expansion-panel-header>
+                                                <v-expansion-panel-content>
                                                         <div>
                                                                 <v-row>
                                                                         <v-col cols="6">
-                                                                                <p v-if="selectedOffer"><strong>Valor total a
-                                                                                                pagar: </strong> {{
-                                                                                                        formatCurrency(selectedOffer.monto_final_oferta)
-                                                                                                }}</p>
-                                                                                <p v-if="selectedOffer"><strong>Valor de la
-                                                                                                cuota mes a mes:</strong>
-                                                                                        {{
-                                                                                                formatCurrency(selectedOffer.cuota)
-                                                                                        }}</p>
+                                                                                <p class="title-offer">Selecciona el plazo que
+                                                                                        se ajuste
+                                                                                        a tus necesidades financieras</p>
                                                                         </v-col>
                                                                         <v-col cols="6">
-                                                                                <p v-if="selectedOffer"><strong>Cuota
-                                                                                                inicial:</strong> {{
-                                                                                                        formatCurrency(selectedOffer.cuota_inicial)
-                                                                                                }}</p>
-                                                                                <p v-if="selectedOffer"><strong>De esta manera
-                                                                                                ahorraras:</strong> {{
-                                                                                                        ((1 -
-                                                                                                                (selectedOffer.monto_final_oferta
-                                                                                                                        / producto.saldo_total)) *
-                                                                                                                100).toFixed(2) }}%</p>
+                                                                                <v-select :items="[1, 6, 12, 36]"
+                                                                                        v-model="selectedTerm"
+                                                                                        @change="selectOffer(producto)" solo>
+                                                                                </v-select>
                                                                         </v-col>
                                                                 </v-row>
+                                                                <div>
+                                                                        <v-row>
+                                                                                <v-col cols="6">
+                                                                                        <p v-if="selectedOffer"><strong>Valor
+                                                                                                        total a
+                                                                                                        pagar: </strong> {{
+                                                                                                                formatCurrency(selectedOffer.monto_final_oferta)
+                                                                                                        }}</p>
+                                                                                        <p v-if="selectedOffer"><strong>Valor de
+                                                                                                        la
+                                                                                                        cuota mes a
+                                                                                                        mes:</strong>
+                                                                                                {{
+                                                                                                        formatCurrency(selectedOffer.cuota)
+                                                                                                }}</p>
+                                                                                </v-col>
+                                                                                <v-col cols="6">
+                                                                                        <p v-if="selectedOffer"><strong>Cuota
+                                                                                                        inicial:</strong> {{
+                                                                                                                formatCurrency(selectedOffer.cuota_inicial)
+                                                                                                        }}</p>
+                                                                                        <p v-if="selectedOffer"><strong>De esta
+                                                                                                        manera
+                                                                                                        ahorraras:</strong> {{
+                                                                                                                ((1 -
+                                                                                                                        (selectedOffer.monto_final_oferta
+                                                                                                                                / producto.saldo_total)) *
+                                                                                                                        100).toFixed(2) }}%</p>
+                                                                                </v-col>
+                                                                        </v-row>
+                                                                </div>
+                                                                <div>
+                                                                        <p v-if="selectedOffer">Si seleccionas este plan
+                                                                                avanzaras
+                                                                                <b>{{ roundPercentage(producto.scores_by_term[selectedTerm].aumento_puntaje_porcentaje)
+                                                                                }}%</b>
+                                                                                para {{ clientData.objetivo_financiero }} y
+                                                                                quedaras a
+                                                                                un <b>{{
+                                                                                        roundPercentage(producto.scores_by_term[selectedTerm].hacia_objetivo)
+                                                                                }}%</b> de
+                                                                                este objetivo.
+                                                                                De acuerdo a la ley 1266 de 2008 de habeas Data
+                                                                                tardaras
+                                                                                <b>{{
+                                                                                        roundMonths(producto.scores_by_term[selectedTerm].tiempo_meses)
+                                                                                }}</b>
+                                                                                meses en eliminar este reporte negativo de las
+                                                                                centrales
+                                                                                de
+                                                                                riesgo.
+                                                                        </p>
+                                                                </div>
                                                         </div>
-                                                        <div>
-                                                                <p v-if="selectedOffer">Si seleccionas este plan avanzaras
-                                                                        <b>{{ roundPercentage(producto.scores_by_term[selectedTerm].aumento_puntaje_porcentaje)
-                                                                        }}%</b>
-                                                                        para {{ clientData.objetivo_financiero }} y quedaras a
-                                                                        un <b>{{
-                                                                                roundPercentage(producto.scores_by_term[selectedTerm].hacia_objetivo)
-                                                                        }}%</b> de
-                                                                        este objetivo.
-                                                                        De acuerdo a la ley 1266 de 2008 de habeas Data tardaras
-                                                                        <b>{{
-                                                                                roundMonths(producto.scores_by_term[selectedTerm].tiempo_meses)
-                                                                        }}</b>
-                                                                        meses en eliminar este reporte negativo de las centrales
-                                                                        de
-                                                                        riesgo.
+                                                        <v-alert class="mt-3" type="info" dense text>
+                                                                <p>
+                                                                        <strong>Comienza tu Rebancarización con QNT</strong>
                                                                 </p>
-                                                        </div>
-                                                </div>
-                                                <v-alert class="mt-3" type="info" dense text>
-                                                        <p>
-                                                                <strong>Comienza tu Rebancarización con QNT</strong>
-                                                        </p>
-                                                        <p>
-                                                                Si deseas adquirir alguna de nuestras ofertas, por favor
-                                                                escríbenos a
-                                                                nuestro
-                                                                <a href="https://wa.link/bcjlk0" target="_blank"
-                                                                        style="color:inherit;">Whatsapp aquí</a>
-                                                                o escríbenos a nuestro correo eléctronico:
-                                                                <a href="mailto:diagnosticofinanciero@qnt.com.co"
-                                                                        style="color:inherit;">diagnosticofinanciero@qnt.com.co</a>
-                                                        </p>
-                                                </v-alert>
+                                                                <p>
+                                                                        Si deseas adquirir alguna de nuestras ofertas, por favor
+                                                                        escríbenos a
+                                                                        nuestro
+                                                                        <a href="https://wa.link/bcjlk0" target="_blank"
+                                                                                style="color:inherit;">Whatsapp aquí</a>
+                                                                        o escríbenos a nuestro correo eléctronico:
+                                                                        <a href="mailto:diagnosticofinanciero@qnt.com.co"
+                                                                                style="color:inherit;">diagnosticofinanciero@qnt.com.co</a>
+                                                                </p>
+                                                        </v-alert>
 
-                                        </v-expansion-panel-content>
-                                </v-expansion-panel>
-                        </v-expansion-panels>
+                                                </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                </v-expansion-panels>
+                        </div>
                 </div>
-                <div>
+
+                <div v-if="this.productosAcuerdo.length > 0">
                         <center>
                                 <h4 style="color:#2B81D6;" class="mb-1">PRODUCTO(S) REESTRUCTURADO(S)</h4>
                         </center>
