@@ -268,7 +268,7 @@
                         </div>
                 </div>
 
-                <div v-if="this.productosAcuerdo.length > 0">
+                <div v-if="productsAgreement()">
                         <center>
                                 <h4 style="color:#2B81D6;" class="mb-1">PRODUCTO(S) REESTRUCTURADO(S)</h4>
                         </center>
@@ -454,6 +454,13 @@ export default {
                                 return false;
                         }
                 },
+                productsAgreement() {
+                        if (this.productosAcuerdo != null && this.productosAcuerdo.length > 0) {
+                                return true;
+                        } else {
+                                return false;
+                        }
+                },
                 messageGoodHistorialCredit() {
                         const allProducts = [...this.productos]
                         if (allProducts.every(producto => producto.estado == 'Al día')) {
@@ -467,7 +474,7 @@ export default {
                                 if (this.productos[i].es_producto_qnt == true)
                                         total += this.productos[i].participacion_mora;
                                 if (total == 100) {
-                                        return
+                                        return total = 100;
                                 }
                         }
                         return total;
