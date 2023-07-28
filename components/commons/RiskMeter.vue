@@ -100,10 +100,10 @@ export default {
 .risk-meter__score-min,
 .risk-meter__score-max {
     color: white;
-    opacity: 0.6;
-    font-weight: bold;
-    margin-inline-end: 5px;
-    margin-inline-start: 5px;
+    opacity: 0.7;
+    font-weight: 400;
+    margin-inline-end: 7px;
+    margin-inline-start: 7px;
 }
 
 .risk-meter__indicator {

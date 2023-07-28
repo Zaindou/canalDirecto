@@ -70,7 +70,8 @@
             </v-stepper-content>
 
             <v-stepper-content step="4">
-                <Step4 :clientData="clientData" :productos="productos"></Step4>
+                <Step4 :clientData="clientData" :productos="productos" :productosAcuerdo="productosAcuerdo"
+                    :productosOferta="productosOferta" :otrosProductos="otrosProductos"></Step4>
                 <v-btn block color="primary" class="buttonsteps" @click="finalizeAndRedirect">
                     ¡Finalizar!
                 </v-btn>
@@ -195,7 +196,12 @@ export default {
             });
 
             this.clientData = response.data.informacionCliente;
-            this.productos = response.data.wazeQnt;
+            this.productos = response.data.wazeQnt.all_products;
+            this.productosAcuerdo = response.data.wazeQnt.products_with_agreement;
+            this.productosOferta = response.data.wazeQnt.products_with_offer;
+            this.otrosProductos = response.data.wazeQnt.other_products;
+            console.log(response.data.wazeQnt.other_products, "Others products")
+
         },
         submitForm() {
             if (!this.terminosCondiciones) {
