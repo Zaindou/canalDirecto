@@ -254,7 +254,7 @@
                                                                         Si deseas adquirir alguna de nuestras ofertas, por favor
                                                                         escríbenos a
                                                                         nuestro
-                                                                        <a href="https://wa.link/bcjlk0" target="_blank"
+                                                                        <a href="https://wa.link/h1y0vn" target="_blank"
                                                                                 style="color:inherit;">Whatsapp aquí</a>
                                                                         o escríbenos a nuestro correo eléctronico:
                                                                         <a href="mailto:diagnosticofinanciero@qnt.com.co"
