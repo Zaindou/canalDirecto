@@ -23,7 +23,8 @@
                                                         </v-btn>
                                                 </a>
                                                 <!-- email button -->
-                                                <a href="mailto:contactocanaldirecto@qnt.com.co" style="text-decoration: none;">
+                                                <a href="mailto:diagnosticofinanciero@qnt.com.co"
+                                                        style="text-decoration: none;">
                                                         <v-btn dark class="mx-2" color="light-blue darken-1">
                                                                 <v-icon left>mdi-email</v-icon>
                                                                 Email
@@ -243,16 +244,17 @@
                                                         style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)"
                                                         elevation="2" @click="dialogPresupuesto = false">Entendido</v-btn>
                                         </v-card-actions>
+
                                 </v-card>
                         </v-dialog>
 
-                        <v-card class="pa-5 mb-5 card-estado-actual" outlined>
+                        <v-card class="pa-4 mb-5 card-estado-actual" outlined>
                                 <v-row>
-                                        <!-- <v-col cols="5" sm="5">
-                                                <img style="border-radius: 100%;" src="../static/presupuesto.svg" width="150"
+                                        <v-col cols="4" sm="4" class="d-none d-sm-block">
+                                                <img style="border-radius: 30%;" src="../static/presupuesto.svg" width="150"
                                                         alt="">
-                                        </v-col> -->
-                                        <v-col cols="12" sm="12" class="py-1">
+                                        </v-col>
+                                        <v-col cols="8" sm="8" class="py-1">
                                                 <strong class="product__titles">Ingresos
                                                         netos<v-icon small class="ml-1" v-on="on"
                                                                 @click="dialogPresupuesto = true">mdi-information-outline</v-icon>:</strong>
@@ -283,7 +285,6 @@
                                         </v-col>
                                 </v-row>
                         </v-card>
-
                 </div>
                 <div v-if="messageOfferClient()">
                         <v-alert color="light-green" dark icon="mdi-party-popper" prominent>
@@ -422,7 +423,7 @@
                                                                                 </v-btn>
                                                                         </a>
                                                                         <!-- email button -->
-                                                                        <a href="mailto:contactocanaldirecto@qnt.com.co"
+                                                                        <a href="mailto:diagnosticofinanciero@qnt.com.co"
                                                                                 style="text-decoration: none;">
                                                                                 <v-btn dark class="mx-2"
                                                                                         color="light-blue darken-1">
@@ -448,12 +449,11 @@
                                                         <span id="entityname">REESTRUCTURACIÓN QNT</span>
                                                         <br>Número de restructuración: {{ producto.numero_restructuracion }}
                                                         <br>Fecha de restructuración: {{ producto.fecha_restructuracion }}
-                                                        <br>Producto(s): {{ producto.productos.join(', ') }}
-                                                        <br>Saldo total del producto: {{ formatCurrency(producto.saldo_total) }}
-
                                                 </div>
                                         </v-expansion-panel-header>
                                         <v-expansion-panel-content>
+                                                <span class="product__titles">Producto(s):</span> <span
+                                                        class="product__content"> {{ producto.productos.join(', ') }}</span>
                                                 <br><span class="product__titles">Valor total a pagar: </span><span
                                                         class="product__content">{{ formatCurrency(producto.valor_total_pagar)
                                                         }}</span>
@@ -487,30 +487,33 @@
                                                 </div>
                                         </v-expansion-panel-header>
                                         <v-expansion-panel-content>
-                                                <p v-if="producto.contacto">Para ponerte al día con esta obligación, debes
+                                                <p v-if="producto.contacto" class="content__recomendation">Para ponerte al día
+                                                        con esta obligación, debes
                                                         contactarte
                                                         con la entidad a:
                                                         <br><strong>Correo:</strong> {{ producto.contacto.correo_contacto }}
                                                         <br><strong>Teléfono:</strong> {{ producto.contacto.numero_contacto }}
                                                 </p>
-                                                <p v-else>Actualmente no contamos con una oferta desde QNT para que puedas pagar
-                                                        este producto; Sin embargo, te recomendamos contactarte con la entidad
+                                                <p v-else class="content__recomendation">Actualmente no contamos con una oferta
+                                                        de este producto desde QNT, sin
+                                                        embargo te recomendamos contactarte con la entidad
                                                         {{ producto.entidad }} para que puedas negociar esta deuda.</p>
-                                                <p>Lo que si podemos decirte es que si pagas esta deuda en un solo plazo te
+                                                <p class="content__recomendation">Lo que si podemos decirte es que si pagas esta
+                                                        deuda en una sola cuota te
                                                         acercarás
-                                                        {{ clientData.objetivo_financiero }} y quedaras a un <b>{{
+                                                        <b>{{
                                                                 roundPercentage(producto.aumento_puntaje_porcentaje)
                                                         }}%</b>
-                                                        para
+                                                        para {{ clientData.objetivo_financiero }} y quedarás a
                                                         <b>{{
                                                                 roundPercentage(producto.hacia_objetivo) }}%</b> de
                                                         este objetivo.
-                                                        De acuerdo a la ley 1266 de 2008 de habeas Data tardaras
+                                                        <br>De acuerdo a la ley 1266 de 2008 de habeas Data tardarás
                                                         <b>{{
                                                                 producto.contacto ? producto.contacto.tiempo_meses :
                                                                 roundMonths(producto.tiempo_meses) }}</b>
-                                                        meses en eliminar este reporte negativo de las centrales de riesgo. Ten
-                                                        en cuenta que desde el momento que comiences a pagar tu puentaje
+                                                        meses en eliminar este reporte negativo en centrales de riesgo; Pero ten
+                                                        en cuenta que desde el momento que comiences a pagar tu puntaje
                                                         crediticio comenzará a mejorar y podrás solicitar crédito siempre y
                                                         cuando no tengas carteras castigadas.
                                                 </p>
@@ -540,7 +543,6 @@
                                 </v-row>
                         </v-carousel-item>
                 </v-carousel>
-
         </div>
 </template>
 
@@ -750,6 +752,7 @@ export default {
         justify-content: center;
         margin-bottom: 0;
         text-align: center;
+        word-wrap: break-word;
 }
 
 .div-table {
@@ -932,6 +935,11 @@ th {
 
         .responsive-table .table-cell .label {
                 font-weight: bold;
+        }
+
+        .title__tips {
+                font-size: 14px;
+                /* O el tamaño que te parezca adecuado */
         }
 }
 

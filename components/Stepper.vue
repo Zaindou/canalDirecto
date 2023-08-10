@@ -39,17 +39,26 @@
                 <Step1 ref="step1" @form-submitted="handleSubmit" />
                 <v-col>
                     <div class="switch-container rounded-bg">
-                        <div>
-                            <label class="switch-label" color="rgb(0, 93, 145)" outlined
-                                @click="TermsAndConditionsRedirect">Acepta
-                                los <a id="linkTerms">términos y
-                                    condiciones legales</a></label>
+                        <div class="d-flex flex-column align-start">
+                            <div class="d-flex align-center justify-between mb-1">
+                                <label class="switch-label" color="rgb(0, 93, 145)" outlined
+                                    @click="termsAndConditionsRedirect">Acepto
+                                    los <a id="linkTerms">términos y condiciones legales</a></label>
+                                <v-switch v-model="terminosCondiciones" color="rgb(0, 93, 145)" required inset
+                                    class="ml-2"></v-switch>
+                            </div>
+                            <div class="d-flex align-center justify-between">
+                                <label class="switch-label" color="rgb(0, 93, 145)" outlined @click="contactRedirect">Acepto
+                                    las
+                                    <a id="linkTerms" class="mr-11">condiciones de contacto</a></label>
+                                <v-switch v-model="condicionesContacto" color="rgb(0, 93, 145)" required inset
+                                    class="ml-2"></v-switch>
+                            </div>
                         </div>
-                        <v-switch v-model="terminosCondiciones" color="rgb(0, 93, 145)" required inset></v-switch>
                     </div>
                 </v-col>
                 <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)" elevation="2"
-                    @click="submitForm" :disabled="!terminosCondiciones" class="buttonsteps">
+                    @click="submitForm" :disabled="!terminosCondiciones || !condicionesContacto" class="buttonsteps">
                     Iniciar mi diagnóstico
                 </v-btn>
             </v-stepper-content>
@@ -124,6 +133,7 @@ export default {
             },
             e1: 1,
             terminosCondiciones: false,
+            condicionesContacto: false,
             loading4: false,
             otp: null,
             numero_identificacion: null,
@@ -289,7 +299,7 @@ export default {
         getStepFromLocalStorage() {
             const step = localStorage.getItem('step');
             const stepMap = {
-                '1': 4,
+                '1': 1,
                 '2': 2,
                 '3': 3,
                 '4': 1,
@@ -325,9 +335,13 @@ export default {
                 this.$refs.step1.primerNombre = firstName;
             }
         },
-        TermsAndConditionsRedirect() {
+        termsAndConditionsRedirect() {
             window.open('https://qnt.com.co/tyc-dignostico/', '_blank');
         },
+        contactRedirect() {
+            window.open('https://qnt.com.co/c-contacto/', '_blank');
+        },
+
 
         finalizeAndRedirect() {
             localStorage.clear();

@@ -18,7 +18,7 @@
                         flag_circle
                     </span>
                 </template>
-                <span>Tu objetivo</span>
+                <span>Objetivo: hasta en 2 meses</span>
             </v-tooltip>
             <div class="risk-meter__score-max">950</div>
         </div>
