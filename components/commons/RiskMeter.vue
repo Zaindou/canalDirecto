@@ -1,18 +1,30 @@
 <template>
-    <v-card class="text-center risk-meter__box" :color="riskColor" dark>
-        <div class="risk-meter__score">TU PUNTAJE <br> <span class="big-text"> {{ score }}</span></div>
+    <div class="text-center">
         <div class="risk-meter__level">
             <div class="risk-meter__score-min">150</div>
-            <span class="material-symbols-outlined risk-meter__indicator" :style="{ left: `${indicatorPosition}%` }">
-                arrow_drop_down_circle
-            </span>
+            <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                    <span class="material-symbols-outlined risk-meter__indicator" :style="{ left: `${indicatorPosition}%` }"
+                        v-on="on">
+                        expand_circle_down
+                    </span>
+                </template>
+                <span>Hoy: {{ porcentageTarget }}%</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                    <span class="material-symbols-outlined risk-meter__indicator goal-indicator"
+                        :style="{ left: `${goalIndicatorPosition}%` }" v-on="on">
+                        flag_circle
+                    </span>
+                </template>
+                <span>Tu objetivo</span>
+            </v-tooltip>
             <div class="risk-meter__score-max">950</div>
         </div>
-        <div class="risk-meter__risk">CALIFICACIÓN DE RIESGO <br> <span class="big-text">{{ riskLevel }}</span></div>
-        <p class="risk-meter__description">{{ riskDescription }}</p>
-
-    </v-card>
+    </div>
 </template>
+
 
 <script>
 export default {
@@ -21,6 +33,15 @@ export default {
             type: Number,
             required: true,
         },
+        goalScore: {
+            type: Number,
+            required: true,
+        },
+        porcentageTarget: {
+            type: Number,
+            required: true,
+        }
+
     },
     computed: {
         indicatorPosition() {
@@ -38,41 +59,24 @@ export default {
                 return "ALTO";
             }
         },
-        riskDescription() {
-            if (this.score >= 621) {
-                return "Significa que tienes el menor nivel de riesgo en el cumplimiento de tus obligaciones financieras."
-            } else if (this.score >= 481) {
-                return "Significa un nivel moderado de riesgo en el cumplimiento de tus obligaciones financieras."
-            } else {
-                return "Significa que existe un mayor riesgo de incumplimiento en el pago de tus obligaciones financieras."
-            }
-        },
-        riskColor() {
-            if (this.score >= 621) {
-                return "#81c784";
-            } else if (this.score >= 481) {
-                return "#ffb74d";
-            } else {
-                return "#e57373";
-            }
+        goalIndicatorPosition() {
+            const minScore = 150;
+            const maxScore = 950;
+            const normalizedScore = (this.goalScore - minScore) / (maxScore - minScore);
+            return normalizedScore * 100; // Convert to percentage
         },
     },
 };
 </script>
 
 <style scoped>
-.risk-meter__box {
-    margin: 0 auto;
-    padding: 20px;
-    color: white;
-    border-radius: 5px;
-}
-
 .risk-meter__score,
 .risk-meter__risk {
     font-size: 16px;
     font-weight: 500;
     margin: 10px 0;
+    border-color: #81c784 !important;
+
 }
 
 .big-text {
@@ -87,7 +91,7 @@ export default {
 
 .risk-meter__level {
     width: 100%;
-    height: 30px;
+    height: 35px;
     background: linear-gradient(to right, #e57373 0%, #ffb74d 50%, #81c784 100%);
     position: relative;
     border-radius: 15px;
@@ -112,5 +116,11 @@ export default {
     transform: translateY(-50%);
     font-size: 35px;
     transition: left 0.3s ease-in-out;
+    color: white;
+}
+
+.goal-indicator {
+    color: white;
+    /* Puedes personalizar esto */
 }
 </style>

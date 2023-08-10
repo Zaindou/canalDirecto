@@ -2,9 +2,9 @@
     <v-stepper v-model="e1" class="stepper-full-width">
         <Loader v-if="loading4"></Loader>
         <div class="image-container">
-            <v-img v-if="e1 != 4" src="../QNT-MOBILE.webp" max-width="900" class="mb-1 mobile-image" alt="QNT"></v-img>
-            <v-img v-if="e1 != 4" src="../QNT_PC.webp" max-width="900" class="mb-1 desktop-image" alt="QNT"></v-img>
-            <v-img v-if="e1 == 4" src="../QNT_4.webp" max-width="900" class="desktop-image" alt="QNT"></v-img>
+            <v-img v-if="e1 != 4" src="../QNT-MOBILE.webp" max-width="900" class="mobile-image" alt="QNT"></v-img>
+            <v-img v-if="e1 != 4" src="../QNT_STEP1.jpg" max-width="900" class="desktop-image" alt="QNT"></v-img>
+            <v-img v-if="e1 == 4" src="../QNT_STEP4.jpg" max-width="900" class="desktop-image" alt="QNT"></v-img>
 
         </div>
 
@@ -39,15 +39,18 @@
                 <Step1 ref="step1" @form-submitted="handleSubmit" />
                 <v-col>
                     <div class="switch-container rounded-bg">
-                        <label class="switch-label" outlined @click="TermsAndConditionsRedirect">Acepta los <a
-                                id="linkTerms">términos y
-                                condiciones legales</a></label>
-                        <v-switch v-model="terminosCondiciones" required inset></v-switch>
+                        <div justify="left" class="mr-5">
+                            <label class="switch-label" color="rgb(0, 93, 145)" outlined
+                                @click="TermsAndConditionsRedirect">Acepta
+                                los <a id="linkTerms">términos y
+                                    condiciones legales</a></label>
+                        </div>
+                        <v-switch v-model="terminosCondiciones" color="rgb(0, 93, 145)" required inset></v-switch>
                     </div>
-                    <Modal title="Términos y condiciones" :content="modalContent" ref="modal"></Modal>
                 </v-col>
-                <v-btn block color="primary" @click="submitForm" :disabled="!terminosCondiciones" class="buttonsteps">
-                    Siguiente
+                <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)" elevation="2"
+                    @click="submitForm" :disabled="!terminosCondiciones" class="buttonsteps">
+                    Iniciar mi diagnóstico
                 </v-btn>
             </v-stepper-content>
 
@@ -57,14 +60,16 @@
                         <Otp @otp-entered="handleOtpEntered" />
                     </v-col>
                 </v-row>
-                <v-btn block color="primary" @click="verifyOtp" class="buttonsteps">
+                <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)" elevation="2"
+                    @click="verifyOtp" class="buttonsteps">
                     Confirmar código
                 </v-btn>
             </v-stepper-content>
 
             <v-stepper-content step="3">
                 <Step3 ref="step3" @submit="handleSubmit3" :numero-identificacion="numero_identificacion" />
-                <v-btn block color="primary" @click="submitForm3" class="buttonsteps">
+                <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)" elevation="2"
+                    @click="submitForm3" class="buttonsteps">
                     Solicitar diagnóstico
                 </v-btn>
             </v-stepper-content>
@@ -72,11 +77,31 @@
             <v-stepper-content step="4">
                 <Step4 :clientData="clientData" :productos="productos" :productosAcuerdo="productosAcuerdo"
                     :productosOferta="productosOferta" :otrosProductos="otrosProductos"></Step4>
-                <v-btn block color="primary" class="buttonsteps" @click="finalizeAndRedirect">
-                    ¡Finalizar!
+                <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)" elevation="2"
+                    class="buttonsteps" @click="finalizeAndRedirect">
+                    Finalizar
                 </v-btn>
             </v-stepper-content>
         </v-stepper-items>
+        <div class="text-center">
+            <v-dialog v-model="dialog" activator="parent" max-width="400">
+                <v-card>
+                    <v-card-text justify="center" class="py-5" style="font-weight: 400; font-size: 1em; text-align:center;">
+                        <b>¿Quieres conocer tu situación financiera?</b>
+                        <br>
+                        <br>En este sitio encontrarás tu puntaje crediticio, podrás conocer en cuánto tiempo te liberarás de
+                        tus deudas y encontrarás opciones para mejorar tu perfil financiero.
+                        <br>
+                        <br>¡Estamos aquí para ayudarte!
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)"
+                            elevation="2" @click="dialog = false">Explorar ahora</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+        </div>
     </v-stepper>
 </template>
 <script>
@@ -97,18 +122,12 @@ export default {
             head: {
                 title: 'Diagnostico'
             },
-
             e1: 1,
-
             terminosCondiciones: false,
-
-            modalContent: 'Términos y condiciones',
-
             loading4: false,
-
             otp: null,
-
             numero_identificacion: null,
+            dialog: true,
 
         }
     },
@@ -119,10 +138,7 @@ export default {
                 this.numero_identificacion = formData.numero_identificacion
                 const response = await axios.post('diagnostico/register', formData);
 
-                console.log(formData)
-
                 if (response.status >= 200 && response.status < 300) {
-                    console.log('Este es el response', response.data)
                     localStorage.setItem("auth_token", response.data.token);
                     localStorage.setItem("numero_identificacion", formData.numero_identificacion);
                     this.$axios.setToken(response.data.token, "Token");
@@ -200,7 +216,6 @@ export default {
             this.productosAcuerdo = response.data.wazeQnt.products_with_agreement;
             this.productosOferta = response.data.wazeQnt.products_with_offer;
             this.otrosProductos = response.data.wazeQnt.other_products;
-            console.log(response.data.wazeQnt.other_products, "Others products")
 
         },
         submitForm() {
@@ -253,7 +268,7 @@ export default {
         iconColor(step) {
             let color;
             if (this.e1 === step) {
-                color = '#2B81D6';
+                color = '#00263C';
             } else if (this.e1 > step) {
                 color = '#87BD29';
             } else if (this.e1 === 4) {
@@ -274,7 +289,7 @@ export default {
         getStepFromLocalStorage() {
             const step = localStorage.getItem('step');
             const stepMap = {
-                '1': 1,
+                '1': 4,
                 '2': 2,
                 '3': 3,
                 '4': 1,
@@ -412,6 +427,7 @@ export default {
         font-weight: bold;
         border-radius: 5px;
         padding: 20px !important;
+        color: white !important;
     }
 
     .mobile-image {
