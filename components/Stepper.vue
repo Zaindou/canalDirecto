@@ -39,7 +39,7 @@
                 <Step1 ref="step1" @form-submitted="handleSubmit" />
                 <v-col>
                     <div class="switch-container rounded-bg">
-                        <div justify="left" class="mr-5">
+                        <div>
                             <label class="switch-label" color="rgb(0, 93, 145)" outlined
                                 @click="TermsAndConditionsRedirect">Acepta
                                 los <a id="linkTerms">términos y
