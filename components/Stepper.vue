@@ -367,8 +367,8 @@ export default {
         }, 10 * 60 * 1000); // 10 minutes
 
         setTimeout(() => {
-            // localStorage.clear();
-            // location.reload()
+            localStorage.clear();
+            location.reload()
             this.showCloseWarning();
         }, 15 * 60 * 1000); // 15 minutes
     },
