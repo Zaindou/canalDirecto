@@ -300,7 +300,7 @@ export default {
             const step = localStorage.getItem('step');
             const stepMap = {
                 '1': 1,
-                '2': 2,
+                '2': 1,
                 '3': 3,
                 '4': 1,
             }
@@ -456,7 +456,7 @@ export default {
 }
 
 .rounded-bg {
-    background-color: #f2f2f2;
+    background-color: rgba(0, 0, 0, 0.01);
     border-radius: 10px;
     margin-bottom: 10px;
 
