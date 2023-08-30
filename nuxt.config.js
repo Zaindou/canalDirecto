@@ -41,24 +41,7 @@ export default {
         type: "text/javascript",
         charset: "utf-8",
       },
-
-      // add hotjar script in nuxt
-      {
-        hid: "hotjar-script",
-        innerHTML: `
-          (function(h,o,t,j,a,r){
-            h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-            h._hjSettings={hjid:3634470,hjsv:6};
-            a=o.getElementsByTagName('head')[0];
-            r=o.createElement('script');r.async=1;
-            r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-            a.appendChild(r);
-          }
-          )(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-        `,
-        type: "text/javascript",
-        charset: "utf-8",
-      }
+      
 
     ],
     __dangerouslyDisableSanitizersByTagID: {
@@ -70,7 +53,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ["./plugins/notifier.js", "./plugins/mask.js"],
+  plugins: ["./plugins/notifier.js", "./plugins/mask.js", {src:'~/plugins/vue-hotjar.client.js', mode:'client'}],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
