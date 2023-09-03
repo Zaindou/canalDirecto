@@ -159,8 +159,7 @@
                                         </v-row>
                                 </v-container>
                         </div>
-
-                        <v-expansion-panels accordion hover-focus class="mb-5">
+                        <v-expansion-panels accordion hover-focus class="mb-5" v-model="panel">
                                 <v-expansion-panel v-for="producto in sortedProducts" :key="producto.id">
                                         <v-expansion-panel-header
                                                 :class="{ 'border-green': producto.estado === 'Al día', 'border-red': producto.estado !== 'Al día' }">
@@ -206,7 +205,6 @@
                                 </v-expansion-panel>
                         </v-expansion-panels>
                 </div>
-
                 <div>
                         <h4 style="color:#00263C; text-align: center;" class="mb-1">
                                 <v-icon id="product-icon" large>mdi-checkbox-marked-circle-outline</v-icon> PRESUPUESTO SUGERIDO
@@ -297,7 +295,7 @@
                                 <h4 style="color:#00263C; text-align: center;" class="mb-1"><v-icon id="product-icon"
                                                 large>mdi-wallet-plus-outline</v-icon>CONOCE LOS PLANES CON QNT
                                 </h4>
-                                <v-expansion-panels class="mb-3">
+                                <v-expansion-panels class="mb-3" v-model="panel">
                                         <v-expansion-panel v-for="(producto, index) in productosOferta" :key="index">
                                                 <v-expansion-panel-header>
                                                         <div>
@@ -561,6 +559,7 @@ export default {
                         dialog: false,
                         dialogPresupuesto: false,
                         dialogObjetivo: false,
+                        panel: 0,
                 }
         },
         props: {
