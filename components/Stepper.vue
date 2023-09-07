@@ -156,6 +156,10 @@ export default {
                     if (response.data.status_code === "NEW_DIAGNOSTIC") {
                         this.$notifier.showMessage({ content: '¡Hemos enviado un código de verificación!', color: 'success' })
                         this.e1 = 2;
+                    } else if (response.data.status_code === "REDIRECT_TO_STEP3") {
+                        this.$notifier.showMessage({ content: '¡Bienvenido de nuevo, te redirigimos a tus datos financieros!', color: 'success' })
+                        this.e1 = 3;
+                        await this.fetchData();
                     } else if (response.data.status_code === "REDIRECT_TO_DIAGNOSTIC") {
                         this.$notifier.showMessage({ content: '¡Bienvenido de nuevo, te redirigimos a tu diagnóstico!', color: 'success' })
 
@@ -294,6 +298,7 @@ export default {
             localStorage.setItem('email', this.$refs.step1.correoElectronico);
             localStorage.setItem('phone', this.$refs.step1.numeroCelular);
             localStorage.setItem('firstName', this.$refs.step1.primerNombre);
+            localStorage.setItem('lastName', this.$refs.step1.primerApellido);
         },
 
         getStepFromLocalStorage() {
@@ -364,13 +369,13 @@ export default {
 
         setTimeout(() => {
             this.showTimeoutWarning();
-        }, 10 * 60 * 1000); // 10 minutes
+        }, 20 * 60 * 1000); // 20 minutes
 
         setTimeout(() => {
             localStorage.clear();
             location.reload()
             this.showCloseWarning();
-        }, 15 * 60 * 1000); // 15 minutes
+        }, 30 * 60 * 1000); // 30 minutes
     },
 
     beforeDestroy() {
