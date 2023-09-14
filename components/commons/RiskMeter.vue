@@ -1,72 +1,81 @@
 <template>
-    <div class="text-center">
-        <div class="risk-meter__level">
-            <div class="risk-meter__score-min">150</div>
-            <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                    <span class="material-symbols-outlined risk-meter__indicator" :style="{ left: `${indicatorPosition}%` }"
-                        v-on="on">
-                        expand_circle_down
-                    </span>
-                </template>
-                <span>Hoy: {{ porcentageTarget }}%</span>
-            </v-tooltip>
-            <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                    <span class="material-symbols-outlined risk-meter__indicator goal-indicator"
-                        :style="{ left: `${goalIndicatorPosition}%` }" v-on="on">
-                        flag_circle
-                    </span>
-                </template>
-                <span>Objetivo: hasta en 2 meses</span>
-            </v-tooltip>
-            <div class="risk-meter__score-max">950</div>
-        </div>
+  <div class="text-center">
+    <div class="risk-meter__level">
+      <div class="risk-meter__score-min">
+        150
+      </div>
+      <v-tooltip top>
+        <template #activator="{ on }">
+          <span
+            class="material-symbols-outlined risk-meter__indicator"
+            :style="{ left: `${indicatorPosition}%` }"
+            v-on="on"
+          >
+            expand_circle_down
+          </span>
+        </template>
+        <span>Hoy: {{ porcentageTarget }}%</span>
+      </v-tooltip>
+      <v-tooltip bottom>
+        <template #activator="{ on }">
+          <span
+            class="material-symbols-outlined risk-meter__indicator goal-indicator"
+            :style="{ left: `${goalIndicatorPosition}%` }"
+            v-on="on"
+          >
+            flag_circle
+          </span>
+        </template>
+        <span>Objetivo: hasta en 2 meses</span>
+      </v-tooltip>
+      <div class="risk-meter__score-max">
+        950
+      </div>
     </div>
+  </div>
 </template>
-
 
 <script>
 export default {
-    props: {
-        score: {
-            type: Number,
-            required: true,
-        },
-        goalScore: {
-            type: Number,
-            required: true,
-        },
-        porcentageTarget: {
-            type: Number,
-            required: true,
-        }
+  props: {
+    score: {
+      type: Number,
+      required: true
+    },
+    goalScore: {
+      type: Number,
+      required: true
+    },
+    porcentageTarget: {
+      type: Number,
+      required: true
+    }
 
+  },
+  computed: {
+    indicatorPosition () {
+      const minScore = 150
+      const maxScore = 950
+      const normalizedScore = (this.score - minScore) / (maxScore - minScore)
+      return normalizedScore * 100 // Convert to percentage
     },
-    computed: {
-        indicatorPosition() {
-            const minScore = 150;
-            const maxScore = 950;
-            const normalizedScore = (this.score - minScore) / (maxScore - minScore);
-            return normalizedScore * 100; // Convert to percentage
-        },
-        riskLevel() {
-            if (this.score >= 621) {
-                return "BAJO";
-            } else if (this.score >= 481) {
-                return "MODERADO";
-            } else {
-                return "ALTO";
-            }
-        },
-        goalIndicatorPosition() {
-            const minScore = 150;
-            const maxScore = 950;
-            const normalizedScore = (this.goalScore - minScore) / (maxScore - minScore);
-            return normalizedScore * 100; // Convert to percentage
-        },
+    riskLevel () {
+      if (this.score >= 621) {
+        return 'BAJO'
+      } else if (this.score >= 481) {
+        return 'MODERADO'
+      } else {
+        return 'ALTO'
+      }
     },
-};
+    goalIndicatorPosition () {
+      const minScore = 150
+      const maxScore = 950
+      const normalizedScore = (this.goalScore - minScore) / (maxScore - minScore)
+      return normalizedScore * 100 // Convert to percentage
+    }
+  }
+}
 </script>
 
 <style scoped>

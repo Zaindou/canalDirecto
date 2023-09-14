@@ -1,19 +1,19 @@
 <template>
   <v-app>
     <v-main>
-      <Snackbar></Snackbar>
+      <Snackbar />
       <Nuxt />
     </v-main>
   </v-app>
 </template>
 
 <script>
-import Snackbar from '~/components/Snackbar.vue'
+import Snackbar from '~/components/snackBar.vue'
 
 export default {
-  components: { Snackbar },
   name: 'DefaultLayout',
-  data() {
+  components: { Snackbar },
+  data () {
     return {
       clipped: false,
       drawer: false,
@@ -39,4 +39,3 @@ export default {
 </script>
 
 <style></style>
-
