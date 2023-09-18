@@ -17,7 +17,7 @@
         </v-row>
         <v-row justify="center">
           <v-col class="d-flex justify-center" cols="12" sm="12">
-            <a href="https://wa.link/h1y0vn" target="_blank" style="text-decoration: none;">
+            <a href="wa.link/1cihhn" target="_blank" style="text-decoration: none;">
               <v-btn dark class="mx-2" color="green">
                 <v-icon left>mdi-whatsapp</v-icon>
                 WhatsApp
@@ -53,11 +53,8 @@
             <span class="content__chunk__1">{{ clientData.objetivo_financiero }}</span>
           </v-col>
           <v-col cols="12" sm="12">
-            <RiskMeter
-              :score="clientData.puntaje_crediticio"
-              :goal-score="clientData.objetivo_score"
-              :porcentage-target="clientData.porcentaje_avance_actual"
-            />
+            <RiskMeter :score="clientData.puntaje_crediticio" :goal-score="clientData.objetivo_score"
+              :porcentage-target="clientData.porcentaje_avance_actual" />
           </v-col>
           <v-col cols="12" sm="4">
             <p class="title__chunk_1">
@@ -94,13 +91,8 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer />
-                  <v-btn
-                    block
-                    dark
-                    style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)"
-                    elevation="2"
-                    @click="dialog = false"
-                  >
+                  <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)"
+                    elevation="2" @click="dialog = false">
                     Entendido
                   </v-btn>
                 </v-card-actions>
@@ -119,13 +111,8 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer />
-                  <v-btn
-                    block
-                    dark
-                    style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)"
-                    elevation="2"
-                    @click="dialogObjetivo = false"
-                  >
+                  <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)"
+                    elevation="2" @click="dialogObjetivo = false">
                     Entendido
                   </v-btn>
                 </v-card-actions>
@@ -156,10 +143,8 @@
           <v-row align="center">
             <v-col cols="12" sm="5">
               <v-card>
-                <v-card-title
-                  class="title__chunk_1"
-                  style="padding-bottom: 0px; padding-right: 0px; padding-left: 0px; padding-top: 7px;"
-                >
+                <v-card-title class="title__chunk_1"
+                  style="padding-bottom: 0px; padding-right: 0px; padding-left: 0px; padding-top: 7px;">
                   Saldo
                   de tus
                   productos
@@ -173,10 +158,8 @@
             </v-col>
             <v-col cols="12" sm="5">
               <v-card>
-                <v-card-title
-                  class="title__chunk_1"
-                  style="padding-bottom: 0px; padding-right: 0px; padding-left: 0px; padding-top: 7px;"
-                >
+                <v-card-title class="title__chunk_1"
+                  style="padding-bottom: 0px; padding-right: 0px; padding-left: 0px; padding-top: 7px;">
                   Saldo
                   en mora
                 </v-card-title>
@@ -193,8 +176,7 @@
       <v-expansion-panels v-model="panel" accordion hover-focus class="mb-5">
         <v-expansion-panel v-for="producto in sortedProducts" :key="producto.id">
           <v-expansion-panel-header
-            :class="{ 'border-green': producto.estado === 'Al día', 'border-red': producto.estado !== 'Al día' }"
-          >
+            :class="{ 'border-green': producto.estado === 'Al día', 'border-red': producto.estado !== 'Al día' }">
             <div>
               <span id="entityname">{{ producto.entidad }}</span>
               <br>Número de producto: {{ producto.producto }}
@@ -271,13 +253,8 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn
-              block
-              dark
-              style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)"
-              elevation="2"
-              @click="dialogPresupuesto = false"
-            >
+            <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)" elevation="2"
+              @click="dialogPresupuesto = false">
               Entendido
             </v-btn>
           </v-card-actions>
@@ -291,23 +268,15 @@
           </v-col>
           <v-col cols="8" sm="8" class="py-1">
             <strong class="product__titles">Ingresos
-              netos<v-icon
-                small
-                class="ml-1"
-                v-on="on"
-                @click="dialogPresupuesto = true"
-              >mdi-information-outline</v-icon>:</strong>
+              netos<v-icon small class="ml-1" v-on="on"
+                @click="dialogPresupuesto = true">mdi-information-outline</v-icon>:</strong>
             <p class="my-0 product__content">
               {{
                 formatCurrency(clientData.ingresos_sin_prestaciones) }}
             </p>
             <strong class="product__titles">Pago
-              de tus productos al día<v-icon
-                small
-                class="ml-1"
-                v-on="on"
-                @click="dialogPresupuesto = true"
-              >mdi-information-outline</v-icon>:</strong>
+              de tus productos al día<v-icon small class="ml-1" v-on="on"
+                @click="dialogPresupuesto = true">mdi-information-outline</v-icon>:</strong>
             <p class="my-0 product__content">
               {{
                 formatCurrency(clientData.pagos_promedio_mes) }}
@@ -372,13 +341,8 @@
                     </p>
                   </v-col>
                   <v-col cols="6">
-                    <v-select
-                      v-model="selectedTerm"
-                      :items="fees"
-                      label="Selecciona el plazo"
-                      solo
-                      @change="selectOffer(producto, $event)"
-                    />
+                    <v-select v-model="selectedTerm" :items="fees" label="Selecciona el plazo" solo
+                      @change="selectOffer(producto, $event)" />
                   </v-col>
                 </v-row>
                 <div style="text-align: center;">
@@ -467,7 +431,7 @@
               </h4>
               <v-row justify="center">
                 <v-col class="d-flex justify-center" cols="12" sm="12">
-                  <a href="https://wa.link/h1y0vn" target="_blank" style="text-decoration: none;">
+                  <a href="wa.link/1cihhn" target="_blank" style="text-decoration: none;">
                     <v-btn dark class="mx-2" color="green">
                       <v-icon left>mdi-whatsapp</v-icon>
                       WhatsApp
@@ -638,7 +602,7 @@ export default {
     }
 
   },
-  data () {
+  data() {
     return {
       selectedTerm: null,
       selectedOffer: null,
@@ -649,7 +613,7 @@ export default {
     }
   },
   computed: {
-    fechaFormateada () {
+    fechaFormateada() {
       const fecha = new Date(this.clientData.fecha_diagnostico)
       const dia = fecha.getDate().toString().padStart(2, '0')
       const mes = (fecha.getMonth() + 1).toString().padStart(2, '0') // Los meses en JavaScript empiezan desde 0
@@ -657,7 +621,7 @@ export default {
       return `${dia}/${mes}/${año}`
     },
 
-    sortedProducts () {
+    sortedProducts() {
       return [...this.productos].sort((a, b) => {
         if (a.estado === 'Al día' && b.estado !== 'Al día') {
           return 1
@@ -668,7 +632,7 @@ export default {
         }
       })
     },
-    riskLevel () {
+    riskLevel() {
       const score = this.clientData.puntaje_crediticio
       if (score >= 621) {
         return 'Bajo'
@@ -678,7 +642,7 @@ export default {
         return 'Alto'
       }
     },
-    fees () {
+    fees() {
       const plazos = []
       for (const producto of this.productosOferta) {
         if (producto.ofertas) {
@@ -699,45 +663,45 @@ export default {
 
   },
   methods: {
-    formatCurrency (value) {
+    formatCurrency(value) {
       return new Intl.NumberFormat('es-CO', {
         style: 'currency',
         currency: 'COP',
         minimumFractionDigits: 0
       }).format(value)
     },
-    roundPercentage (value) {
+    roundPercentage(value) {
       return parseFloat(value).toFixed(2)
     },
-    roundMonths (value) {
+    roundMonths(value) {
       return parseFloat(value).toFixed(0)
     },
-    messageOfferClient () {
+    messageOfferClient() {
       if (this.productosOferta != null && this.productosOferta.length > 0) {
         return true
       }
     },
-    othersDebts () {
+    othersDebts() {
       if (this.otrosProductos != null && this.otrosProductos.length > 0) {
         return true
       } else {
         return false
       }
     },
-    productsAgreement () {
+    productsAgreement() {
       if (this.productosAcuerdo != null && this.productosAcuerdo.length > 0) {
         return true
       } else {
         return false
       }
     },
-    messageGoodHistorialCredit () {
+    messageGoodHistorialCredit() {
       const allProducts = [...this.productos]
       if (allProducts.every(producto => producto.estado === 'Al día')) {
         return true
       }
     },
-    totalPorcentageDebt () {
+    totalPorcentageDebt() {
       let total = 0
       for (const i in this.productos) {
         if (this.productos[i].es_producto_qnt === true) { total += this.productos[i].participacion_mora }
@@ -748,7 +712,7 @@ export default {
       }
       return total
     },
-    selectOffer (producto, selectedTerm) {
+    selectOffer(producto, selectedTerm) {
       this.selectedTerm = selectedTerm
       producto.selectedOffer = producto.ofertas[selectedTerm]
     }
