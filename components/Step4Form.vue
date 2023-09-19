@@ -17,7 +17,7 @@
         </v-row>
         <v-row justify="center">
           <v-col class="d-flex justify-center" cols="12" sm="12">
-            <a href="https://wa.link/1cihhn" target="_blank" style="text-decoration: none;">
+            <a href="https://wa.link/sszq4o" target="_blank" style="text-decoration: none;">
               <v-btn dark class="mx-2" color="green">
                 <v-icon left>mdi-whatsapp</v-icon>
                 WhatsApp
@@ -431,7 +431,7 @@
               </h4>
               <v-row justify="center">
                 <v-col class="d-flex justify-center" cols="12" sm="12">
-                  <a href="https://wa.link/1cihhn" target="_blank" style="text-decoration: none;">
+                  <a href="https://wa.link/sszq4o" target="_blank" style="text-decoration: none;">
                     <v-btn dark class="mx-2" color="green">
                       <v-icon left>mdi-whatsapp</v-icon>
                       WhatsApp
