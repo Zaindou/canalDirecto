@@ -57,18 +57,12 @@
                   <a id="linkTerms" class="mr-11">condiciones de contacto</a></label>
                 <v-switch v-model="condicionesContacto" color="rgb(0, 93, 145)" required inset class="ml-2" />
               </div>
+
             </div>
           </div>
         </v-col>
-        <v-btn
-          block
-          dark
-          style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)"
-          elevation="2"
-          :disabled="!terminosCondiciones || !condicionesContacto"
-          class="buttonsteps"
-          @click="submitForm"
-        >
+        <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)" elevation="2"
+          :disabled="!terminosCondiciones || !condicionesContacto" class="buttonsteps" @click="submitForm">
           Iniciar mi diagnóstico
         </v-btn>
       </v-stepper-content>
@@ -79,48 +73,25 @@
             <Otp @otp-entered="handleOtpEntered" />
           </v-col>
         </v-row>
-        <v-btn
-          block
-          dark
-          style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)"
-          elevation="2"
-          class="buttonsteps"
-          @click="verifyOtp"
-        >
+        <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)" elevation="2"
+          class="buttonsteps" @click="verifyOtp">
           Confirmar código
         </v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="3">
         <Step3 ref="step3" :numero-identificacion="numero_identificacion" @submit="handleSubmit3" />
-        <v-btn
-          block
-          dark
-          style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)"
-          elevation="2"
-          class="buttonsteps"
-          @click="submitForm3"
-        >
+        <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)" elevation="2"
+          class="buttonsteps" @click="submitForm3">
           Solicitar diagnóstico
         </v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="4">
-        <Step4
-          :client-data="clientData"
-          :productos="productos"
-          :productos-acuerdo="productosAcuerdo"
-          :productos-oferta="productosOferta"
-          :otros-productos="otrosProductos"
-        />
-        <v-btn
-          block
-          dark
-          style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)"
-          elevation="2"
-          class="buttonsteps"
-          @click="finalizeAndRedirect"
-        >
+        <Step4 :client-data="clientData" :productos="productos" :productos-acuerdo="productosAcuerdo"
+          :productos-oferta="productosOferta" :otros-productos="otrosProductos" />
+        <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)" elevation="2"
+          class="buttonsteps" @click="finalizeAndRedirect">
           Finalizar
         </v-btn>
       </v-stepper-content>
@@ -137,13 +108,8 @@
             <br>¡Estamos aquí para ayudarte!
           </v-card-text>
           <v-card-actions>
-            <v-btn
-              block
-              dark
-              style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)"
-              elevation="2"
-              @click="dialog = false"
-            >
+            <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)" elevation="2"
+              @click="dialog = false">
               Explorar ahora
             </v-btn>
           </v-card-actions>
@@ -163,7 +129,7 @@ import Step4 from '~/components/Step4Form.vue'
 
 export default {
   components: { Otp, Step1, Step3, Step4, Loader },
-  data () {
+  data() {
     return {
       head: {
         title: 'Diagnostico'
@@ -180,11 +146,11 @@ export default {
   },
 
   watch: {
-    e1 () {
+    e1() {
       this.saveStepToLocalStorage()
     }
   },
-  mounted () {
+  mounted() {
     this.getStepFromLocalStorage()
     this.getIdentificationFromLocalStorage()
     this.getEmailPhoneAndNameFromLocalStorage()
@@ -200,11 +166,11 @@ export default {
     }, 30 * 60 * 1000) // 30 minutes
   },
 
-  beforeDestroy () {
+  beforeDestroy() {
     this.saveStepToLocalStorage()
   },
   methods: {
-    async handleSubmit (formData) {
+    async handleSubmit(formData) {
       try {
         this.loading4 = true
         this.numero_identificacion = formData.numero_identificacion
@@ -224,7 +190,6 @@ export default {
             await this.fetchData()
           } else if (response.data.status_code === 'REDIRECT_TO_DIAGNOSTIC') {
             this.$notifier.showMessage({ content: '¡Bienvenido de nuevo, te redirigimos a tu diagnóstico!', color: 'success' })
-
             this.e1 = 4
             await this.fetchData()
           }
@@ -233,13 +198,13 @@ export default {
           this.e1 = 1
         }
       } catch (error) {
-        this.$notifier.showMessage({ content: `${error.response.data.message}`, color: 'error' })
+        this.$notifier.showMessage({ content: `${error.response.data}`, color: 'error' })
         this.e1 = 1
       } finally {
         this.loading4 = false
       }
     },
-    async handleSubmit3 (formData) {
+    async handleSubmit3(formData) {
       const token = localStorage.getItem('auth_token')
 
       const config = {
@@ -269,11 +234,11 @@ export default {
         }
       })
     },
-    submitForm3 () {
+    submitForm3() {
       this.$refs.step3.submitForm3()
     },
 
-    async fetchData () {
+    async fetchData() {
       let token, cedula
       if (process.client) {
         token = localStorage.getItem('auth_token')
@@ -292,18 +257,18 @@ export default {
       this.productosOferta = response.data.wazeQnt.products_with_offer
       this.otrosProductos = response.data.wazeQnt.other_products
     },
-    submitForm () {
+    submitForm() {
       if (!this.terminosCondiciones) {
         this.$notifier.showMessage({ content: 'Acepta los términos y condiciones antes de continuar.', color: 'error' })
       } else if (this) { this.$refs.step1.submitForm() }
     },
-    openModal () {
+    openModal() {
       this.$refs.modal.openModal()
     },
-    handleOtpEntered (otp) {
+    handleOtpEntered(otp) {
       this.otp = otp
     },
-    async verifyOtp () {
+    async verifyOtp() {
       const data = {
         phone_number: this.$refs.step1.numeroCelular,
         numero_identificacion: this.numero_identificacion,
@@ -331,13 +296,12 @@ export default {
           } else {
             this.$notifier.showMessage({ content: `Error inesperado: código de estatus ${error.response.status}`, color: 'error' })
             this.e1 = 2
-            // console.log(error.response.data)
             this.loading4 = false
           }
         })
     },
 
-    iconColor (step) {
+    iconColor(step) {
       let color
       if (this.e1 === step) {
         color = '#00263C'
@@ -350,7 +314,7 @@ export default {
       }
       return color
     },
-    saveStepToLocalStorage () {
+    saveStepToLocalStorage() {
       localStorage.setItem('step', this.e1)
       localStorage.setItem('numero_identificacion', this.numero_identificacion)
       localStorage.setItem('email', this.$refs.step1.correoElectronico)
@@ -359,7 +323,7 @@ export default {
       localStorage.setItem('lastName', this.$refs.step1.primerApellido)
     },
 
-    getStepFromLocalStorage () {
+    getStepFromLocalStorage() {
       const step = localStorage.getItem('step')
       const stepMap = {
         1: 1,
@@ -374,7 +338,7 @@ export default {
       }
     },
 
-    getIdentificationFromLocalStorage () {
+    getIdentificationFromLocalStorage() {
       const identification = localStorage.getItem('numero_identificacion')
 
       if (identification) {
@@ -382,7 +346,7 @@ export default {
       }
     },
 
-    getEmailPhoneAndNameFromLocalStorage () {
+    getEmailPhoneAndNameFromLocalStorage() {
       const email = localStorage.getItem('email')
       const phone = localStorage.getItem('phone')
       const firstName = localStorage.getItem('firstName')
@@ -399,23 +363,23 @@ export default {
         this.$refs.step1.primerNombre = firstName
       }
     },
-    termsAndConditionsRedirect () {
+    termsAndConditionsRedirect() {
       window.open('https://qnt.com.co/tyc-dignostico/', '_blank')
     },
-    contactRedirect () {
+    contactRedirect() {
       window.open('https://qnt.com.co/c-contacto/', '_blank')
     },
 
-    finalizeAndRedirect () {
+    finalizeAndRedirect() {
       localStorage.clear()
       window.location.href = 'https://www.qnt.com.co'
     },
 
-    showTimeoutWarning () {
+    showTimeoutWarning() {
       this.$notifier.showMessage({ content: 'Tu sesión está a punto de expirar, por favor completa el formulario.', color: 'warning', icon: 'mdi-alert-circle' })
     },
 
-    showCloseWarning () {
+    showCloseWarning() {
       this.$notifier.showMessage({ content: 'Tu sesión ha expirado, por favor completa el formulario.', color: 'error', icon: 'mdi-alert-circle' })
     }
 

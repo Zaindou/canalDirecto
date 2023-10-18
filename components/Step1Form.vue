@@ -1,123 +1,53 @@
 <template>
   <v-form v-model="valid">
+    <Alerts v-if="showAlert" :message="'Por favor completa todos los campos.'" type="error" />
     <v-container>
       <v-row>
-        <!-- <v-col><span class="compartir-informacion">Compartenos la siguiente información, por favor:</span></v-col> -->
         <v-col class="d-flex mt-1" cols="12" sm="12">
-          <v-select
-            v-model="tipoIdentificacion"
-            :items="tipoDeIdentificacion"
-            label="Tipo de identificación"
-            hide-details
-            required
-            outlined
-          />
+          <v-select v-model="tipoIdentificacion" :items="tipoDeIdentificacion" label="Tipo de identificación" hide-details
+            required outlined />
         </v-col>
         <v-col cols="12" md="6">
-          <v-text-field
-            v-model="numeroIdentificacion"
-            type="number"
-            :rules="ccRules"
-            label="Número de identificación"
-            prepend-inner-icon="mdi-card-account-details"
-            hide-details
-            required
-            outlined
-            autocomplete
-          />
+          <v-text-field v-model="numeroIdentificacion" type="number" :rules="ccRules" label="Número de identificación"
+            prepend-inner-icon="mdi-card-account-details" hide-details required outlined autocomplete />
         </v-col>
 
         <v-col cols="12" md="6">
           <div>
-            <v-menu
-              ref="menu"
-              v-model="menu"
-              :close-on-content-click="false"
-              transition="scale-transition"
-              offset-y
-              min-width="auto"
-              @show="openDatePicker"
-            >
+            <v-menu ref="menu" v-model="menu" :close-on-content-click="false" transition="scale-transition" offset-y
+              min-width="auto" @show="openDatePicker">
               <template #activator="{ on, attrs }">
-                <v-text-field
-                  v-model.lazy="formattedDate"
-                  v-mask="'##/##/####'"
-                  placeholder="DD/MM/AAAA"
-                  label="Fecha de expedición"
-                  :rules="dateRules"
-                  prepend-inner-icon="mdi-calendar"
-                  readonly
-                  outlined
-                  hide-details
-                  v-bind="attrs"
-                  @input="formatDate"
-                  v-on="on"
-                />
+                <v-text-field v-model.lazy="formattedDate" v-mask="'##/##/####'" placeholder="DD/MM/AAAA"
+                  label="Fecha de expedición" :rules="dateRules" prepend-inner-icon="mdi-calendar" readonly outlined
+                  hide-details v-bind="attrs" @input="formatDate" v-on="on" />
               </template>
-              <v-date-picker
-                v-model="fechaExpedicion"
-                :active-picker.sync="activePicker"
-                :max="getMaxDate"
-                min="1950-01-01"
-                locale="es"
-                @input="menu = false"
-                @change="save"
-              />
+              <v-date-picker v-model="fechaExpedicion" :active-picker.sync="activePicker" :max="getMaxDate"
+                min="1950-01-01" locale="es" @input="menu = false" @change="save" />
             </v-menu>
           </div>
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-text-field
-            v-model="primerNombre"
-            :rules="nameRules"
-            label="Primer nombre"
-            hide-details
-            prepend-inner-icon="mdi-account-box"
-            required
-            outlined
-          />
+          <v-text-field v-model="primerNombre" :rules="nameRules" label="Primer nombre" hide-details
+            prepend-inner-icon="mdi-account-box" required outlined />
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-text-field
-            v-model="primerApellido"
-            :rules="nameRules"
-            label="Primer apellido"
-            hide-details
-            prepend-inner-icon="mdi-account-box"
-            required
-            outlined
-          />
+          <v-text-field v-model="primerApellido" :rules="nameRules" label="Primer apellido" hide-details
+            prepend-inner-icon="mdi-account-box" required outlined />
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-text-field
-            v-model="numeroCelular"
-            type="number"
-            :rules="clRules"
-            label="Número de celular"
-            prepend-inner-icon="mdi-cellphone"
-            required
-            outlined
-            hide-details
-          />
+          <v-text-field v-model="numeroCelular" type="number" :rules="clRules" label="Número de celular"
+            prepend-inner-icon="mdi-cellphone" required outlined hide-details />
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-text-field
-            v-model="correoElectronico"
-            :rules="emailRules"
-            label="Correo Electrónico"
-            prepend-inner-icon="mdi-email"
-            outlined
-            placeholder="rebancarizandome@qnt.com.co"
-            hide-details
-          />
+          <v-text-field v-model="correoElectronico" :rules="emailRules" label="Correo Electrónico"
+            prepend-inner-icon="mdi-email" outlined placeholder="rebancarizandome@qnt.com.co" hide-details />
         </v-col>
       </v-row>
     </v-container>
-    <Alerts v-if="showAlert" :message="'Por favor completa todos los campos.'" type="error" />
   </v-form>
 </template>
 
@@ -157,7 +87,7 @@ export default {
     ],
     emailRules: [
       v => !!v || 'El correo electónico es requerido.',
-      v => /.+@.+/.test(v) || 'Tu correo electrónico no es válido.'
+      v => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u.test(v) || 'Tu correo electrónico no es válido.'
     ],
     ccRules: [
       v => !!v || 'El número de identificación es requerido.',
@@ -167,7 +97,8 @@ export default {
     clRules: [
       v => !!v || 'El número de celular es requerido.',
       v => v.length >= 10 || 'El número de celular debe tener al menos 10 dígitos.',
-      v => v.length <= 10 || 'El número de celular debe tener máximo 10 dígitos.'
+      v => v.length <= 10 || 'El número de celular debe tener máximo 10 dígitos.',
+      v => v.startsWith('3') || 'El número de celular debe iniciar con 3.'
     ],
 
     dateRules: [
@@ -177,44 +108,44 @@ export default {
   }),
 
   computed: {
-    getMaxDate () {
+    getMaxDate() {
       return new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10)
     }
   },
-
   watch: {
-    fechaExpedicion (newVal) {
+    fechaExpedicion(newVal) {
       this.formattedDate = this.formatDate(newVal)
     }
   },
 
-  mounted () {
+  mounted() {
     this.openDatePicker()
   },
 
   methods: {
-    updateIdentificationNumber (value) {
+    updateIdentificationNumber(value) {
       this.numeroIdentificacion = value.numeroIdentificacion
     },
 
-    formatDate (date) {
+    formatDate(date) {
       if (!date) { return '' }
       const [year, month, day] = date.split('-')
       return `${day}/${month}/${year}`
     },
-    save (date) {
+    save(date) {
       this.fechaExpedicion = date
       this.formattedDate = this.formatDate(date)
     },
-    openDatePicker () {
+    openDatePicker() {
       this.activePicker = 'YEAR'
       this.menu = false
     },
 
-    submitForm () {
+    submitForm() {
       if (this.primerNombre === '' || this.primerApellido === '' || this.numeroIdentificacion === '' || this.fechaExpedicion === '' || this.numeroCelular === '' || this.correoElectronico === '' || this.terminosCondiciones === false) {
         this.valid = false
         this.showAlert = true
+
       } else {
         this.valid = true
       }
