@@ -194,11 +194,15 @@ export default {
             await this.fetchData()
           }
         } else {
-          this.$notifier.showMessage({ content: 'Error al enviar el OTP.', color: 'error' })
+          this.$notifier.showMessage({ content: data.response.message, color: 'error' })
           this.e1 = 1
         }
       } catch (error) {
-        this.$notifier.showMessage({ content: `${error.response.data}`, color: 'error' })
+        if (error.response.data.message == null || error.response.data.message === 'undefined') {
+          this.$notifier.showMessage({ content: 'Error inesperado, por favor intenta nuevamente.', color: 'error' })
+        } else {
+          this.$notifier.showMessage({ content: `${error.response.data.message}`, color: 'error' })
+        }
         this.e1 = 1
       } finally {
         this.loading4 = false

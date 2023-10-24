@@ -181,7 +181,7 @@
               <span id="entityname">{{ producto.entidad }}</span>
               <br>Número de producto: {{ producto.producto }}
               <br>Estado de producto: {{ producto.estado }}
-              <br>Saldo total: {{ formatCurrency(producto.saldo_total) }}
+              <br>Saldo reportado: {{ formatCurrency(producto.saldo_total) }}
             </div>
           </v-expansion-panel-header>
 
@@ -324,7 +324,7 @@
               <div>
                 <span id="entityname">{{ producto.entidad }}</span>
                 <br>Estado del producto: {{ producto.estado }}
-                <br>Saldo total: {{ formatCurrency(producto.saldo_total) }}
+                <br>Saldo reportado: {{ formatCurrency(producto.saldo_total) }}
                 <br>Part. En mora: {{ producto.participacion_mora }}%
               </div>
             </v-expansion-panel-header>
@@ -373,16 +373,9 @@
                           formatCurrency(producto.selectedOffer.cuota_inicial)
                         }}</span>
                       </p>
-                      <p v-if="producto.selectedOffer">
-                        <strong class="product__titles">%
-                          de
-                          ahorro:</strong>
-                        <span style="color:#81c784; font-weight: 500;">{{
-                          ((1 -
-                            (producto.selectedOffer.monto_final_oferta
-                              / producto.saldo_total))
-                            *
-                            100).toFixed(2)
+                      <p v-if="producto.selectedOffer && getAhorroPercentage(producto) >= 0">
+                        <strong class="product__titles">% de ahorro:</strong>
+                        <span style="color:#81c784; font-weight: 500;">{{ getAhorroPercentage(producto).toFixed(2)
                         }}%</span>
                       </p>
                     </v-col>
@@ -715,6 +708,14 @@ export default {
     selectOffer(producto, selectedTerm) {
       this.selectedTerm = selectedTerm
       producto.selectedOffer = producto.ofertas[selectedTerm]
+    },
+    getAhorroPercentage(producto) {
+      let ahorro = ((1 - (producto.selectedOffer.monto_final_oferta / producto.saldo_total)) * 100);
+
+      if (ahorro < 0) {
+        ahorro = ((1 - (producto.selectedOffer.monto_final_oferta / producto.selectedOffer.saldo_total)) * 100);
+      }
+      return ahorro;
     }
   }
 
