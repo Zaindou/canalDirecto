@@ -181,7 +181,8 @@
               <span id="entityname">{{ producto.entidad }}</span>
               <br>Número de producto: {{ producto.producto }}
               <br>Estado de producto: {{ producto.estado }}
-              <br>Saldo reportado: {{ formatCurrency(producto.saldo_total) }}
+              <br>{{ producto.estado !== 'Al día' ? 'Saldo en mora' : 'Saldo reportado' }}: {{
+                formatCurrency(producto.saldo_total) }}
             </div>
           </v-expansion-panel-header>
 
@@ -324,7 +325,7 @@
               <div>
                 <span id="entityname">{{ producto.entidad }}</span>
                 <br>Estado del producto: {{ producto.estado }}
-                <br>Saldo reportado: {{ formatCurrency(producto.saldo_total) }}
+                <br>Saldo total: {{ formatCurrency(producto.saldo_total) }}
                 <br>Part. En mora: {{ producto.participacion_mora }}%
               </div>
             </v-expansion-panel-header>
@@ -653,7 +654,6 @@ export default {
       }
       return plazos
     }
-
   },
   methods: {
     formatCurrency(value) {
@@ -716,6 +716,17 @@ export default {
         ahorro = ((1 - (producto.selectedOffer.monto_final_oferta / producto.selectedOffer.saldo_total)) * 100);
       }
       return ahorro;
+    }
+  },
+  watch: {
+    productosOferta: {
+      handler: function (val, oldVal) {
+        if (val.length > 0) {
+          this.selectedTerm = this.productosOferta[0].ofertas[1].plazo
+          this.productosOferta[0].selectedOffer = this.productosOferta[0].ofertas[this.selectedTerm]
+        }
+      },
+      deep: true
     }
   }
 

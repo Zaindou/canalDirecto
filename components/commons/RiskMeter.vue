@@ -6,11 +6,8 @@
       </div>
       <v-tooltip top>
         <template #activator="{ on }">
-          <span
-            class="material-symbols-outlined risk-meter__indicator"
-            :style="{ left: `${indicatorPosition}%` }"
-            v-on="on"
-          >
+          <span class="material-symbols-outlined risk-meter__indicator" :style="{ left: `${indicatorPosition}%` }"
+            v-on="on">
             expand_circle_down
           </span>
         </template>
@@ -18,15 +15,12 @@
       </v-tooltip>
       <v-tooltip bottom>
         <template #activator="{ on }">
-          <span
-            class="material-symbols-outlined risk-meter__indicator goal-indicator"
-            :style="{ left: `${goalIndicatorPosition}%` }"
-            v-on="on"
-          >
+          <span class="material-symbols-outlined risk-meter__indicator goal-indicator"
+            :style="{ left: `${goalIndicatorPosition}%` }" v-on="on">
             flag_circle
           </span>
         </template>
-        <span>Objetivo: hasta en 2 meses</span>
+        <span>Tu objetivo</span>
       </v-tooltip>
       <div class="risk-meter__score-max">
         950
@@ -53,13 +47,13 @@ export default {
 
   },
   computed: {
-    indicatorPosition () {
+    indicatorPosition() {
       const minScore = 150
       const maxScore = 950
       const normalizedScore = (this.score - minScore) / (maxScore - minScore)
       return normalizedScore * 100 // Convert to percentage
     },
-    riskLevel () {
+    riskLevel() {
       if (this.score >= 621) {
         return 'BAJO'
       } else if (this.score >= 481) {
@@ -68,7 +62,7 @@ export default {
         return 'ALTO'
       }
     },
-    goalIndicatorPosition () {
+    goalIndicatorPosition() {
       const minScore = 150
       const maxScore = 950
       const normalizedScore = (this.goalScore - minScore) / (maxScore - minScore)
@@ -81,55 +75,55 @@ export default {
 <style scoped>
 .risk-meter__score,
 .risk-meter__risk {
-    font-size: 16px;
-    font-weight: 500;
-    margin: 10px 0;
-    border-color: #81c784 !important;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 10px 0;
+  border-color: #81c784 !important;
 
 }
 
 .big-text {
-    font-size: 18px;
-    font-weight: bold;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .risk-meter__description {
-    font-size: 14px;
-    margin-bottom: 20px;
+  font-size: 14px;
+  margin-bottom: 20px;
 }
 
 .risk-meter__level {
-    width: 100%;
-    height: 35px;
-    background: linear-gradient(to right, #e57373 0%, #ffb74d 50%, #81c784 100%);
-    position: relative;
-    border-radius: 15px;
-    overflow: hidden;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  width: 100%;
+  height: 35px;
+  background: linear-gradient(to right, #e57373 0%, #ffb74d 50%, #81c784 100%);
+  position: relative;
+  border-radius: 15px;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .risk-meter__score-min,
 .risk-meter__score-max {
-    color: white;
-    opacity: 0.7;
-    font-weight: 400;
-    margin-inline-end: 7px;
-    margin-inline-start: 7px;
+  color: white;
+  opacity: 0.7;
+  font-weight: 400;
+  margin-inline-end: 7px;
+  margin-inline-start: 7px;
 }
 
 .risk-meter__indicator {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 35px;
-    transition: left 0.3s ease-in-out;
-    color: white;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 35px;
+  transition: left 0.3s ease-in-out;
+  color: white;
 }
 
 .goal-indicator {
-    color: white;
-    /* Puedes personalizar esto */
+  color: white;
+  /* Puedes personalizar esto */
 }
 </style>
