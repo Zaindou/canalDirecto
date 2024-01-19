@@ -311,7 +311,7 @@
         }}%</b> del saldo total de tus deudas
         y
         tenemos una oferta(s)
-        para ti, comienza tu Rebancarización ahora y mejora tu puntaje de crédito.
+        para ti, comeinza tu Rebancarización ahora y mejora tu puntaje de crédito.
       </v-alert>
       <div>
         <h4 style="color:#00263C; text-align: center;" class="mb-1">
@@ -610,7 +610,7 @@ export default {
     fechaFormateada() {
       const fecha = new Date(this.clientData.fecha_diagnostico)
       const dia = fecha.getDate().toString().padStart(2, '0')
-      const mes = (fecha.getMonth() + 1).toString().padStart(2, '0')
+      const mes = (fecha.getMonth() + 1).toString().padStart(2, '0') // Los meses en JavaScript empiezan desde 0
       const año = fecha.getFullYear()
       return `${dia}/${mes}/${año}`
     },

@@ -22,14 +22,14 @@
           mdi-shield-lock-outline
         </v-icon>
       </v-stepper-step>
-      <!-- 
+
       <v-divider />
 
       <v-stepper-step :complete="e1 > 3" step="3">
         <v-icon large :color="iconColor(3)">
           mdi-piggy-bank-outline
         </v-icon>
-      </v-stepper-step> -->
+      </v-stepper-step>
 
       <v-divider />
 
@@ -44,19 +44,20 @@
       <v-stepper-content step="1">
         <Step1 ref="step1" @form-submitted="handleSubmit" />
         <v-col>
-          <div class="checkbox-container rounded-bg">
+          <div class="switch-container rounded-bg">
             <div class="d-flex flex-column align-start">
-              <div class="d-flex align-center justify-between" style="margin-bottom: 0px !important;">
-                <v-checkbox v-model="terminosCondiciones" color="rgb(0, 93, 145)" required class="mr-0"></v-checkbox>
-                <label class="checkbox-label" color="rgb(0, 93, 145)" outlined @click="termsAndConditionsRedirect">Acepto
+              <div class="d-flex align-center justify-between mb-1">
+                <label class="switch-label" color="rgb(0, 93, 145)" outlined @click="termsAndConditionsRedirect">Acepto
                   los <a id="linkTerms">términos y condiciones legales</a></label>
+                <v-switch v-model="terminosCondiciones" color="rgb(0, 93, 145)" required inset class="ml-2" />
               </div>
-              <!-- Reducción del margen superior en la segunda fila de checkbox -->
-              <div class="d-flex align-center justify-between" style="margin-top: 0px !important;">
-                <v-checkbox v-model="condicionesContacto" color="rgb(0, 93, 145)" required class="mr-0"></v-checkbox>
-                <label class="checkbox-label" color="rgb(0, 93, 145)" outlined @click="contactRedirect">Acepto las <a
-                    id="linkTerms" class="mr-11">condiciones de contacto</a></label>
+              <div class="d-flex align-center justify-between">
+                <label class="switch-label" color="rgb(0, 93, 145)" outlined @click="contactRedirect">Acepto
+                  las
+                  <a id="linkTerms" class="mr-11">condiciones de contacto</a></label>
+                <v-switch v-model="condicionesContacto" color="rgb(0, 93, 145)" required inset class="ml-2" />
               </div>
+
             </div>
           </div>
         </v-col>
@@ -125,8 +126,6 @@ import Otp from '~/components/otpStep.vue'
 import Step1 from '~/components/Step1Form.vue'
 import Step3 from '~/components/Step3Form.vue'
 import Step4 from '~/components/Step4Form.vue'
-import { useMainStore } from '@/store/mainStore';
-
 
 export default {
   components: { Otp, Step1, Step3, Step4, Loader },
@@ -261,15 +260,6 @@ export default {
       this.productosAcuerdo = response.data.wazeQnt.products_with_agreement
       this.productosOferta = response.data.wazeQnt.products_with_offer
       this.otrosProductos = response.data.wazeQnt.other_products
-
-      const mainStore = useMainStore();
-      mainStore.setClientData(this.clientData);
-      console.log(mainStore.clientData, "*¨***CLIENTEDATA")
-      mainStore.setProductos(this.productos);
-      // mainStore.setProductosAcuerdo(this.productosAcuerdo);
-      // mainStore.setProductosOferta(this.productosOferta);
-      // mainStore.setOtrosProductos(this.otrosProductos);
-
     },
     submitForm() {
       if (!this.terminosCondiciones) {
@@ -290,27 +280,29 @@ export default {
         otp: this.otp
       }
 
-      this.loading4 = true;
-      try {
-        const response = await axios.post('diagnostico/otp/verify', data);
-        this.loading4 = false;
-
-        if (response.status === 200) {
-          this.$notifier.showMessage({ content: '¡Tu código de verificación es correcto!', color: 'success' });
-
-          if (response.data.STATUS_CODE === 'REDIRECT_TO_DIAGNOSTIC') {
-            const formData = {
-              numero_identificacion: this.numero_identificacion,
-            };
-            this.handleSubmit3(formData);
-          } else {
-            this.e1 = 3;
-          }
+      this.loading4 = true
+      await axios.post('diagnostico/otp/verify', data).then((response) => {
+        if (response.status >= 200 && response.status < 300) {
+          this.$notifier.showMessage({ content: '¡Tu código de verificación es correcto ;)!', color: 'success' })
+          this.e1 = 3
+          this.loading4 = false
+        } else {
+          this.$notifier.showMessage({ content: 'Error al verificar el código de verificación.', color: 'error' })
+          this.e1 = 2
+          this.loading4 = false
         }
-      } catch (error) {
-        this.$notifier.showMessage({ content: 'Error al verificar el código OTP.', color: 'error' });
-        this.loading4 = false;
-      }
+      })
+        .catch((error) => {
+          if (error.response.status >= 400 && error.response.status < 500) {
+            this.$notifier.showMessage({ content: 'Tu código de verificación es incorrecto.', color: 'error' })
+            this.e1 = 2
+            this.loading4 = false
+          } else {
+            this.$notifier.showMessage({ content: `Error inesperado: código de estatus ${error.response.status}`, color: 'error' })
+            this.e1 = 2
+            this.loading4 = false
+          }
+        })
     },
 
     iconColor(step) {
@@ -333,8 +325,6 @@ export default {
       localStorage.setItem('phone', this.$refs.step1.numeroCelular)
       localStorage.setItem('firstName', this.$refs.step1.primerNombre)
       localStorage.setItem('lastName', this.$refs.step1.primerApellido)
-      localStorage.setItem('objetivo_financiero', this.$refs.step1.selectedOption)
-      localStorage.setItem('fecha_expedicion', this.$refs.step1.formattedDate)
     },
 
     getStepFromLocalStorage() {
@@ -342,7 +332,7 @@ export default {
       const stepMap = {
         1: 1,
         2: 1,
-        3: 1,
+        3: 3,
         4: 1
       }
 
@@ -364,19 +354,18 @@ export default {
       const email = localStorage.getItem('email')
       const phone = localStorage.getItem('phone')
       const firstName = localStorage.getItem('firstName')
-      const lastName = localStorage.getItem('lastName')
-      const identification = localStorage.getItem('numero_identificacion')
-      const fecha_expeditcion = localStorage.getItem('fecha_expedicion')
 
-      if (email && phone && firstName && lastName && identification) {
+      if (email) {
         this.$refs.step1.correoElectronico = email
-        this.$refs.step1.numeroCelular = phone
-        this.$refs.step1.primerNombre = firstName
-        this.$refs.step1.primerApellido = lastName
-        this.$refs.step1.numeroIdentificacion = identification
-        this.$refs.step1.formattedDate = fecha_expeditcion
       }
 
+      if (phone) {
+        this.$refs.step1.numeroCelular = phone
+      }
+
+      if (firstName) {
+        this.$refs.step1.primerNombre = firstName
+      }
     },
     termsAndConditionsRedirect() {
       window.open('https://qnt.com.co/tyc-dignostico/', '_blank')
