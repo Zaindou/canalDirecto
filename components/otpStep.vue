@@ -37,7 +37,7 @@
 import axios from 'axios'
 
 export default {
-  data () {
+  data() {
     return {
       otp: '',
       showResendBtn: false,
@@ -45,7 +45,7 @@ export default {
       timer: null
     }
   },
-  mounted () {
+  mounted() {
     this.timer = setInterval(() => {
       this.remainingTime--
       if (this.remainingTime === 0) {
@@ -54,18 +54,18 @@ export default {
       }
     }, 1000)
   },
-  beforeDestroy () {
+  beforeDestroy() {
     clearInterval(this.timer)
   },
   methods: {
-    onInput (value) {
+    onInput(value) {
       this.otp = value
     },
-    onComplete (value) {
+    onComplete(value) {
       this.$emit('otp-entered', this.otp)
     },
 
-    resendOTP () {
+    resendOTP() {
       const token = localStorage.getItem('auth_token')
 
       const config = {
@@ -110,38 +110,38 @@ export default {
 
 <style>
 .v-otp-input {
-    margin: 0 auto;
-    width: 100%;
-    max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 500px;
 }
 
 .p1 {
-    color: #3b3b3b;
-    font-size: 0.9rem !important;
-    font-weight: 400;
-    text-align: center;
+  color: #3b3b3b;
+  font-size: 0.9rem !important;
+  font-weight: 400;
+  text-align: center;
 }
 
 .p2 {
-    align-items: center;
-    color: #115b7a;
-    font-size: 1rem;
-    font-weight: 400;
-    padding: 15px 0px 0px 0px !important;
+  align-items: center;
+  color: #115b7a;
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 15px 0px 0px 0px !important;
 
 }
 
 .b-green {
-    color: #87BD29;
+  color: #87BD29;
 }
 
 .resendotp {
-    background-color: #E1F4FC;
-    border-radius: 5px;
-    margin-bottom: 2rem;
-    margin-top: 30px;
-    max-width: 500px;
-    padding: 15px !important;
+  background-color: #E1F4FC;
+  border-radius: 5px;
+  margin-bottom: 2rem;
+  margin-top: 30px;
+  max-width: 500px;
+  padding: 15px !important;
 }
 
 /* .col {

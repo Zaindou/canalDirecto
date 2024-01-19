@@ -53,7 +53,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ["./plugins/notifier.js", "./plugins/mask.js", {src:'~/plugins/vue-hotjar.client.js', mode:'client'}],
+  plugins: ["./plugins/notifier.js", "./plugins/mask.js", {src:'~/plugins/vue-hotjar.client.js', mode:'client'}, {src:"~/plugins/eventBus.js", mode:'client'}],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -64,6 +64,8 @@ export default {
     // '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/vuetify
     "@nuxtjs/vuetify",
+    '@nuxtjs/composition-api/module',
+    ['@pinia/nuxt', { disableVuex: false }],
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -71,11 +73,20 @@ export default {
     // https://go.nuxtjs.dev/axios
     "@nuxtjs/axios",
   ],
+  proxy: {
+    "/diagnostico": {
+      target: "http://localhost:8000/diagnostico/",
+      pathRewrite: {
+        "^/diagnostico": "/",
+      },
+    },
+  },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: "/diagnostico",
+    // baseURL: "/diagnostico",
+    proxy: true,
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
@@ -98,5 +109,9 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
+  build: {transpile: ['vue-chartjs', 'chart.js'],},
+  server: {
+    port: 3000,
+    host: "0.0.0.0",
+  }
 };
