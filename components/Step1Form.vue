@@ -1,5 +1,5 @@
 <template>
-  <v-form v-model="valid">
+  <v-form v-model="valid" style="margin-bottom: 0px !important;">
     <Alerts v-if="showAlert" :message="'Por favor completa todos los campos.'" type="error" />
     <v-container>
       <v-row>
@@ -46,7 +46,18 @@
           <v-text-field v-model="correoElectronico" :rules="emailRules" label="Correo Electrónico"
             prepend-inner-icon="mdi-email" outlined placeholder="rebancarizandome@qnt.com.co" hide-details />
         </v-col>
+
+        <v-container class="info-container" style="margin-bottom: 0px !important;">
+          <div class="p position-relative">
+            Cuéntanos el objetivo financiero que quieres alcanzar
+          </div>
+        </v-container>
+        <v-col cols="12" md="12" style="margin: 0px !important;">
+          <v-select v-model="selectedOption" :items="options" label="Objetivo Financiero"
+            style="margin-bottom: 0px !important;" prepend-inner-icon="mdi-coffee-outline" outlined />
+        </v-col>
       </v-row>
+
     </v-container>
   </v-form>
 </template>
@@ -77,6 +88,17 @@ export default {
     menu: true,
 
     formattedDate: '',
+
+    options: [
+      'Solicitar tarjeta de crédito',
+      'Solicitar crédito de libre inversión',
+      'Solicitar crédito de educación',
+      'Solicitar crédito de vivienda',
+      'Solicitar crédito de vehículo',
+      'Quiero salir de mis deudas'
+    ],
+
+    selectedOption: null,
 
     tipoDeIdentificacion: [
       { text: 'Cédula de ciudadanía', value: 'CC' },
@@ -142,6 +164,8 @@ export default {
     },
 
     submitForm() {
+
+
       if (this.primerNombre === '' || this.primerApellido === '' || this.numeroIdentificacion === '' || this.fechaExpedicion === '' || this.numeroCelular === '' || this.correoElectronico === '' || this.terminosCondiciones === false) {
         this.valid = false
         this.showAlert = true
@@ -159,6 +183,7 @@ export default {
             tipo_identificacion: this.tipoIdentificacion,
             numero_celular: this.numeroCelular,
             correo_electronico: this.correoElectronico,
+            objetivo_financiero: this.selectedOption,
             terminos_condiciones: this.terminosCondiciones
           })
       }
@@ -184,5 +209,9 @@ input[type=number]::-webkit-outer-spin-button {
 .custom-text-field.v-text-field.v-text-field--enclosed .v-input__slot {
   padding: 0 !important;
   margin: 0 !important;
+}
+
+.v-application p {
+  margin: 5 !important;
 }
 </style>

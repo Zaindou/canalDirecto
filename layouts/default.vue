@@ -13,10 +13,20 @@ import Snackbar from '~/components/Snackbar.vue'
 export default {
   name: 'DefaultLayout',
   components: { Snackbar },
-  data () {
+  head() {
     return {
-      clipped: false,
-      drawer: false,
+      script: [
+        {
+          src: 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js',
+          defer: true
+        }
+      ],
+      // Agrega cualquier otro elemento necesario aquí
+    };
+  },
+  data() {
+    return {
+
       items: [
         {
           icon: 'mdi-apps',
@@ -29,10 +39,7 @@ export default {
           to: '/inspire'
         }
       ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Diagnostico Stepper TEST'
+
     }
   }
 }

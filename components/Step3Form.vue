@@ -12,53 +12,27 @@
         </v-container>
       </div>
       <v-col class="d-flex" cols="13" sm="13">
-        <v-text-field
-          v-model="formattedIncome"
-          label="Ingresos mensuales"
-          prepend-inner-icon="mdi-cash"
-          required
-          outlined
-          @input="formatIncome"
-        />
+        <v-text-field v-model="formattedIncome" label="Ingresos mensuales" prepend-inner-icon="mdi-cash" required outlined
+          @input="formatIncome" />
       </v-col>
 
       <v-col class="d-flex" cols="13" sm="13">
-        <v-text-field
-          v-model="formattedExpenses"
-          label="Gastos mensuales"
-          prepend-inner-icon="mdi-cash"
-          required
-          outlined
-          @input="formatExpenses"
-        />
+        <v-text-field v-model="formattedExpenses" label="Gastos mensuales" prepend-inner-icon="mdi-cash" required outlined
+          @input="formatExpenses" />
       </v-col>
       <!-- Ahorros -->
-
-      <v-row>
+      <!-- <v-row>
         <v-col class="d-flex" cols="12" sm="12">
-          <v-select
-            v-model="ahorros"
-            :items="ahorrosOpciones.map(option => option.text)"
-            label="¿Tienes ahorros?"
-            hide-details
-            outlined
-            required
-          />
+          <v-select v-model="ahorros" :items="ahorrosOpciones.map(option => option.text)" label="¿Tienes ahorros?"
+            hide-details outlined required />
         </v-col>
         <v-col v-if="ahorros === 'SI'" class="d-flex" cols="12" sm="12">
-          <v-text-field
-            v-model="formattedSavings"
-            label="Valor de tus ahorros"
-            prepend-inner-icon="mdi-piggy-bank-outline"
-            hide-details
-            outlined
-            required
-            @input="formatSavings"
-            @blur="formatSavings"
-          />
+          <v-text-field v-model="formattedSavings" label="Valor de tus ahorros"
+            prepend-inner-icon="mdi-piggy-bank-outline" hide-details outlined required @input="formatSavings"
+            @blur="formatSavings" />
         </v-col>
-      </v-row>
-
+      </v-row> -->
+      <!-- 
       <v-container class="info-container">
         <div class="p position-relative">
           <p>
@@ -66,16 +40,11 @@
             negativos <br>en centrales de riesgo. <br>¿Cuál seria tu <b>meta financiera</b>?
           </p>
         </div>
-      </v-container>
+      </v-container> -->
 
       <!-- Obetivo financiero -->
-      <v-select
-        v-model="selectedOption"
-        :items="options"
-        label="Objetivo Financiero"
-        prepend-inner-icon="mdi-coffee-outline"
-        outlined
-      />
+      <!-- <v-select v-model="selectedOption" :items="options" label="Objetivo Financiero"
+        prepend-inner-icon="mdi-coffee-outline" outlined /> -->
     </v-container>
   </v-form>
 </template>
@@ -93,7 +62,7 @@ export default {
     }
   },
 
-  data () {
+  data() {
     return {
 
       valid: false,
@@ -121,36 +90,35 @@ export default {
   },
 
   methods: {
-    formatIncome () {
+    formatIncome() {
       let value = this.formattedIncome.replace(/\D/g, '')
       value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
       this.formattedIncome = value
     },
-    formatExpenses () {
+    formatExpenses() {
       let value = this.formattedExpenses.replace(/\D/g, '')
       value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
       this.formattedExpenses = value
     },
-    formatSavings () {
+    formatSavings() {
       let value = this.formattedSavings.replace(/\D/g, '')
       value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
       this.formattedSavings = value
     },
 
-    submitForm3 () {
-      // const ahorrosOption = this.ahorrosOpciones.find(option => option.text === this.ahorros);
-
+    submitForm3() {
       const tieneAhorros = this.ahorros === 'NO' ? 'false' : 'true'
-
       const ahorrosValue = this.ahorros === 'NO' ? '0' : this.formattedSavings
+
+      const objetivo_financiero = localStorage.getItem('objetivo_financiero')
 
       this.$emit('submit', {
         numero_identificacion: this.numeroIdentificacion,
         ingresos_mensuales: this.formattedIncome,
         gastos_mensuales: this.formattedExpenses,
-        tienes_ahorros: tieneAhorros,
-        objetivo_financiero: this.selectedOption,
-        valor_ahorros: ahorrosValue
+        // tienes_ahorros: tieneAhorros,
+        objetivo_financiero: objetivo_financiero,
+        // valor_ahorros: ahorrosValue
       })
     }
 
