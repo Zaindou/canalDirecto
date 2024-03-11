@@ -98,7 +98,7 @@
 <script>
 import { useMainStore } from '@/store/mainStore';
 import Header from '/components/commons/Header.vue';
-import FinancialTips from '/components/commons/FinancialTips.vue'
+import FinancialTips from '/components/commons/tipsFinancial.vue'
 
 export default {
     components: {
