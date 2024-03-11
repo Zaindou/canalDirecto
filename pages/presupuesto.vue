@@ -54,7 +54,7 @@
 
 <script>
 import Header from '~/components/commons/Header.vue'
-import FinancialTips from '/components/commons/FinancialTips.vue'
+import FinancialTips from '~/components/commons/financialTips.vue'
 import { useMainStore } from '@/store/mainStore';
 
 export default {
