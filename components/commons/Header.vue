@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex justify-center logo-container">
-        <img src="logo.png" alt="Logo" class="logo-img">
+        <img src="/logo.png" alt="Logo" class="logo-img">
     </div>
 </template>
 <style scoped>

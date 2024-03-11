@@ -2,7 +2,7 @@
     <v-container class="pa-7">
         <Header></Header>
         <div>
-            <v-btn icon color="#0b2f44" @click="goBack" class="mb-1 ml-3">
+            <v-btn icon color="#0b2f44" @click="navigateTo('inicio')" class="mb-1 ml-3">
                 <v-icon>mdi-arrow-left</v-icon> Volver
             </v-btn>
         </div>
@@ -14,7 +14,7 @@
         </div>
         <v-row justify="center">
             <v-col cols="12" sm="6" md="6">
-                <v-card class="mb-1">
+                <v-card class="mb-1 step-1">
                     <v-row no-gutters class="pa-1">
                         <v-col cols="2" class="d-flex justify-start align-center">
                             <IconoCredito class="icono-svg" />
@@ -30,7 +30,7 @@
 
             <!-- Tarjeta para el saldo en mora -->
             <v-col cols="12" sm="6" md="6">
-                <v-card>
+                <v-card class="step-2">
                     <v-row no-gutters class="pa-1">
                         <v-col cols="2" class="d-flex justify-start align-center">
                             <IconoMora class="icono-svg" />
@@ -45,8 +45,12 @@
         </v-row>
         <div class="mt-8">
             <span class="title-tools">Detalle de tus productos (Vigentes)</span>
-            <Productos />
+            <Productos class="step-3" />
         </div>
+        <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)" elevation="2"
+            class="mt-6 step-4" @click="navigateTo('simulador')">
+            CONTINUAR
+        </v-btn>
     </v-container>
 </template>
 
@@ -78,9 +82,6 @@ export default {
         },
     },
     methods: {
-        goBack() {
-            this.$router.push('/inicio');
-        },
         formatCurrency(value) {
             return new Intl.NumberFormat('es-CO', {
                 style: 'currency',
@@ -101,6 +102,9 @@ export default {
             }
             return 'Hoy es un buen día...';
         },
+        navigateTo(route) {
+            this.$router.push(route);
+        },
     },
     watch: {
         'mainStore.clientData': {
@@ -116,6 +120,37 @@ export default {
     mounted() {
         const mainStore = useMainStore();
         mainStore.loadFromLocalStorage();
+        introJs().setOptions({
+            steps: [
+                {
+                    intro: 'En esta sección podrás ver el saldo de tus créditos y el saldo en mora de tus productos financieros.',
+                    title: "Bienvenido a tus productos financieros!",
+                },
+                {
+                    element: document.querySelector('.step-3'),
+                    title: "Detalle de tus productos financieros",
+                    intro: 'Aquí podrás ver el detalle de tus productos financieros.',
+                },
+                {
+                    element: document.querySelector('.step-4'),
+                    title: "Continuar",
+                    intro: 'Haz clic en el botón para continuar.',
+                },
+            ],
+            nextLabel: 'Siguiente',
+            prevLabel: 'Anterior',
+            doneLabel: 'Listo',
+            // showProgress: true,
+            dontShowAgain: false,
+            dontShowAgainLabel: 'No volver a mostrar',
+            showBullets: false,
+            disableInteraction: true,
+            overlayOpacity: 0.7,
+            exitOnEsc: false,
+            exitOnOverlayClick: false,
+            showButtons: true,
+
+        }).start();
     },
 };
 </script>

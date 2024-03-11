@@ -7,7 +7,7 @@ import $ from 'jquery';
 <script>
 
 export default {
-  data () {
+  data() {
     return {
       head: {
         title: 'Canal Directo'
@@ -27,7 +27,7 @@ export default {
 
 @media (min-width: 790px) {
   .remove-padding {
-    padding: 40px !important;
+    padding: 10px !important;
   }
 }
 </style>

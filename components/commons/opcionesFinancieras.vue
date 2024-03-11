@@ -4,7 +4,7 @@
             <v-col order="6" v-for="button in buttons" :key="button.title" class="d-flex justify-center ">
                 <v-card :style="{ backgroundColor: button.color }"
                     class="d-flex flex-column align-center justify-center text-center py-2 px-2 card-button"
-                    @click="navigateTo(button.route)">
+                    @click="navigateTo(button.route)" hover>
                     <div v-html="button.svgContent" class="svg-icon mb-1"></div>
                     <span class="card-title" style="line-height: normal;">{{ button.title }}</span>
                 </v-card>

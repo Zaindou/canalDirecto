@@ -2,10 +2,13 @@
   <div>
     <div class="ma-auto position-relative" style="max-width: 500px">
       <p class="p1">
-        Hemos enviado un <b class="b-green">código de verificación</b> a tu correo y/o celular, para
-        validar tu identidad.
+        Te hemos enviado un <b class="b-green">código de verificación.</b>
+        <br>Introduce el código que hemos enviado al número: <b>{{ numero_celular }}</b>
       </p>
-      <v-otp-input length="5" type="number" placeholder="0" @input="$emit('otp-entered', $event)" />
+      <!-- <v-otp-input length="5" type="number" placeholder="0" @input="$emit('otp-entered', $event)" /> -->
+      <v-text-field type="number" class="mt-6" label="" placeholder="Introducir código" :rules=[numberRules] outlined
+        @input="$emit('otp-entered', $event)">
+      </v-text-field>
     </div>
     <v-container class="resendotp">
       <v-row class="align-center">
@@ -19,7 +22,7 @@
             ¿No llegó el código temporal? Para reenviarlo por favor haz
             <span>
               <button class="btn" @click="resendOTP">
-                <b>¡clic aquí!</b>
+                <b class="text-decoration-underline">¡clic aquí!</b>
               </button>
             </span>
           </p>
@@ -42,8 +45,23 @@ export default {
       otp: '',
       showResendBtn: false,
       remainingTime: 180,
-      timer: null
+      timer: null,
+      numero_celular: null,
+      numerberRules: val => {
+        if (val === null || val === '') {
+          return 'Campo requerido'
+        }
+      }
     }
+  },
+  computed: {
+    requiredRule() {
+      return [(v) => !!v || 'Campo requerido']
+    },
+    numericRule() {
+      return [(v) => !isNaN(v) || 'Debe ser un número']
+    }
+
   },
   mounted() {
     this.timer = setInterval(() => {
@@ -53,6 +71,7 @@ export default {
         this.showResendBtn = true
       }
     }, 1000)
+    this.numero_celular = localStorage.getItem('phone')
   },
   beforeDestroy() {
     clearInterval(this.timer)
@@ -109,16 +128,16 @@ export default {
 </script>
 
 <style>
-.v-otp-input {
+/* .v-otp-input {
   margin: 0 auto;
   width: 100%;
   max-width: 500px;
-}
+} */
 
 .p1 {
   color: #3b3b3b;
   font-size: 0.9rem !important;
-  font-weight: 400;
+  font-weight: 400 !important;
   text-align: center;
 }
 
@@ -139,7 +158,7 @@ export default {
   background-color: #E1F4FC;
   border-radius: 5px;
   margin-bottom: 2rem;
-  margin-top: 30px;
+  margin-top: 7px;
   max-width: 500px;
   padding: 15px !important;
 }

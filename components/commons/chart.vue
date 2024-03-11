@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <div class="chart-container ml-8" style="position: relative; height:40vh; width:80vw">
         <canvas ref="creditScoreChart"></canvas>
     </div>
@@ -32,111 +32,81 @@ export default {
         }
     },
     methods: {
+        // ...
         buildChart() {
-            const ctx = this.$refs.creditScoreChart.getContext('2d');
-            Chart.defaults.global.defaultFontColor = '#FFFFFF';
-            Chart.defaults.global.defaultColor = '#FFFFFF';
+            // ...
             this.chart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: this.generateMonthLabels(new Date(2023, 11), 13), // Noviembre de 2023 a Junio de 2025
-                    datasets: [
-                        {
-                            label: 'Proyección simulada',
-                            data: [], // Inicialmente vacío
-                            borderColor: '#00B3FF',
-                            fill: false,
-                        },
-                        {
-                            label: 'Comportamiento real',
-                            data: [], // Inicialmente vacío
-                            borderColor: '#62AC21',
-                            fill: false,
-                        }
-                    ],
-                },
+                // ...
                 options: {
-                    legend: {
-                        labels: {
-                            fontColor: '#FFFFFF'
-                        }
-                    },
+                    // ...
                     scales: {
                         yAxes: [{
                             ticks: {
-                                fontColor: '#FFFFFF',
-                                beginAtZero: true,
-                                max: 1000
+                                // Actualiza los rangos del eje Y según los requisitos
+                                stepSize: 100, // Asegúrate de que el stepSize sea 100 para ajustarse a los rangos dados
+                                suggestedMax: 900, // Ajusta esto si esperas que el puntaje pueda ser más alto
+                                // Puedes definir un callback para cambiar cómo se muestran las etiquetas si es necesario
                             }
                         }],
                         xAxes: [{
-                            ticks: {
-                                fontColor: '#FFFFFF'
-                            }
+                            // ...
+                            // Asegúrate de que las etiquetas de xAxes puedan desplazarse si es necesario
+                            type: 'category', // Utiliza el tipo 'category' para una mejor manipulación de las etiquetas
                         }]
                     }
                 }
             });
         },
         updateChartData(selectedProducts) {
-            const newScore = this.calculateNewScore(selectedProducts);
-            this.chart.data.datasets[0].data = this.generateDummyData(newScore, 20);
-            this.chart.data.datasets[1].data = this.generateDummyData(this.initialScore, 20, true);
+            // ...
+            // Actualizar las etiquetas del eje X basado en la consulta más larga
+            const longestSimulation = this.findLongestSimulation(selectedProducts);
+            this.chart.data.labels = this.generateMonthLabels(new Date(), longestSimulation);
+
+            // Aquí actualizas los datos de los datasets con los puntajes reales y simulados
+            this.chart.data.datasets[0].data = this.generateScoreData(selectedProducts);
+            this.chart.data.datasets[1].data = this.generateRealScoreData(); // Suponiendo que tienes una función para esto
             this.chart.update();
         },
-        calculateNewScore(products) {
-            let scoreIncrease = 0;
+        // ...
+        findLongestSimulation(products) {
+            // Encuentra la simulación más larga basada en las cuotas seleccionadas
+            let longestQuota = 0;
             products.forEach(product => {
-                if (product.selected) {
-                    scoreIncrease += 20 * product.selectedQuota;
+                if (product.selected && product.selectedQuota > longestQuota) {
+                    longestQuota = product.selectedQuota;
                 }
             });
-            return this.initialScore + scoreIncrease;
+            return longestQuota;
         },
-        generateMonthLabels(startDate, numberOfMonths) {
-            let labels = [];
-            let date = new Date(startDate);
-
-            for (let i = 0; i < numberOfMonths; i++) {
-                labels.push(this.formatDateToMonthYear(date));
-                date.setMonth(date.getMonth() + 1);
-            }
-
-            return labels;
-        },
-        generateDummyData(maxScore, numberOfMonths, isRealBehaviour = false) {
+        generateScoreData(products) {
+            // Genera los datos de puntaje simulados basados en los productos seleccionados
             let data = [];
-            let score = Math.floor(Math.random() * maxScore);
-
-            for (let i = 0; i < numberOfMonths; i++) {
-                data.push(score);
-
-                if (isRealBehaviour && i % 3 === 0) {
-                    score = Math.max(score + (Math.random() > 0.5 ? 1 : -1) * Math.floor(Math.random() * 50), 0);
-                } else {
-                    score = Math.min(score + Math.floor(Math.random() * 20), maxScore);
+            // Aquí debes calcular el puntaje inicial basado en el puntaje_crediticio y luego sumar el puntaje por cuota
+            // Supongamos que inicializas el puntaje con el puntaje_crediticio
+            let score = this.initialScore; // Deberás obtener este valor del puntaje_crediticio
+            products.forEach(product => {
+                if (product.selected) {
+                    // Suponiendo que dividimos el puntaje_por_cuota por la cantidad de cuotas
+                    score += product.puntaje_por_cuota / product.selectedQuota;
                 }
-            }
-
+                // Aquí deberías calcular el incremento de puntaje para cada mes y agregarlo a los datos
+                // Por simplicidad, aquí solo agregamos el puntaje calculado al array
+                data.push(score);
+            });
             return data;
         },
-        formatDateToMonthYear(date) {
-            return `${date.toLocaleString('default', { month: 'short' })}-${date.getFullYear()}`;
-        }
-    },
-    mounted() {
-        this.buildChart();
-        this.updateChartData(this.selectedProducts);
+        // ...
     }
 };
 </script>
-
+-->
 <style>
 .chart-container {
-    overflow-x: scroll;
+    /* overflow-x: scroll; */
     height: 40vh;
     width: 80vw;
     position: relative;
-    background: linear-gradient(to bottom, #00263C 0%, #005a7d 0%, #00A2E4 10%);
+    /* background: linear-gradient(to bottom, #00263C 0%, #005a7d 0%, #00A2E4 10%); */
 }
-</style>
+</style> 

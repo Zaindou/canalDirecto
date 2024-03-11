@@ -5,7 +5,7 @@
                 <v-card class="mx-auto recommendation-card">
                     <v-card-title class="justify-space-between title-box">
                         Recomendación QNT
-                        <v-icon>mdi-information-outline</v-icon>
+                        <!-- <v-icon>mdi-information-outline</v-icon> -->
                     </v-card-title>
                     <v-card-text style="line-height: normal;">
                         {{ recomendacion ? recomendacion : '¡Estamos cargando un par de recomendaciones para ti!' }}

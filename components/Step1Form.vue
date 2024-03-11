@@ -1,15 +1,14 @@
 <template>
   <v-form v-model="valid" style="margin-bottom: 0px !important;">
-    <Alerts v-if="showAlert" :message="'Por favor completa todos los campos.'" type="error" />
     <v-container>
       <v-row>
         <v-col class="d-flex mt-1" cols="12" sm="12">
-          <v-select v-model="tipoIdentificacion" :items="tipoDeIdentificacion" label="Tipo de identificación" hide-details
-            required outlined />
+          <v-select v-model="tipoIdentificacion" :items="tipoDeIdentificacion" label="Tipo de identificación"
+            hide-details="auto" required outlined />
         </v-col>
         <v-col cols="12" md="6">
           <v-text-field v-model="numeroIdentificacion" type="number" :rules="ccRules" label="Número de identificación"
-            prepend-inner-icon="mdi-card-account-details" hide-details required outlined autocomplete />
+            prepend-inner-icon="mdi-card-account-details" hide-details="auto" required outlined autocomplete />
         </v-col>
 
         <v-col cols="12" md="6">
@@ -19,7 +18,7 @@
               <template #activator="{ on, attrs }">
                 <v-text-field v-model.lazy="formattedDate" v-mask="'##/##/####'" placeholder="DD/MM/AAAA"
                   label="Fecha de expedición" :rules="dateRules" prepend-inner-icon="mdi-calendar" readonly outlined
-                  hide-details v-bind="attrs" @input="formatDate" v-on="on" />
+                  hide-details="auto" v-bind="attrs" @input="formatDate" v-on="on" />
               </template>
               <v-date-picker v-model="fechaExpedicion" :active-picker.sync="activePicker" :max="getMaxDate"
                 min="1950-01-01" locale="es" @input="menu = false" @change="save" />
@@ -28,23 +27,23 @@
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-text-field v-model="primerNombre" :rules="nameRules" label="Primer nombre" hide-details
+          <v-text-field v-model="primerNombre" :rules="nameRules" label="Primer nombre" hide-details="auto"
             prepend-inner-icon="mdi-account-box" required outlined />
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-text-field v-model="primerApellido" :rules="nameRules" label="Primer apellido" hide-details
+          <v-text-field v-model="primerApellido" :rules="nameRules" label="Primer apellido" hide-details="auto"
             prepend-inner-icon="mdi-account-box" required outlined />
         </v-col>
 
         <v-col cols="12" md="6">
           <v-text-field v-model="numeroCelular" type="number" :rules="clRules" label="Número de celular"
-            prepend-inner-icon="mdi-cellphone" required outlined hide-details />
+            prepend-inner-icon="mdi-cellphone" required outlined hide-details="auto" />
         </v-col>
 
         <v-col cols="12" md="6">
           <v-text-field v-model="correoElectronico" :rules="emailRules" label="Correo Electrónico"
-            prepend-inner-icon="mdi-email" outlined placeholder="rebancarizandome@qnt.com.co" hide-details />
+            prepend-inner-icon="mdi-email" outlined placeholder="rebancarizandome@qnt.com.co" hide-details="auto" />
         </v-col>
 
         <v-container class="info-container" style="margin-bottom: 0px !important;">
@@ -52,12 +51,13 @@
             Cuéntanos el objetivo financiero que quieres alcanzar
           </div>
         </v-container>
+
         <v-col cols="12" md="12" style="margin: 0px !important;">
           <v-select v-model="selectedOption" :items="options" label="Objetivo Financiero"
-            style="margin-bottom: 0px !important;" prepend-inner-icon="mdi-coffee-outline" outlined />
+            style="margin-bottom: 0px !important;" prepend-inner-icon="mdi-coffee-outline" density="comfortable"
+            :rules="[selectRule]" hide-details="auto" outlined />
         </v-col>
       </v-row>
-
     </v-container>
   </v-form>
 </template>
@@ -102,13 +102,14 @@ export default {
 
     tipoDeIdentificacion: [
       { text: 'Cédula de ciudadanía', value: 'CC' },
-      { text: 'Cédula de extranjería', value: 'CE' }],
+      // { text: 'Cédula de extranjería', value: 'CE' }
+    ],
     nameRules: [
       v => !!v || 'Tu nombre es necesario para continuar.',
-      v => v.length >= 3 || 'Por favor ingresa tu nombre completo.'
+      v => v.length >= 3 || 'Por favor ingresa tu primer nombre completo.'
     ],
     emailRules: [
-      v => !!v || 'El correo electónico es requerido.',
+      v => !!v || 'Tu correo electónico es necesario para continuar.',
       v => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u.test(v) || 'Tu correo electrónico no es válido.'
     ],
     ccRules: [
@@ -117,16 +118,21 @@ export default {
       v => v.length <= 10 || 'El número de identificación debe tener máximo 10 dígitos.'
     ],
     clRules: [
-      v => !!v || 'El número de celular es requerido.',
+      v => !!v || 'Tú número celular es necesario para continuar.',
       v => v.length >= 10 || 'El número de celular debe tener al menos 10 dígitos.',
       v => v.length <= 10 || 'El número de celular debe tener máximo 10 dígitos.',
       v => v.startsWith('3') || 'El número de celular debe iniciar con 3.'
     ],
 
     dateRules: [
-      v => !!v || 'La fecha es requerida',
+      v => !!v || 'Tu fecha de expedición es necesaria para continuar.',
       v => /^\d{2}\/\d{2}\/\d{4}$/.test(v) || 'El formato de la fecha debe ser DD/MM/AAAA'
+    ],
+    selectRule: [
+      v => !!v || 'El objetivo financiero es requerido',
+
     ]
+
   }),
 
   computed: {
@@ -165,10 +171,10 @@ export default {
 
     submitForm() {
 
-
-      if (this.primerNombre === '' || this.primerApellido === '' || this.numeroIdentificacion === '' || this.fechaExpedicion === '' || this.numeroCelular === '' || this.correoElectronico === '' || this.terminosCondiciones === false) {
+      if (this.primerNombre === '' || this.primerApellido === '' || this.numeroIdentificacion === '' || this.fechaExpedicion === '' || this.numeroCelular === '' || this.correoElectronico === '' || this.terminosCondiciones === false, this.selectedOption === null) {
         this.valid = false
         this.showAlert = true
+        this.$notifier.showMessage({ content: "Por favor verifica tus datos diligenciados.", color: 'error' })
 
       } else {
         this.valid = true

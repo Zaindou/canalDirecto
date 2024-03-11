@@ -1,5 +1,6 @@
 <template>
-    <v-container class="pa-7">
+    <v-container class="pa-7 main-container">
+        <Loader v-if="loading4" />
         <Header></Header>
         <div>
             <h4 class="title-name mb-3">Hola, {{ formattedName }}</h4>
@@ -8,24 +9,21 @@
                     formattedDate }}.</b>
             </p>
         </div>
-        <!-- Contenedor del carrusel -->
         <v-window v-model="window" cycle class="carousel-container">
-            <!-- Elementos del carrusel -->
             <v-window-item v-for="i in pageCount" :key="i">
                 <v-row>
                     <v-col v-for="(card, index) in cards.slice(getStartIndex(i), getEndIndex(i))" :key="card.title"
-                        :cols="calculateColSize" class="my-card">
-                        <v-card>
+                        :cols="calculateColSize" class="my-card" data-title="Welcome!"
+                        data-intro='Hola este es el primer paso!'>
+                        <v-card class="tips-inicial">
                             <v-card-title class="title-carrousel">
                                 {{ card.title }}
                                 <v-spacer></v-spacer>
-                                <!-- Icono de información para todas las tarjetas -->
                                 <v-btn icon @click="openModal(card)">
                                     <v-icon style="color: #00A2E4;">mdi-information-outline</v-icon>
                                 </v-btn>
                             </v-card-title>
                             <v-card-text>
-                                <!-- Mostrar el texto normal y luego el texto resaltado para el puntaje crediticio -->
                                 <template v-if="card.type === 'creditScore'">
                                     <div class="mb-2" style="line-height: normal;">{{ card.text }}</div>
                                     <span class=" score-text" :style="scoreAndRiskStyles[index]">
@@ -35,25 +33,21 @@
                                         {{ scoreMessage }}
                                     </div>
                                 </template>
-                                <!-- Mostrar el texto normal y luego el texto resaltado para la calificación de riesgo -->
                                 <template v-else-if="card.type === 'riskRating'">
                                     {{ card.text }}
                                     <span class="score-text" :style="scoreAndRiskStyles[index]">
-                                        {{ card.highlightedValue }}
+                                        {{ card.highlightedValue ? card.highlightedValue : card.riskLevel }}
                                     </span>
                                 </template>
-                                <!-- Para cualquier otro tipo de tarjeta, muestra el texto completo -->
                                 <template v-else-if="card.type === 'objetivoFinanciero'">
                                     {{ card.text }}
                                     <div class="mb-2"></div>
                                     <span class="color-higlited">{{ card.objective }}</span>
                                 </template>
-
                                 <template v-else>
                                     {{ card.text }}
                                 </template>
                             </v-card-text>
-                            <!-- Renderiza el botón solo si buttonText está definido -->
                             <v-card-actions v-if="card.buttonText">
                                 <v-btn color="primary">{{ card.buttonText }}</v-btn>
                             </v-card-actions>
@@ -82,7 +76,7 @@
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
                 </v-card-title>
-                <v-card-text class="py-3" style="font-weight: 400; font-size: 1em;">{{ currentCard.modalText
+                <v-card-text class="py-2" style="font-weight: 400; font-size: 1em;">{{ currentCard.modalText
                 }}</v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -91,16 +85,16 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <div class="mt-7">
+        <div class="mt-7 herramientas-tip">
             <span class="title-tools">Herramientas para tus finanzas saludables</span>
             <opcionesFinancieras />
         </div>
         <div class="mt-7">
-            <recomendaciones />
+            <recomendaciones class="recomendaciones-tip" />
         </div>
         <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)" elevation="2"
-            :disabled="!terminosCondiciones || !condicionesContacto" class="buttonsteps" @click="submitForm">
-            Iniciar mi diagnóstico
+            class="mt-6 button-next-tip" @click="navigateTo('mis-productos-financieros')">
+            CONTINUAR
         </v-btn>
     </v-container>
 </template>
@@ -110,10 +104,12 @@ import { useMainStore } from '@/store/mainStore';
 import recomendaciones from '/components/commons/Recomendaciones.vue';
 import Header from '/components/commons/Header.vue';
 import OpcionesFinancieras from '/components/commons/opcionesFinancieras.vue';
+import Loader from '~/components/commons/LoaderForm.vue'
+
 
 export default {
     components: {
-        OpcionesFinancieras, recomendaciones, Header
+        OpcionesFinancieras, recomendaciones, Header, Loader
     },
     data: () => ({
         localClientData: null,
@@ -121,6 +117,7 @@ export default {
         showModal: false,
         currentCard: {},
         score: 0,
+        loading4: true,
         cards: [
             {
                 title: 'Puntaje crediticio',
@@ -144,7 +141,7 @@ export default {
                 highlightedValue: null,
                 riskLevel: 150,
                 type: 'riskRating',
-                modalText: 'Tu capacidad para obtener crédito depende de cómo las entidades te ven en términos de riesgo. Si tienes un riesgo bajo, significa que confían mucho en ti para pagar tus deudas, lo que te ayuda a conseguir crédito fácilmente. Un riesgo medio indica que tienes oportunidades justas para obtener crédito. Sin embargo, un riesgo alto podría hacer que sea más difícil para ti conseguir préstamos, ya que los prestamistas te ven como más propenso a no pagar tus deudas.'
+                modalText: 'Tu capacidad para obtener crédito depende de cómo las entidades te ven en términos de riesgo. Si tienes un riesgo bajo, significa que confían mucho en ti para pagar tus deudas, lo que te ayuda a conseguir crédito fácilmente. Un riesgo medio indica que tienes oportunidades justas para obtener crédito. Sin embargo, un riesgo alto podría hacer que sea más difícil para ti conseguir préstamos, ya que las entidades te ven más propenso a no pagar tus deudas.'
             },
         ],
         itemsPerPage: 3, // Por defecto mostramos 3 tarjetas
@@ -197,7 +194,6 @@ export default {
             if (this.localClientData && this.localClientData.nombre_completo) {
                 const parts = this.localClientData.nombre_completo.split(' ');
                 if (parts.length >= 3) {
-                    // Asumiendo que el formato es "Primer Apellido Segundo Apellido Primer Nombre"
                     return `${parts[2]} ${parts[0]}`; // Primer nombre y primer apellido
                 }
                 return this.localClientData.nombre_completo; // Devuelve el nombre completo si no cumple con el formato esperado
@@ -247,6 +243,9 @@ export default {
             }
             return fullName;
         },
+        navigateTo(route) {
+            this.$router.push(route);
+        },
     },
     watch: {
         '$vuetify.breakpoint.name'(newVal) {
@@ -272,16 +271,63 @@ export default {
     mounted() {
         const mainStore = useMainStore();
         mainStore.loadFromLocalStorage();
+        // if (this.localClientData == null) {
+        //     this.$router.push('/')
+        // }
         this.score = this.localClientData ? this.localClientData.puntaje_crediticio : 0;
         this.cards[0].highlightedValue = this.score;
 
-        this.window = 0;
+        // this.window = 0;
         if (this.$vuetify.breakpoint.xs) {
             this.itemsPerPage = 1;
         }
 
+        this.loading4 = false;
+        if (!localStorage.getItem('tourInicioVisto')) {
+            introJs().setOptions({
+                steps: [
+                    {
+                        title: '¡Bienvenido!',
+                        intro: `Hola, este es el primer paso de tu diagnóstico financiero. Aquí podrás ver tu puntaje crediticio, el objetivo financiero que seleccionaste y tu calificación de riesgo`
+                    },
+                    {
+                        title: 'Información adicional',
+                        element: document.querySelector('.carousel-container'),
+                        intro: "Puedes deslizar hacia la izquierda o derecha para ver más información."
+                    },
+                    {
+                        title: 'Herramientas financieras',
+                        element: document.querySelector('.herramientas-tip'),
+                        intro: "En esta sección encontrarás herramientas para mejorar tus finanzas."
+                    },
+                    {
+                        title: 'Recomendaciones',
+                        element: document.querySelector('.recomendaciones-tip'),
+                        intro: "Y aquí encontrarás recomendaciones personalizadas para ti."
+                    },
+                    {
+                        title: '¡Listo!',
+                        element: document.querySelector('.button-next-tip'),
+                        intro: "Finalmente, puedes continuar con el diagnóstico."
+                    }
+                ],
+                nextLabel: 'Siguiente',
+                prevLabel: 'Anterior',
+                doneLabel: 'Listo',
+                dontShowAgain: false,
+                dontShowAgainLabel: 'No volver a mostrar',
+                showBullets: false,
+                disableInteraction: true,
+                overlayOpacity: 0.7,
+                exitOnEsc: false,
+                exitOnOverlayClick: false,
+                showButtons: true,
+            }).start();
 
-    },
+            localStorage.setItem('tourInicioVisto', 'true');
+        }
+    }
+
 };
 </script>
 
@@ -291,7 +337,7 @@ export default {
 }
 
 .carousel-container .v-window-item {
-    padding-right: 20px;
+    justify-content: center !important;
 }
 
 
@@ -306,7 +352,7 @@ export default {
 
 .card-height {
     width: 50px;
-    height: 300px;
+    height: 1000px;
 }
 
 .title-name {
@@ -317,8 +363,7 @@ export default {
     color: #0b2f44;
     font-weight: 600;
     font-size: 1rem !important;
-
-
+    margin-bottom: 0px !important;
 }
 
 .title-tools {
@@ -336,5 +381,50 @@ export default {
     font-weight: 600;
     font-size: 1rem;
     color: #0b2f44;
+}
+
+.data-tooltip-class {
+    background-color: #0b2f44;
+    color: white;
+    font-size: 2rem !important;
+    font-weight: 500;
+}
+
+.tips-inicial {
+    min-height: 150px;
+    min-width: 50px;
+    /* Aumenta la altura mínima de las tarjetas */
+}
+
+@media (min-width: 960px) {
+    .main-container {
+        max-width: 1200px;
+        /* Ajusta el ancho máximo del contenedor */
+        margin: auto;
+        /* Centra el contenedor */
+    }
+
+    .title-name,
+    .title-carrousel,
+    .title-tools,
+    .score-text,
+    .color-higlited {
+        font-size: 1.2rem;
+        /* Aumenta el tamaño de la fuente */
+    }
+
+
+    .tips-inicial {
+        min-height: 210px;
+        min-width: 50px;
+        /* Aumenta la altura mínima de las tarjetas */
+    }
+
+    .v-btn {
+        padding: 10px 20px;
+        /* Aumenta el tamaño de los botones */
+        font-size: 1rem;
+        /* Aumenta el tamaño de la fuente de los botones */
+    }
 }
 </style>

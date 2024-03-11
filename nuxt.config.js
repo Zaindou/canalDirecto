@@ -22,6 +22,9 @@ export default {
         href: "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200",
         crossorigin: "",
       },
+      {rel: "stylesheet", href:  "https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css"},
+      {rel: "stylesheet", href:  "https://platserv.bvsalud.org/client/vendors/introjs/themes/introjs-modern.css"}
+
     ],
     script: [
       {
@@ -41,7 +44,6 @@ export default {
         type: "text/javascript",
         charset: "utf-8",
       },
-      
 
     ],
     __dangerouslyDisableSanitizersByTagID: {

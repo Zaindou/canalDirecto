@@ -47,16 +47,19 @@
           <div class="checkbox-container rounded-bg">
             <div class="d-flex flex-column align-start">
               <div class="d-flex align-center justify-between" style="margin-bottom: 0px !important;">
-                <v-checkbox v-model="terminosCondiciones" color="rgb(0, 93, 145)" required class="mr-0"></v-checkbox>
-                <label class="checkbox-label" color="rgb(0, 93, 145)" outlined @click="termsAndConditionsRedirect">Acepto
-                  los <a id="linkTerms">términos y condiciones legales</a></label>
+                <v-checkbox class="checkbox-label mr-0" v-model="terminosCondiciones" color="rgb(0, 93, 145)"
+                  required></v-checkbox>
+                <label class="" color="rgb(0, 93, 145)" outlined @click="termsAndConditionsRedirect">Acepto
+                  los <a id="linkTerms" class="text-decoration-underline">términos y condiciones legales </a> y las <a
+                    id="linkTerms" class="text-decoration-underline">condiciones de contacto</a></label>
               </div>
               <!-- Reducción del margen superior en la segunda fila de checkbox -->
-              <div class="d-flex align-center justify-between" style="margin-top: 0px !important;">
-                <v-checkbox v-model="condicionesContacto" color="rgb(0, 93, 145)" required class="mr-0"></v-checkbox>
-                <label class="checkbox-label" color="rgb(0, 93, 145)" outlined @click="contactRedirect">Acepto las <a
-                    id="linkTerms" class="mr-11">condiciones de contacto</a></label>
-              </div>
+              <!-- <div class="d-flex align-center justify-between" style="margin-top: 0px !important;">
+                <v-checkbox v-model="condicionesContacto" color="rgb(0, 93, 145)" required
+                  class="checkbox-label mr-0"></v-checkbox>
+                <label color="rgb(0, 93, 145)" outlined @click="contactRedirect">Acepto las <a id="linkTerms"
+                    class="mr-11 text-decoration-underline">condiciones de contacto</a></label>
+              </div> -->
             </div>
           </div>
         </v-col>
@@ -137,7 +140,7 @@ export default {
       },
       e1: 1,
       terminosCondiciones: false,
-      condicionesContacto: false,
+      condicionesContacto: true,
       loading4: false,
       otp: null,
       numero_identificacion: null,
@@ -184,15 +187,15 @@ export default {
 
           if (response.data.status_code === 'NEW_DIAGNOSTIC') {
             this.$notifier.showMessage({ content: '¡Hemos enviado un código de verificación!', color: 'success' })
-            this.e1 = 2
+            this.$router.push('/otp')
           } else if (response.data.status_code === 'REDIRECT_TO_STEP3') {
             this.$notifier.showMessage({ content: '¡Bienvenido de nuevo, te redirigimos a tus datos financieros!', color: 'success' })
             this.e1 = 3
             await this.fetchData()
           } else if (response.data.status_code === 'REDIRECT_TO_DIAGNOSTIC') {
             this.$notifier.showMessage({ content: '¡Bienvenido de nuevo, te redirigimos a tu diagnóstico!', color: 'success' })
-            this.e1 = 4
             await this.fetchData()
+            this.$router.push('/inicio')
           }
         } else {
           this.$notifier.showMessage({ content: data.response.message, color: 'error' })
@@ -200,6 +203,7 @@ export default {
         }
       } catch (error) {
         if (error.response.data.message == null || error.response.data.message === 'undefined') {
+          console.log(error, 'error')
           this.$notifier.showMessage({ content: 'Error inesperado, por favor intenta nuevamente.', color: 'error' })
         } else {
           this.$notifier.showMessage({ content: `${error.response.data.message}`, color: 'error' })
@@ -223,7 +227,9 @@ export default {
         if (response.status >= 200 && response.status < 301) {
           this.$notifier.showMessage({ content: '¡Hemos cargado tus datos financieros correctamente ;)!', color: 'success' })
           await this.fetchData()
-          this.e1 = 4
+          // this.e1 = 4
+          this.$router.push('/inicio')
+          // this.$router.push(route);
         }
         this.loading4 = false
       }
@@ -264,7 +270,6 @@ export default {
 
       const mainStore = useMainStore();
       mainStore.setClientData(this.clientData);
-      console.log(mainStore.clientData, "*¨***CLIENTEDATA")
       mainStore.setProductos(this.productos);
       // mainStore.setProductosAcuerdo(this.productosAcuerdo);
       // mainStore.setProductosOferta(this.productosOferta);
@@ -274,7 +279,10 @@ export default {
     submitForm() {
       if (!this.terminosCondiciones) {
         this.$notifier.showMessage({ content: 'Acepta los términos y condiciones antes de continuar.', color: 'error' })
-      } else if (this) { this.$refs.step1.submitForm() }
+      } else if (this) {
+        this.resetLocalStorage()
+        this.$refs.step1.submitForm()
+      }
     },
     openModal() {
       this.$refs.modal.openModal()
@@ -308,7 +316,7 @@ export default {
           }
         }
       } catch (error) {
-        this.$notifier.showMessage({ content: 'Error al verificar el código OTP.', color: 'error' });
+        this.$notifier.showMessage({ content: `${error.response.data.message}`, color: 'error' });
         this.loading4 = false;
       }
     },
@@ -396,6 +404,10 @@ export default {
 
     showCloseWarning() {
       this.$notifier.showMessage({ content: 'Tu sesión ha expirado, por favor completa el formulario.', color: 'error', icon: 'mdi-alert-circle' })
+    }
+    ,
+    resetLocalStorage() {
+      localStorage.clear()
     }
 
   }
@@ -524,5 +536,20 @@ export default {
 
 .desktop-image {
   display: block !important;
+}
+
+.checkbox-container {
+  background-color: #fcfcfc;
+  border-radius: 10px;
+  padding: 15px !important;
+  color: #7e7e7e;
+}
+
+.checkbox-label {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: #7e7e7e;
+  margin-bottom: 0px !important;
+  margin-top: 0px !important;
 }
 </style>
