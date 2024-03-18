@@ -22,7 +22,7 @@
                         <v-col cols="10" class="d-flex flex-column justify-center">
                             <span class="title">Saldo de mis créditos</span>
                             <span class="subtitle-1" style="color: #0b2f44;">{{
-                                formatCurrency(saldoProductos) }}</span>
+                formatCurrency(saldoProductos) }}</span>
                         </v-col>
                     </v-row>
                 </v-card>
@@ -37,7 +37,8 @@
                         </v-col>
                         <v-col cols="10" class="d-flex flex-column justify-center">
                             <span class="title">Saldo en mora</span>
-                            <span class="subtitle-1" style="color: #0b2f44;">{{ formatCurrency(saldoMoraProductos) }}</span>
+                            <span class="subtitle-1" style="color: #0b2f44;">{{ formatCurrency(saldoMoraProductos)
+                                }}</span>
                         </v-col>
                     </v-row>
                 </v-card>
@@ -120,37 +121,42 @@ export default {
     mounted() {
         const mainStore = useMainStore();
         mainStore.loadFromLocalStorage();
-        introJs().setOptions({
-            steps: [
-                {
-                    intro: 'En esta sección podrás ver el saldo de tus créditos y el saldo en mora de tus productos financieros.',
-                    title: "Bienvenido a tus productos financieros!",
-                },
-                {
-                    element: document.querySelector('.step-3'),
-                    title: "Detalle de tus productos financieros",
-                    intro: 'Aquí podrás ver el detalle de tus productos financieros.',
-                },
-                {
-                    element: document.querySelector('.step-4'),
-                    title: "Continuar",
-                    intro: 'Haz clic en el botón para continuar.',
-                },
-            ],
-            nextLabel: 'Siguiente',
-            prevLabel: 'Anterior',
-            doneLabel: 'Listo',
-            // showProgress: true,
-            dontShowAgain: false,
-            dontShowAgainLabel: 'No volver a mostrar',
-            showBullets: false,
-            disableInteraction: true,
-            overlayOpacity: 0.7,
-            exitOnEsc: false,
-            exitOnOverlayClick: false,
-            showButtons: true,
 
-        }).start();
+        if (!localStorage.getItem('tourFinances')) {
+            introJs().setOptions({
+                steps: [
+                    {
+                        intro: 'En esta sección podrás ver el saldo de tus créditos y el saldo en mora de tus productos financieros.',
+                        title: "Bienvenido a tus productos financieros!",
+                    },
+                    {
+                        element: document.querySelector('.step-3'),
+                        title: "Detalle de tus productos financieros",
+                        intro: 'Aquí podrás ver el detalle de tus productos financieros.',
+                    },
+                    {
+                        element: document.querySelector('.step-4'),
+                        title: "Continuar",
+                        intro: 'Haz clic en el botón para continuar.',
+                    },
+                ],
+                nextLabel: 'Siguiente',
+                prevLabel: 'Anterior',
+                doneLabel: 'Listo',
+                // showProgress: true,
+                dontShowAgain: false,
+                dontShowAgainLabel: 'No volver a mostrar',
+                showBullets: false,
+                disableInteraction: true,
+                overlayOpacity: 0.7,
+                exitOnEsc: false,
+                exitOnOverlayClick: false,
+                showButtons: true,
+
+            }).start();
+        }
+
+        localStorage.setItem('tourFinances', 'true');
     },
 };
 </script>

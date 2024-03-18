@@ -18,11 +18,12 @@
                     </span>
                     <br>
                     <span><b class="subtitle-1">Número de producto:</b> {{ producto ? producto.producto : 'Cargando...'
-                    }}</span>
+                        }}</span>
                     <br>
-                    <span><b class="subtitle-1">Saldo reportado:</b> {{ producto ? formatCurrency(producto.saldo_total) :
-                        'Cargando...'
-                    }}</span>
+                    <span><b class="subtitle-1">Saldo reportado:</b> {{ producto ? formatCurrency(producto.saldo_total)
+                :
+                'Cargando...'
+                        }}</span>
                     <br>
                     <div v-if="producto && contactoProducto">
                         <span v-if="contactoProducto.nombre_comercial">
@@ -69,17 +70,18 @@
                                         <span class="title"> {{ producto ? producto.entidad : 'Cargando...' }}
                                         </span>
                                         <br>
-                                        <span><b class="subtitle-1">Estado del producto:</b> {{ producto ? producto.estado
-                                            : 'Cargando...'
-                                        }}</span>
+                                        <span><b class="subtitle-1">Estado del producto:</b> {{ producto ?
+                producto.estado
+                : 'Cargando...'
+                                            }}</span>
                                         <br>
                                         <span><b class="subtitle-1">Saldo total:</b> {{ producto ?
-                                            formatCurrency(producto.saldo_total) :
-                                            'Cargando...'
-                                        }}</span>
+                formatCurrency(producto.saldo_total) :
+                'Cargando...'
+                                            }}</span>
                                         <br>
                                         <span><b class="subtitle-1">% saldo de tus deudas:</b> {{ producto ?
-                                            producto.participacion_mora : '' }}%</span>
+                producto.participacion_mora : '' }}%</span>
 
                                         <v-select class="mt-4" :items="opcionesDeCuotas" label="Número de cuotas"
                                             v-model="cuotasSeleccionadas" outlined></v-select>
@@ -87,37 +89,49 @@
                                         <v-divider class="mb-4"></v-divider>
 
                                         <span style="color: #62AC21;"><b class="subtitle-1">Tu objetivo es:</b> {{
-                                            localClientData ?
-                                            localClientData.objetivo_financiero :
-                                            'Cargando...' }}
+                localClientData ?
+                    localClientData.objetivo_financiero :
+                    'Cargando...' }}
                                         </span>
                                         <br>
                                         <span style="color: #62AC21;"><b class="subtitle-1">¿Cuánto debe ser mi
                                                 puntaje?:</b>
                                             {{ localClientData ?
-                                                localClientData.objetivo_score :
-                                                'Cargando...'
+                localClientData.objetivo_score :
+                'Cargando...'
                                             }}</span>
                                         <br>
-                                        <span style="color: #62AC21;"><b class="subtitle-1">¿Cuál es mi puntaje actual?:</b>
+                                        <span style="color: #62AC21;"><b class="subtitle-1">¿Cuál es mi puntaje
+                                                actual?:</b>
                                             {{ localClientData ?
-                                                localClientData.puntaje_crediticio :
-                                                'Cargando...'
+                localClientData.puntaje_crediticio :
+                'Cargando...'
                                             }}</span>
                                         <br>
-                                        <span style="color: #62AC21;"><b class="subtitle-1">¿Cuánto aumenta tu puntaje al
+                                        <span style="color: #62AC21;"><b class="subtitle-1">¿Cuánto aumenta tu puntaje
+                                                al
                                                 saldar esta obligación?:
                                             </b>
-                                            {{ puntajePorCuota }} puntos</span>
+                                            {{ Math.round(this.producto.puntaje_por_cuota) }} puntos</span>
                                         <br>
+                                        <div v-if="Math.round(this.producto.puntaje_por_cuota) != puntajePorCuota">
+                                            <span style="color: #62AC21;"><b class="subtitle-1">¿Cuánto aumenta tu
+                                                    puntaje
+                                                    mes a mes?:
+                                                </b>
+                                                {{ puntajePorCuota }} puntos</span>
+                                            <br>
+                                        </div>
+
                                         <span style="color: #62AC21;"><b class="subtitle-1">¿Cuánto te acerca a tu
                                                 objetivo?: </b> {{ Math.round(this.producto.aumento_puntaje_porcentaje)
-                                                }}%</span>
+                                            }}%</span>
                                         <br>
-                                        <span style="color: #62AC21;"><b class="subtitle-1">¿Con cuántos puntos quedarías
+                                        <span style="color: #62AC21;"><b class="subtitle-1">¿Con cuántos puntos
+                                                quedarías
                                                 respecto a tu
                                                 objetivo?</b> {{
-                                                    puntajeTotalDespuesDeSaldar }} de
+                puntajeTotalDespuesDeSaldar }} de
                                             {{ localClientData ? localClientData.objetivo_score : 'Cargando...'
                                             }}</span>
 
@@ -146,9 +160,13 @@
                         </div>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
-                        <p style="color: rgb(155, 155, 155); line-height: normal;">En QNT te recomendamos contactarte con {{
+                        <p style="color: rgb(155, 155, 155); line-height: normal;">En QNT te recomendamos contactarte
+                            con {{
                             contactoProducto.nombre_comercial }} para que puedas
-                            negociar tus obligaciones en mora con: {{ contactoProducto.contacto_recomendado }} </p>
+                            negociar tus obligaciones en mora con:
+                            <br>
+                            {{ contactoProducto.contacto_recomendado }}
+                        </p>
                     </v-expansion-panel-content>
 
                 </v-expansion-panel>
@@ -160,7 +178,8 @@
                             <div class="panel-text-content">
                                 <div class="panel-title">Hablar por Whatsapp</div>
                                 <p class="panel-description">
-                                    Quieres chatear con tu acreedor para solucionar tu obligación financiera. Ingresa aqui.
+                                    Quieres chatear con tu acreedor para solucionar tu obligación financiera. Ingresa
+                                    aqui.
                                 </p>
                             </div>
                         </div>
@@ -182,17 +201,35 @@
                     </v-expansion-panel-content>
                 </v-expansion-panel>
 
+                <!-- <v-expansion-panel>
+                    <v-expansion-panel-header
+                        v-if="producto && contactoProducto && contactoProducto.nombre_comercial && contactoProducto.numero_contacto">
+                        <div class="panel-header-content">
+                            <img :src="`/icons/llamadaAsesor.svg`" class="icono-svg" />
+                            <div class="panel-text-content">
+                                <div class="panel-title">Quiero llamar a un asesor</div>
 
-                <v-expansion-panel>
-                    <v-expansion-panel-header class="title" style="text-align: center !important; ">
-                        <img :src="`/icons/llamadaAsesor.svg`" class="icono-svg" />
-                        Quiero llamar a un asesor
+                                <p class="panel-description">
+                                    Te mostramos las líneas de atención en las cuales puedes recibir asesoria para
+                                    mejorar
+                                    tus
+                                    reportes negativos.
+                                </p>
+                            </div>
+                        </div>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
+                        <p style="color: rgb(155, 155, 155); line-height: normal;">Si prefieres, puedes contactar con un
+                            asesor de {{ contactoProducto.nombre_comercial }}
+                            contactate con los siguientes canales:
+                            <br>
+                        <ul>{{ contactoProducto.numero_contacto }}
+                        </ul>
+                        </p>
 
                     </v-expansion-panel-content>
 
-                </v-expansion-panel>
+                </v-expansion-panel> -->
 
             </v-expansion-panels>
 

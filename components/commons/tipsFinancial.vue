@@ -10,9 +10,8 @@
             </v-slide-item>
         </v-slide-group>
         <div class="custom-bullets">
-            <div v-for="(tip, index) in filteredTips" :key="tip.id" :class="{ 'active': slide === index }" class="bullet"
-                @click="slide = index">
-
+            <div v-for="(tip, index) in filteredTips" :key="tip.id" :class="{ 'active': slide === index }"
+                class="bullet" @click="slide = index">
             </div>
         </div>
     </v-container>
@@ -113,22 +112,32 @@ export default {
 
         ],
     }),
+    methods: {
+        formatCurrency(value) {
+            const numericValue = typeof value === 'number' ? value : Number(value);
+            const roundedValue = Math.round(numericValue);
+            return new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0,
+            }).format(roundedValue);
+        },
+    },
     computed: {
         mainStore() {
             return useMainStore();
         },
+
         filteredTips() {
             if (!this.localClientData) {
                 return [];
             }
-            const ingresos = this.localClientData.ingresos_mensuales;
-            const gastosBasicos = this.localClientData.recomendacion_gastos_basicos;
+            const ingresos = this.localClientData.ingresos_mensuales ? this.formatCurrency(this.localClientData.ingresos_mensuales) : 0;
+            const gastosBasicos = this.localClientData.recomendacion_gastos_basicos ? this.formatCurrency(this.localClientData.recomendacion_gastos_basicos) : 0;
             const productosActivos = this.localClientData.productos_activos;
             const productosMora = this.localClientData.productos_mora;
-            const sumaCuotasPromedio = this.localClientData.pagos_promedio_mes ? this.localClientData.pagos_promedio_mes : 0;
-            const disponibleAhorro = this.localClientData.disponible_saldar_deudas;
-
-
+            const sumaCuotasPromedio = this.localClientData.pagos_promedio_mes ? this.formatCurrency(this.localClientData.pagos_promedio_mes) : 0;
+            const disponibleAhorro = this.localClientData.disponible_saldar_deudas ? this.formatCurrency(this.localClientData.disponible_saldar_deudas) : 0;
 
             const tipsByType = this.tips.reduce((acc, tip) => {
                 if (!acc[tip.type]) {
@@ -158,7 +167,7 @@ export default {
                 else if (productosMora > 0) {
                     mensajeProductosActuales = `Tienes ${productosMora} obligaciones en mora, las cuales debes poner al día para mejorar tu puntaje de crédito. Estamos aquí para asesorarte.`;
                 } else {
-                    mensajeProductosActuales = `Tienes ${productosActivos} obligaciones al día, en la cual estás pagando $${sumaCuotasPromedio} en promedio. Recuerda las fechas de corte de tus productos para no incurrir en moras.`;
+                    mensajeProductosActuales = `Tienes ${productosActivos} obligaciones al día, en la cual estás pagando ${sumaCuotasPromedio} en promedio. Recuerda las fechas de corte de tus productos para no incurrir en moras.`;
                 }
                 const tipProductoActual = {
                     id: 'productos_actuales',
@@ -173,7 +182,7 @@ export default {
                 const tipsDisponible = {
                     id: 'disponible',
                     title: 'Disponible',
-                    message: `Te sugerimos invertir $${disponibleAhorro} para crear tu futuro. Sé el arquitecto de tu éxito financiero. ¡Haz que cada peso cuente!`,
+                    message: `Te sugerimos invertir ${disponibleAhorro} para crear tu futuro. Sé el arquitecto de tu éxito financiero. ¡Haz que cada peso cuente!`,
                     type: 'disponible',
                 };
                 tipsCondiciones.push(tipsDisponible);
@@ -181,7 +190,7 @@ export default {
                 const tipsDisponible = {
                     id: 'disponible',
                     title: 'Disponible',
-                    message: `Te sugerimos destinar $${disponibleAhorro} para saldar tus deudas y despertar tu libertad financiera. Cada pago es un paso hacia tu bienestar. ¡Estamos para asesorarte!`,
+                    message: `Te sugerimos destinar ${disponibleAhorro} para saldar tus deudas y despertar tu libertad financiera. Cada pago es un paso hacia tu bienestar. ¡Estamos para asesorarte!`,
                     type: 'disponible',
                 };
                 tipsCondiciones.push(tipsDisponible);
@@ -249,11 +258,7 @@ export default {
     word-wrap: break-word;
 }
 
-.custom-bullets {
-    display: flex;
-    justify-content: center;
-    margin: 10px 0;
-}
+
 
 .bullet {
     border-radius: 50%;
@@ -267,5 +272,18 @@ export default {
 .bullet.active {
     background-color: #00A2E4;
 }
-</style>
 
+.custom-bullets {
+    display: none;
+}
+
+@media screen and (max-width: 600px) {
+    .custom-bullets {
+        display: flex;
+        justify-content: center;
+        margin: 10px 0;
+    }
+
+
+}
+</style>
