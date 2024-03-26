@@ -10,7 +10,8 @@
             <p style="color: #666666; line-height: normal;"> Conoce el presupuesto recomendado por QNT para que conozcas
                 como
                 mejorar tu perfil
-                crediticio ante las centrales de riesgo; Recuerda que esta información se obtiene a partir de los reportes
+                crediticio ante las centrales de riesgo; Recuerda que esta información se obtiene a partir de los
+                reportes
                 de prestaciones sociales
                 realizados por tu empleador.
             </p>
@@ -18,7 +19,7 @@
         <div>
             <v-row>
                 <v-col v-for="item in financialData" :key="item.id" cols="12" md="4">
-                    <v-card>
+                    <v-card class="financeCard">
                         <v-card-title class="d-flex justify-space-between align-center">
                             <div class="d-flex align-center">
                                 <!-- Usamos img con src apuntando a la carpeta static -->
@@ -35,8 +36,8 @@
                                     <v-icon>mdi-information</v-icon>
                                 </v-card-actions>
                             </template>
-                            <span>{{ item.tooltipText }}</span>
-                        </v-tooltip> -->
+<span>{{ item.tooltipText }}</span>
+</v-tooltip> -->
                     </v-card>
                 </v-col>
             </v-row>
@@ -109,14 +110,14 @@ export default {
             {
                 id: 5,
                 iconName: 'recomendacionAhorro',
-                title: 'Recomendación ahorro',
+                title: 'Recomendación ahorro / pago de deudas',
                 value: 0,
                 tooltipText: 'This is the average income.'
             },
             {
                 id: 6,
                 iconName: 'disponibleAhorro',
-                title: 'Disponible ahorro',
+                title: 'Disponible ahorro / pago de deudas',
                 value: 0,
                 tooltipText: 'This is the average income.'
             },
@@ -175,9 +176,16 @@ export default {
     width: 65px;
 }
 
+.financeCard {
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-width: 50px;
+    word-wrap: break-word;
+}
+
 .title {
-    font-size: 0.85rem !important;
-    font-weight: 800;
+    font-size: 0.7rem !important;
+    font-weight: 600;
     color: #0b2f44;
     word-wrap: break-word;
 }
@@ -187,6 +195,7 @@ export default {
     font-weight: 400;
     color: #0b2f44;
     word-wrap: break-word;
+    white-space: pre !important;
 }
 
 .title-tools {

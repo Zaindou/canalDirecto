@@ -131,7 +131,8 @@
                                                 quedarías
                                                 respecto a tu
                                                 objetivo?</b> {{
-                puntajeTotalDespuesDeSaldar }} de
+                Math.round(this.producto.puntaje_por_cuota +
+                    localClientData.puntaje_crediticio) }} de
                                             {{ localClientData ? localClientData.objetivo_score : 'Cargando...'
                                             }}</span>
 
@@ -162,7 +163,7 @@
                     <v-expansion-panel-content>
                         <p style="color: rgb(155, 155, 155); line-height: normal;">En QNT te recomendamos contactarte
                             con {{
-                            contactoProducto.nombre_comercial }} para que puedas
+                contactoProducto.nombre_comercial }} para que puedas
                             negociar tus obligaciones en mora con:
                             <br>
                             {{ contactoProducto.contacto_recomendado }}

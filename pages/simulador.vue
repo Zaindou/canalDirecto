@@ -11,14 +11,15 @@
         tu perfil crediticio.
       </p>
     </div>
-    <div v-if="localClientData.productos_mora > 0">
+    <div v-if="localClientData && localClientData.productos_mora > 0">
       <v-card v-for="(product, index) in products" :key="index" class="mb-3 step-1">
         <v-row no-gutters align="center" class="pa-4">
 
           <v-row align="center">
 
             <v-col cols="1">
-              <v-checkbox v-model="product.selected" @change="showAlert(product.selected, index)"></v-checkbox>
+              <v-checkbox v-model="product.selected"
+                @change="showAlert(product.selected, index); saveSelectedOptions()"></v-checkbox>
             </v-col>
 
             <v-col class="product-title">{{ product.name }}</v-col>
@@ -35,13 +36,13 @@
             <v-row>
               <v-col cols="6" class="d-flex ">
                 <span class="mr-2 step-2">Cantidad cuotas:</span>
-                <v-select class="cuota-step" v-model="product.selectedQuota" :items="quotas" dense hide-details
-                  outlined></v-select>
+                <v-select class="cuota-step" v-model="product.selectedQuota" :items="quotas" dense hide-details outlined
+                  @change="saveSelectedOptions"></v-select>
               </v-col>
               <v-col cols="6" class="d-flex align-center">
                 <span class="mr-2 text-product">Desde:</span>
-                <v-select class="step-3" v-model="product.selectedDate" :items="dates" dense hide-details
-                  outlined></v-select>
+                <v-select class="step-3" v-model="product.selectedDate" :items="dates" dense hide-details outlined
+                  @change="saveSelectedOptions"></v-select>
               </v-col>
             </v-row>
           </v-col>
@@ -67,6 +68,22 @@
         No tienes deudas en mora, ¡Felicidades! Esto te permitirá acceder a créditos con mayor facilidad.
       </v-alert>
     </div>
+    <div class="score-details">
+      <h3>Detalle del Aumento de Puntaje)</h3>
+      <div v-for="(product, index) in products" :key="index" class="product-detail">
+        <div>{{ product.name }}</div>
+        <div v-if="product.selectedQuota >= 1 && product.selectedQuota <= 3">
+          Primeros 3 meses: +{{ calculateMonthlyScoreIncrease(product, 'first') }} puntos/mes
+        </div>
+        <div v-if="product.selectedQuota >= 1 && product.selectedQuota <= 3">
+          Siguientes 3 meses: +{{ calculateMonthlyScoreIncrease(product, 'next') }} puntos/mes
+        </div>
+        <div v-else>
+          Aumento mensual: +{{ calculateMonthlyScoreIncrease(product, 'normal') }} puntos/mes
+        </div>
+      </div>
+    </div>
+
     <div class="d-flex justify-center align-center step-4">
       <v-card class="mx-auto mt-1"
         :style="{ background: 'linear-gradient(to bottom, #00263C 0%, #005a7d 0%, #00A2E4 49%)' }">
@@ -81,8 +98,7 @@
             crédito una vez
             comiences a pagar tus
             obligaciones. </p>
-          <!-- <p style="color: white; font-size: 1.2em; font-weight: 400; text-align: center; line-break:auto;">
-                        Puntaje actual: {{ this.score }} Puntaje meta: {{ this.goalScore }}</p> -->
+
           <div class="chart-container" style="position: relative; height:45vh; width:85vw">
             <canvas ref="creditScoreChart"></canvas>
           </div>
@@ -116,7 +132,9 @@ export default {
     showAlerts: [],
     score: null,
     goalScore: null,
-    localClientData: null,
+    localClientData: {
+      productos_mora: 0
+    }
   }),
   computed: {
     mainStore() {
@@ -131,24 +149,41 @@ export default {
   methods: {
     loadAndFilterProducts() {
       const storedProducts = this.productos || [];
+      const localProducts = JSON.parse(localStorage.getItem('selectedProducts')) || [];
 
-      const filteredProducts = storedProducts.filter(product => product.estado !== 'Al día').map(product => ({
-        ...product,
-        name: product.entidad,
-        balance: product.saldo_total.toLocaleString(),
-        selected: true,
-        selectedQuota: 1, // Valor inicial para la cuota seleccionada
-        selectedDate: null, // Valor inicial para la fecha seleccionada
-        puntaje_por_cuota: product.puntaje_por_cuota
-      }));
-      filteredProducts.sort((a, b) => b.saldo_total - a.saldo_total);
+      const filteredProducts = storedProducts.filter(product => product.estado !== 'Al día').map(product => {
+        const localProduct = localProducts.find(p => p.id_producto === product.id_producto) || {};
+        return {
+          ...product,
+          name: product.entidad,
+          balance: product.saldo_total.toLocaleString(),
+          selected: localProduct.selected !== undefined ? localProduct.selected : true,
+          selectedQuota: localProduct.selectedQuota || 1,
+          selectedDate: localProduct.selectedDate || null,
+          puntaje_por_cuota: product.puntaje_por_cuota
+        };
+      });
 
       this.products = filteredProducts;
+      filteredProducts.sort((a, b) => b.saldo_total - a.saldo_total);
 
-      this.showAlerts = new Array(filteredProducts.length).fill(false);
+      localStorage.setItem('selectedProducts', JSON.stringify(this.products));
 
-      this.calculateTotalScore();
+      this.updateChart();
+    },
 
+    saveSelectedOptions() {
+      localStorage.setItem('selectedProducts', JSON.stringify(this.products));
+    },
+    calculateMonthlyScoreIncrease(product, period) {
+      if (period === 'first' && product.selectedQuota >= 1 && product.selectedQuota <= 3) {
+        return (product.puntaje_por_cuota * 0.6 / 3).toFixed(2);
+      } else if (period === 'next' && product.selectedQuota >= 1 && product.selectedQuota <= 3) {
+        return (product.puntaje_por_cuota * 0.4 / 3).toFixed(2);
+      } else if (period === 'normal') {
+        return (this.calculateScoreForQuota(product.puntaje_por_cuota, product.selectedQuota)).toFixed(2);
+      }
+      return 0;
     },
     setNext24Months() {
       const storedProducts = this.productos;
@@ -237,6 +272,19 @@ export default {
         data: {
           labels: this.generateMonthLabels(), // Asegura que esto genera las etiquetas correctas
           datasets: [{
+            label: 'Objetivo Alcanzado',
+            data: [intersection],
+            borderColor: '#47cc31',
+            backgroundColor: '#ffffff',
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            fill: false,
+            pointBorderColor: '#39a327',
+            pointBackgroundColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointHoverBorderWidth: 2,
+            showLine: false,
+          }, {
             label: 'Puntaje Meta',
             // Usa un array lleno del valor de goalScore para la longitud de this.dates
             data: Array(this.dates.length).fill(this.goalScore),
@@ -269,7 +317,8 @@ export default {
             pointBorderWidth: 5,
             fill: false,
           },
-          ].concat(intersectionDataset),
+
+          ],
         },
         options: {
           scales: {
@@ -355,36 +404,23 @@ export default {
 
     },
     updateChart() {
-      if (this.chart) {
+      if (!this.chart) {
+        // Si la instancia de la gráfica no está definida, salimos del método
+        return;
+      }
+      if (this.chart && this.products.some(product => product.selected)) {
         const scoreData = this.calculateScoreData();
         const intersection = this.findIntersection(scoreData);
 
         // Actualizar los datos de las proyecciones simuladas.
-        this.chart.data.datasets[1].data = scoreData;
+        this.chart.data.datasets[2].data = scoreData;
 
         // Actualizar el conjunto de datos de la intersección si existe una.
         if (intersection) {
           if (this.chart.data.datasets.length > 2) {
-            this.chart.data.datasets[2].data = [intersection];
-          } else {
-            // Si el conjunto de datos de intersección no existe, lo agregamos.
-            this.chart.data.datasets.push({
-              label: 'Objetivo Alcanzado',
-              data: [intersection],
-              borderColor: '#47cc31',
-              backgroundColor: '#ffffff',
-              pointRadius: 5,
-              pointHoverRadius: 7,
-              fill: false,
-              pointBorderColor: '#39a327',
-              pointBackgroundColor: '#ffffff',
-              pointBorderWidth: 2,
-              pointHoverBorderWidth: 2,
-              showLine: false,
-            });
+            this.chart.data.datasets[0].data = [intersection];
           }
         } else if (this.chart.data.datasets.length > 2) {
-          // Si no hay intersección y el conjunto de datos existe, lo eliminamos.
           this.chart.data.datasets.pop();
         }
 
@@ -392,45 +428,41 @@ export default {
         this.chart.update();
       }
     },
-    // calculateScoreData() {
-    //     let initialScore = this.score
-    //     let monthlyScores = new Array(this.dates.length).fill(initialScore);
 
-    //     this.products.forEach(product => {
-    //         if (product.selected) {
-    //             let startMonthIndex = this.dates.indexOf(product.selectedDate);
-    //             let endMonthIndex = startMonthIndex + product.selectedQuota;
-
-    //             for (let i = startMonthIndex; i < endMonthIndex && i < this.dates.length; i++) {
-    //                 monthlyScores[i] += this.calculateScoreForQuota(product.puntaje_por_cuota, product.selectedQuota);
-    //             }
-    //         }
-    //     });
-
-    //     for (let i = 1; i < monthlyScores.length; i++) {
-    //         monthlyScores[i] = monthlyScores[i - 1] + (monthlyScores[i] - initialScore);
-    //     }
-
-    //     //Redondear sin decimales
-    //     monthlyScores = monthlyScores.map(score => Math.round(score));
-
-    //     return monthlyScores;
-    // },
     calculateScoreData() {
       let initialScore = this.score;
       let monthlyScores = new Array(this.dates.length).fill(initialScore);
 
       this.products.forEach(product => {
         if (product.selected) {
-          let startMonthIndex = this.dates.indexOf(product.selectedDate) + 1; // Comenzamos desde el mes siguiente
+          let startMonthIndex = this.dates.indexOf(product.selectedDate) + 2; // Comenzamos desde el mes siguiente
           let endMonthIndex = startMonthIndex + product.selectedQuota;
 
-          for (let i = startMonthIndex; i < endMonthIndex && i < this.dates.length; i++) {
-            monthlyScores[i] += this.calculateScoreForQuota(product.puntaje_por_cuota, product.selectedQuota);
+          if (product.selectedQuota >= 1 && product.selectedQuota <= 3) {
+            // Para plazos de 1 a 3 meses, dividimos el puntaje de manera diferente
+            let firstThreeMonthsScore = product.puntaje_por_cuota * 0.6;
+            let nextThreeMonthsScore = product.puntaje_por_cuota * 0.4;
+
+            // Distribuir el 60% del puntaje en los primeros 3 meses
+            for (let i = startMonthIndex; i < startMonthIndex + 3 && i < this.dates.length; i++) {
+              monthlyScores[i] += firstThreeMonthsScore / 3;
+            }
+
+            // Distribuir el 40% del puntaje en los siguientes 3 meses
+            for (let i = startMonthIndex + 3; i < startMonthIndex + 6 && i < this.dates.length; i++) {
+              monthlyScores[i] += nextThreeMonthsScore / 3;
+            }
+          } else {
+            // Para plazos mayores a 3 meses, usamos el cálculo normal
+            for (let i = startMonthIndex; i < endMonthIndex && i < this.dates.length; i++) {
+              monthlyScores[i] += this.calculateScoreForQuota(product.puntaje_por_cuota, product.selectedQuota);
+            }
           }
         }
       });
 
+
+      // Acumular el puntaje mensual
       for (let i = 1; i < monthlyScores.length; i++) {
         monthlyScores[i] = monthlyScores[i - 1] + (monthlyScores[i] - initialScore);
       }
@@ -439,6 +471,7 @@ export default {
 
       return monthlyScores;
     },
+
 
     dateMatchesProductStart(dateLabel, product) {
       const [month, year] = dateLabel.split('/');
