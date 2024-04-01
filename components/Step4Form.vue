@@ -151,8 +151,8 @@
                 </v-card-title>
                 <v-card-text style="font-weight: 600; font-size: 1em;">
                   {{ formatCurrency(clientData.saldo_total_productos)
-                    ? formatCurrency(clientData.saldo_total_productos)
-                    : '$ 0' }}
+                ? formatCurrency(clientData.saldo_total_productos)
+                : '$ 0' }}
                 </v-card-text>
               </v-card>
             </v-col>
@@ -165,8 +165,8 @@
                 </v-card-title>
                 <v-card-text style="font-weight: 600; font-size: 1em;">
                   {{ formatCurrency(clientData.saldo_total_productos_mora)
-                    ? formatCurrency(clientData.saldo_total_productos_mora)
-                    : '$ 0' }}
+                ? formatCurrency(clientData.saldo_total_productos_mora)
+                : '$ 0' }}
                 </v-card-text>
               </v-card>
             </v-col>
@@ -192,26 +192,26 @@
                 <v-col cols="12" sm="12">
                   <strong class="product__titles">Producto:</strong>
                   <span class="product__content">{{ producto.tipo_producto
-                  }}</span>
+                    }}</span>
                   <br><strong class="product__titles">Antigüedad (en
                     días):</strong>
                   <span class="product__content">{{ producto.antiguedad
-                  }}</span>
+                    }}</span>
                   <br><strong class="product__titles">Días en
                     mora:</strong>
                   <span class="product__content">{{ producto.dias_en_mora
-                  }}</span>
+                    }}</span>
                   <br><strong class="product__titles">Cuota:</strong>
                   <span class="product__content">{{
-                    formatCurrency(producto.cuota) }}</span>
+                formatCurrency(producto.cuota) }}</span>
                   <br><strong class="product__titles">% del saldo de tus
                     productos vigentes:</strong>
                   <span class="product__content">{{
-                    producto.participacion_al_dia }}%</span>
+                producto.participacion_al_dia }}%</span>
                   <br><strong class="product__titles">% del saldo de tus
                     deudas(en mora):</strong>
                   <span class="product__content">{{
-                    producto.participacion_mora }}%</span>
+                producto.participacion_mora }}%</span>
                 </v-col>
               </v-row>
             </div>
@@ -308,7 +308,7 @@
     <div v-if="messageOfferClient()">
       <v-alert color="light-green" dark icon="mdi-party-popper" prominent>
         <strong>¡Felicitaciones!</strong> QNT Tiene el <b>{{ roundPercentage(totalPorcentageDebt())
-        }}%</b> del saldo total de tus deudas
+          }}%</b> del saldo total de tus deudas
         y
         tenemos una oferta(s)
         para ti, comienza tu Rebancarización ahora y mejora tu puntaje de crédito.
@@ -353,8 +353,8 @@
                         <strong class="product__titles">Valor
                           total a pagar: </strong>
                         <span style="color:#81c784; font-weight: 500;">{{
-                          formatCurrency(producto.selectedOffer.monto_final_oferta)
-                        }}</span>
+                formatCurrency(producto.selectedOffer.monto_final_oferta)
+              }}</span>
                       </p>
 
                       <p v-if="producto.selectedOffer">
@@ -362,8 +362,8 @@
                           mes a
                           mes:</strong>
                         <span style="color:#81c784; font-weight: 500;">{{
-                          formatCurrency(producto.selectedOffer.cuota)
-                        }}</span>
+                formatCurrency(producto.selectedOffer.cuota)
+              }}</span>
                       </p>
                     </v-col>
                     <v-col cols="6">
@@ -371,13 +371,13 @@
                         <strong class="product__titles">Cuota
                           inicial:</strong>
                         <span style="color:#81c784; font-weight: 500;">{{
-                          formatCurrency(producto.selectedOffer.cuota_inicial)
-                        }}</span>
+                formatCurrency(producto.selectedOffer.cuota_inicial)
+              }}</span>
                       </p>
                       <p v-if="producto.selectedOffer && getAhorroPercentage(producto) >= 0">
                         <strong class="product__titles">% de ahorro:</strong>
                         <span style="color:#81c784; font-weight: 500;">{{ getAhorroPercentage(producto).toFixed(2)
-                        }}%</span>
+                          }}%</span>
                       </p>
                     </v-col>
                   </v-row>
@@ -389,20 +389,20 @@
                       este plan
                       avanzaras
                       <b>{{ roundPercentage(producto.scores_by_term[selectedTerm].aumento_puntaje_porcentaje)
-                      }}%</b>
+                        }}%</b>
                       para {{ clientData.objetivo_financiero
                       }} y
                       quedaras a
                       un <b>{{
-                        roundPercentage(producto.scores_by_term[selectedTerm].hacia_objetivo)
-                      }}%</b> de
+                roundPercentage(producto.scores_by_term[selectedTerm].hacia_objetivo)
+              }}%</b> de
                       este objetivo.
                       De acuerdo a la ley 1266 de 2008 de
                       habeas Data
                       tardaras
                       <b>{{
-                        roundMonths(producto.scores_by_term[selectedTerm].tiempo_meses)
-                      }}</b>
+                  roundMonths(producto.scores_by_term[selectedTerm].tiempo_meses)
+                }}</b>
                       meses en eliminar este reporte negativo
                       de las
                       centrales
@@ -463,19 +463,20 @@
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <span class="product__titles">Producto(s):</span> <span class="product__content"> {{
-              producto.productos.join(', ') }}</span>
+                producto.productos.join(', ') }}</span>
             <br><span class="product__titles">Valor total a pagar: </span><span class="product__content">{{
-              formatCurrency(producto.valor_total_pagar)
-            }}</span>
-            <br><span class="product__titles">Número de cuota(s): </span><span class="product__content">{{ producto.plazo
-            }}</span>
+                formatCurrency(producto.valor_total_pagar)
+              }}</span>
+            <br><span class="product__titles">Número de cuota(s): </span><span class="product__content">{{
+                  producto.plazo
+                }}</span>
             <br><span class="product__titles">Valor cuota incicial:
             </span><span class="product__content">{{
-              formatCurrency(producto.valor_cuota_inicial)
-            }}</span>
+                  formatCurrency(producto.valor_cuota_inicial)
+                }}</span>
             <br><span class="product__titles">Valor cuota mensual: </span>
             <span class="product__content">{{ formatCurrency(producto.valor_cuota_mensual)
-            }}</span>
+              }}</span>
             <br><span class="product__titles">Día de pago mensual:</span>
             <span class="product__content">{{ producto.dia_pago_mensual }}</span>
           </v-expansion-panel-content>
@@ -526,7 +527,7 @@
               <br>De acuerdo a la ley 1266 de 2008 de habeas Data tardarás
               <b>{{
                 producto.contacto ? producto.contacto.tiempo_meses :
-                roundMonths(producto.tiempo_meses) }}</b>
+                  roundMonths(producto.tiempo_meses) }}</b>
               meses en eliminar este reporte negativo en centrales de riesgo; Pero ten
               en cuenta que desde el momento que comiences a pagar tu puntaje
               crediticio comenzará a mejorar y podrás solicitar crédito siempre y

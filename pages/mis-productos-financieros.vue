@@ -37,7 +37,7 @@
                         </v-col>
                         <v-col cols="10" class="d-flex flex-column justify-center">
                             <span class="title">Saldo en mora</span>
-                            <span class="subtitle-1" style="color: #0b2f44;">{{ formatCurrency(saldoMoraProductos)
+                            <span class="subtitle-1" style="color: #0b2f44;">{{ formatCurrency(saldoMora)
                                 }}</span>
                         </v-col>
                     </v-row>
@@ -76,6 +76,8 @@ export default {
         saldoProductos: 0,
         saldoMoraProductos: null,
         fechaDiagnostico: null,
+        sortedProducts: [],
+        saldoMora: null,
     }),
     computed: {
         mainStore() {
@@ -116,7 +118,23 @@ export default {
                 this.saldoMoraProductos = newValue ? newValue.saldo_total_productos_mora : 'No tienes saldo en mora.';
                 this.fechaDiagnostico = newValue ? this.formattedDate() : null;
             }
+        },
+        'mainStore.productos': {
+            immediate: true,
+            handler(newValue) {
+                if (newValue) {
+                    this.sortedProducts = newValue
+
+                    this.saldoMora = this.sortedProducts.reduce((total, producto) => {
+                        if (producto.estado !== "Al día") {
+                            return total + producto.saldo_total;
+                        }
+                        return total;
+                    }, 0);
+                }
+            }
         }
+
     },
     mounted() {
         const mainStore = useMainStore();

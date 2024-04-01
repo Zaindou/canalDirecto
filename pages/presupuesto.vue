@@ -24,13 +24,18 @@
                             <div class="d-flex align-center">
                                 <!-- Usamos img con src apuntando a la carpeta static -->
                                 <img :src="`/icons/${item.iconName}.svg`" class="mr-1 svg-icon" />
-                                <span class="title">{{ item.title }}</span>
+                                <!-- Utilizamos v-html para interpretar el HTML dentro del título -->
+                                <span class="title" style="line-height: normal;" v-html="item.title"></span>
                             </div>
                             <span class="text">{{ item.value }}</span>
                         </v-card-title>
+                    </v-card>
 
-                        <!-- Sección para tooltip si es necesario -->
-                        <!-- <v-tooltip bottom>
+
+
+
+                    <!-- Sección para tooltip si es necesario -->
+                    <!-- <v-tooltip bottom>
                             <template v-slot:activator="{ on, attrs }">
                                 <v-card-actions v-bind="attrs" v-on="on">
                                     <v-icon>mdi-information</v-icon>
@@ -110,7 +115,7 @@ export default {
             {
                 id: 5,
                 iconName: 'recomendacionAhorro',
-                title: 'Recomendación ahorro / pago de deudas',
+                title: 'Recomendación ahorro / <br> pago de deudas',
                 value: 0,
                 tooltipText: 'This is the average income.'
             },

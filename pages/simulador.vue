@@ -461,13 +461,32 @@ export default {
         }
       });
 
-
       // Acumular el puntaje mensual
       for (let i = 1; i < monthlyScores.length; i++) {
         monthlyScores[i] = monthlyScores[i - 1] + (monthlyScores[i] - initialScore);
       }
 
+      // let lastDebtPaymentIndex = Math.max(...this.products.map(product => this.dates.indexOf(product.selectedDate) + 2 + product.selectedQuota));
+      // Determinar el último índice de pago de deuda
+      let lastPaymentIndex = this.products.reduce((maxIndex, product) => {
+        let productEndIndex = this.dates.indexOf(product.selectedDate) + 2 + product.selectedQuota;
+        return Math.max(maxIndex, productEndIndex);
+      }, 0);
+
+      // Aplicar el incremento del 15% solo si el puntaje no alcanza el objetivo después de pagar todas las deudas
+      if (monthlyScores[lastPaymentIndex - 1] < this.goalScore) {
+        for (let i = lastPaymentIndex; i < monthlyScores.length; i++) {
+          monthlyScores[i] = Math.min(Math.round(monthlyScores[i - 1] * 1.15), 730);
+        }
+      }
+
+
+      // Continuar incrementando el puntaje en un 15% cada mes después del último mes en el que se pagaron las deudas
+
+
       monthlyScores = monthlyScores.map(score => Math.round(score));
+
+      console.log(monthlyScores)
 
       return monthlyScores;
     },
