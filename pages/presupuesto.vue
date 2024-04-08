@@ -43,7 +43,6 @@
                             </template>
 <span>{{ item.tooltipText }}</span>
 </v-tooltip> -->
-                    </v-card>
                 </v-col>
             </v-row>
         </div>

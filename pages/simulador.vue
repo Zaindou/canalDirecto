@@ -242,31 +242,18 @@ export default {
     },
     findIntersection() {
       const scoreData = this.calculateScoreData();
-      const goalData = Array(this.dates.length).fill(this.goalScore);
       for (let i = 0; i < scoreData.length; i++) {
         if (scoreData[i] >= this.goalScore) {
           return { x: this.dates[i], y: this.goalScore };
         }
       }
       return null;
-    },
+    }
+    ,
     setupChart() {
       const ctx = this.$refs.creditScoreChart.getContext('2d');
       const intersection = this.findIntersection();
-      const intersectionDataset = intersection ? [{
-        label: 'Objetivo Alcanzado',
-        data: [intersection],
-        borderColor: '#47cc31',
-        backgroundColor: '#ffffff',
-        pointRadius: 5,
-        pointHoverRadius: 7,
-        fill: false,
-        pointBorderColor: '#39a327',
-        pointBackgroundColor: '#ffffff',
-        pointBorderWidth: 2,
-        pointHoverBorderWidth: 2,
-        showLine: false,
-      }] : [];
+
       this.chart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -284,7 +271,8 @@ export default {
             pointBorderWidth: 2,
             pointHoverBorderWidth: 2,
             showLine: false,
-          }, {
+          },
+          {
             label: 'Puntaje Meta',
             // Usa un array lleno del valor de goalScore para la longitud de this.dates
             data: Array(this.dates.length).fill(this.goalScore),
@@ -361,9 +349,18 @@ export default {
           },
           tooltips: {
             enabled: true,
-            mode: 'index',
+            mode: 'nearest',
             intersect: false,
             callbacks: {
+              title: function (tooltipItems, data) {
+                if (tooltipItems[0].datasetIndex === 0) {
+                  return 'Objetivo alcanzado';
+                } else if (tooltipItems[0].datasetIndex === 1) {
+                  return 'Puntaje Meta';
+                } else {
+                  return 'Proyección simulada';
+                }
+              },
               label: function (tooltipItem, data) {
                 let label = data.datasets[tooltipItem.datasetIndex].label || '';
                 if (label) {
