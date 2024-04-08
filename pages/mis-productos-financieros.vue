@@ -1,5 +1,5 @@
 <template>
-    <v-container class="pa-7">
+    <v-container class="pa-7- main-container">
         <Header></Header>
         <div>
             <v-btn icon color="#0b2f44" @click="navigateTo('inicio')" class="mb-1 ml-3">
@@ -207,5 +207,14 @@ export default {
     margin-bottom: 4px;
     text-align: center;
     /* Ajusta esto para controlar el espacio entre el título y el subtítulo */
+}
+
+@media (min-width: 960px) {
+    .main-container {
+        max-width: 1200px;
+        /* Ajusta el ancho máximo del contenedor */
+        margin: auto;
+        /* Centra el contenedor */
+    }
 }
 </style>

@@ -68,7 +68,9 @@
         No tienes deudas en mora, ¡Felicidades! Esto te permitirá acceder a créditos con mayor facilidad.
       </v-alert>
     </div>
-    <div class="score-details">
+
+    <!-- DEV UTIL -->
+    <!-- <div class="score-details">
       <h3>Detalle del Aumento de Puntaje)</h3>
       <div v-for="(product, index) in products" :key="index" class="product-detail">
         <div>{{ product.name }}</div>
@@ -82,7 +84,7 @@
           Aumento mensual: +{{ calculateMonthlyScoreIncrease(product, 'normal') }} puntos/mes
         </div>
       </div>
-    </div>
+    </div> -->
 
     <div class="d-flex justify-center align-center step-4">
       <v-card class="mx-auto mt-1"

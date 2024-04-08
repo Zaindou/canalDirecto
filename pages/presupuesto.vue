@@ -100,7 +100,7 @@ export default {
             {
                 id: 3,
                 iconName: 'pagosActuales',
-                title: 'Pagos de tus productos actuales',
+                title: 'Pagos de tus productos <br> actuales',
                 value: 0,
                 tooltipText: 'This is the average income.'
             },
@@ -121,7 +121,7 @@ export default {
             {
                 id: 6,
                 iconName: 'disponibleAhorro',
-                title: 'Disponible ahorro / pago de deudas',
+                title: 'Disponible ahorro / <br> pago de deudas',
                 value: 0,
                 tooltipText: 'This is the average income.'
             },
