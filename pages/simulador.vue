@@ -150,32 +150,35 @@ export default {
   },
   methods: {
     loadAndFilterProducts() {
-      const storedProducts = this.productos || [];
-      const localProducts = JSON.parse(localStorage.getItem('selectedProducts')) || [];
+      if (process.client) {
+        const storedProducts = this.productos || [];
+        const localProducts = JSON.parse(localStorage.getItem('selectedProducts')) || [];
 
-      const filteredProducts = storedProducts.filter(product => product.estado !== 'Al día').map(product => {
-        const localProduct = localProducts.find(p => p.id_producto === product.id_producto) || {};
-        return {
-          ...product,
-          name: product.entidad,
-          balance: product.saldo_total.toLocaleString(),
-          selected: localProduct.selected !== undefined ? localProduct.selected : true,
-          selectedQuota: localProduct.selectedQuota || 1,
-          selectedDate: localProduct.selectedDate || null,
-          puntaje_por_cuota: product.puntaje_por_cuota
-        };
-      });
+        const filteredProducts = storedProducts.filter(product => product.estado !== 'Al día').map(product => {
+          const localProduct = localProducts.find(p => p.id_producto === product.id_producto) || {};
+          return {
+            ...product,
+            name: product.entidad,
+            balance: product.saldo_total.toLocaleString(),
+            selected: localProduct.selected !== undefined ? localProduct.selected : true,
+            selectedQuota: localProduct.selectedQuota || 1,
+            selectedDate: localProduct.selectedDate || null,
+            puntaje_por_cuota: product.puntaje_por_cuota
+          };
+        });
 
-      this.products = filteredProducts;
-      filteredProducts.sort((a, b) => b.saldo_total - a.saldo_total);
+        this.products = filteredProducts;
+        filteredProducts.sort((a, b) => b.saldo_total - a.saldo_total);
 
-      localStorage.setItem('selectedProducts', JSON.stringify(this.products));
+        localStorage.setItem('selectedProducts', JSON.stringify(this.products));
 
-      this.updateChart();
+        this.updateChart();
+      }
     },
-
     saveSelectedOptions() {
-      localStorage.setItem('selectedProducts', JSON.stringify(this.products));
+      if (process.client) {
+        localStorage.setItem('selectedProducts', JSON.stringify(this.products));
+      }
     },
     calculateMonthlyScoreIncrease(product, period) {
       if (period === 'first' && product.selectedQuota >= 1 && product.selectedQuota <= 3) {
