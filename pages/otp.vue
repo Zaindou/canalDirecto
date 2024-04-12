@@ -85,7 +85,7 @@ export default {
         return {
             otp: '',
             showResendBtn: false,
-            remainingTime: 10,
+            remainingTime: 180,
             timer: null,
             e1: 2,
             numero_celular: null,
