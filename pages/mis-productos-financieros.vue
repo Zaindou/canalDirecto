@@ -109,72 +109,72 @@ export default {
             this.$router.push(route);
         },
     },
-    watch: {
-        'mainStore.clientData': {
-            immediate: true,
-            handler(newValue) {
-                this.localClientData = newValue;
-                this.saldoProductos = newValue ? newValue.saldo_total_productos : 0;
-                this.saldoMoraProductos = newValue ? newValue.saldo_total_productos_mora : 'No tienes saldo en mora.';
-                this.fechaDiagnostico = newValue ? this.formattedDate() : null;
-            }
-        },
-        'mainStore.productos': {
-            immediate: true,
-            handler(newValue) {
-                if (newValue) {
-                    this.sortedProducts = newValue
+    // watch: {
+    //     'mainStore.clientData': {
+    //         immediate: true,
+    //         handler(newValue) {
+    //             this.localClientData = newValue;
+    //             this.saldoProductos = newValue ? newValue.saldo_total_productos : 0;
+    //             this.saldoMoraProductos = newValue ? newValue.saldo_total_productos_mora : 'No tienes saldo en mora.';
+    //             this.fechaDiagnostico = newValue ? this.formattedDate() : null;
+    //         }
+    //     },
+    //     'mainStore.productos': {
+    //         immediate: true,
+    //         handler(newValue) {
+    //             if (newValue) {
+    //                 this.sortedProducts = newValue
 
-                    this.saldoMora = this.sortedProducts.reduce((total, producto) => {
-                        if (producto.estado !== "Al día") {
-                            return total + producto.saldo_total;
-                        }
-                        return total;
-                    }, 0);
-                }
-            }
-        }
+    //                 this.saldoMora = this.sortedProducts.reduce((total, producto) => {
+    //                     if (producto.estado !== "Al día") {
+    //                         return total + producto.saldo_total;
+    //                     }
+    //                     return total;
+    //                 }, 0);
+    //             }
+    //         }
+    //     }
 
-    },
+    // },
     mounted() {
         const mainStore = useMainStore();
         mainStore.loadFromLocalStorage();
 
-        // if (!localStorage.getItem('tourFinances')) {
-        //     introJs().setOptions({
-        //         steps: [
-        //             {
-        //                 intro: 'En esta sección podrás ver el saldo de tus créditos y el saldo en mora de tus productos financieros.',
-        //                 title: "Bienvenido a tus productos financieros!",
-        //             },
-        //             {
-        //                 element: document.querySelector('.step-3'),
-        //                 title: "Detalle de tus productos financieros",
-        //                 intro: 'Aquí podrás ver el detalle de tus productos financieros.',
-        //             },
-        //             {
-        //                 element: document.querySelector('.step-4'),
-        //                 title: "Continuar",
-        //                 intro: 'Haz clic en el botón para continuar.',
-        //             },
-        //         ],
-        //         nextLabel: 'Siguiente',
-        //         prevLabel: 'Anterior',
-        //         doneLabel: 'Listo',
-        //         // showProgress: true,
-        //         dontShowAgain: false,
-        //         dontShowAgainLabel: 'No volver a mostrar',
-        //         showBullets: false,
-        //         disableInteraction: true,
-        //         overlayOpacity: 0.7,
-        //         exitOnEsc: false,
-        //         exitOnOverlayClick: false,
-        //         showButtons: true,
+        if (!localStorage.getItem('tourFinances')) {
+            introJs().setOptions({
+                steps: [
+                    {
+                        intro: 'En esta sección podrás ver el saldo de tus créditos y el saldo en mora de tus productos financieros.',
+                        title: "Bienvenido a tus productos financieros!",
+                    },
+                    {
+                        element: document.querySelector('.step-3'),
+                        title: "Detalle de tus productos financieros",
+                        intro: 'Aquí podrás ver el detalle de tus productos financieros.',
+                    },
+                    {
+                        element: document.querySelector('.step-4'),
+                        title: "Continuar",
+                        intro: 'Haz clic en el botón para continuar.',
+                    },
+                ],
+                nextLabel: 'Siguiente',
+                prevLabel: 'Anterior',
+                doneLabel: 'Listo',
+                // showProgress: true,
+                dontShowAgain: false,
+                dontShowAgainLabel: 'No volver a mostrar',
+                showBullets: false,
+                disableInteraction: true,
+                overlayOpacity: 0.7,
+                exitOnEsc: false,
+                exitOnOverlayClick: false,
+                showButtons: true,
 
-        //     }).start();
-        // }
+            }).start();
+        }
 
-        // localStorage.setItem('tourFinances', 'true');
+        localStorage.setItem('tourFinances', 'true');
     },
 };
 </script>
