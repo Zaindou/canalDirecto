@@ -57,10 +57,10 @@
 
 <script>
 // Importar los componentes SVG
-import IconoCredito from '~/components/icons/IconoCredito.vue';
-import IconoMora from '~/components/icons/IconoMora.vue';
+import IconoCredito from '/components/icons/IconoCredito.vue';
+import IconoMora from '/components/icons/IconoMora.vue';
 import Header from '/components/commons/Header.vue';
-import Productos from '~/components/commons/Products.vue';
+import Productos from '/components/commons/Products.vue';
 import { useMainStore } from '@/store/mainStore';
 
 
@@ -109,33 +109,33 @@ export default {
             this.$router.push(route);
         },
     },
-    // watch: {
-    //     'mainStore.clientData': {
-    //         immediate: true,
-    //         handler(newValue) {
-    //             this.localClientData = newValue;
-    //             this.saldoProductos = newValue ? newValue.saldo_total_productos : 0;
-    //             this.saldoMoraProductos = newValue ? newValue.saldo_total_productos_mora : 'No tienes saldo en mora.';
-    //             this.fechaDiagnostico = newValue ? this.formattedDate() : null;
-    //         }
-    //     },
-    //     'mainStore.productos': {
-    //         immediate: true,
-    //         handler(newValue) {
-    //             if (newValue) {
-    //                 this.sortedProducts = newValue
+    watch: {
+        'mainStore.clientData': {
+            immediate: true,
+            handler(newValue) {
+                this.localClientData = newValue;
+                this.saldoProductos = newValue ? newValue.saldo_total_productos : 0;
+                this.saldoMoraProductos = newValue ? newValue.saldo_total_productos_mora : 'No tienes saldo en mora.';
+                this.fechaDiagnostico = newValue ? this.formattedDate() : null;
+            }
+        },
+        'mainStore.productos': {
+            immediate: true,
+            handler(newValue) {
+                if (newValue) {
+                    this.sortedProducts = newValue
 
-    //                 this.saldoMora = this.sortedProducts.reduce((total, producto) => {
-    //                     if (producto.estado !== "Al día") {
-    //                         return total + producto.saldo_total;
-    //                     }
-    //                     return total;
-    //                 }, 0);
-    //             }
-    //         }
-    //     }
+                    this.saldoMora = this.sortedProducts.reduce((total, producto) => {
+                        if (producto.estado !== "Al día") {
+                            return total + producto.saldo_total;
+                        }
+                        return total;
+                    }, 0);
+                }
+            }
+        }
 
-    // },
+    },
     mounted() {
         const mainStore = useMainStore();
         mainStore.loadFromLocalStorage();
