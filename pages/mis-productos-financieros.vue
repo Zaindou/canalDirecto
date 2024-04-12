@@ -1,5 +1,58 @@
 <template>
-    <h1>es la data</h1>
+    <v-container class="pa-7- main-container">
+        <Header></Header>
+        <div>
+            <v-btn icon color="#0b2f44" @click="navigateTo('inicio')" class="mb-1 ml-3">
+                <v-icon>mdi-arrow-left</v-icon> Volver
+            </v-btn>
+        </div>
+        <div>
+            <p style="color: #666666; line-height: normal;">Conoce los productos que tienes vigentes reportados en las
+                centrales de riesgo del día <b>{{ fechaDiagnostico }}</b>.
+                Los organizamos de manera tal que puedas ver cual es el que te ayuda más a mejorar tu perfil crediticio.
+            </p>
+        </div>
+        <v-row justify="center">
+            <v-col cols="12" sm="6" md="6">
+                <v-card class="mb-1 step-1">
+                    <v-row no-gutters class="pa-1">
+                        <v-col cols="2" class="d-flex justify-start align-center">
+                            <IconoCredito class="icono-svg" />
+                        </v-col>
+                        <v-col cols="10" class="d-flex flex-column justify-center">
+                            <span class="title">Saldo de mis créditos</span>
+                            <span class="subtitle-1" style="color: #0b2f44;">{{
+                formatCurrency(saldoProductos) }}</span>
+                        </v-col>
+                    </v-row>
+                </v-card>
+            </v-col>
+
+            <!-- Tarjeta para el saldo en mora -->
+            <v-col cols="12" sm="6" md="6">
+                <v-card class="step-2">
+                    <v-row no-gutters class="pa-1">
+                        <v-col cols="2" class="d-flex justify-start align-center">
+                            <IconoMora class="icono-svg" />
+                        </v-col>
+                        <v-col cols="10" class="d-flex flex-column justify-center">
+                            <span class="title">Saldo en mora</span>
+                            <span class="subtitle-1" style="color: #0b2f44;">{{ formatCurrency(saldoMora)
+                                }}</span>
+                        </v-col>
+                    </v-row>
+                </v-card>
+            </v-col>
+        </v-row>
+        <div class="mt-8">
+            <span class="title-tools">Detalle de tus productos (Vigentes)</span>
+            <Productos class="step-3" />
+        </div>
+        <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)" elevation="2"
+            class="mt-6 step-4" @click="navigateTo('simulador')">
+            CONTINUAR
+        </v-btn>
+    </v-container>
 </template>
 
 <script>
