@@ -23,7 +23,8 @@ export default {
         crossorigin: "",
       },
       {rel: "stylesheet", href:  "https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css"},
-      {rel: "stylesheet", href:  "https://platserv.bvsalud.org/client/vendors/introjs/themes/introjs-modern.css"}
+      {rel: "stylesheet", href:  "https://platserv.bvsalud.org/client/vendors/introjs/themes/introjs-modern.css"},
+      {rel: "stylesheet", href: "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"}
 
     ],
     script: [
