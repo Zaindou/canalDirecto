@@ -41,13 +41,13 @@
                 </v-container>
             </div>
             <v-col class="d-flex" cols="13" sm="13">
-                <v-text-field type="text" v-model="formattedIncome" label="Ingresos mensuales" prepend-inner-icon="mdi-cash"
-                    required outlined @input="formatIncome" />
+                <v-text-field type="text" v-model="formattedIncome" label="Ingresos mensuales"
+                    prepend-inner-icon="mdi-cash" required outlined @input="formatIncome" />
             </v-col>
 
             <v-col class="d-flex" cols="13" sm="13">
-                <v-text-field type="text" v-model="formattedExpenses" label="Gastos mensuales" prepend-inner-icon="mdi-cash"
-                    required outlined @input="formatExpenses" />
+                <v-text-field type="text" v-model="formattedExpenses" label="Gastos mensuales"
+                    prepend-inner-icon="mdi-cash" required outlined @input="formatExpenses" />
             </v-col>
             <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)" elevation="2"
                 class="buttonsteps" @click="submitForm3">
@@ -155,7 +155,6 @@ export default {
 
             await axios.post('diagnostico/register/financial', formData, config).then(async (response) => {
                 if (response.status >= 200 && response.status < 301) {
-                    console.log('Si estamos aquí.')
                     this.$notifier.showMessage({ content: '¡Hemos cargado tus datos financieros correctamente ;)!', color: 'success' })
                     await this.fetchData()
                     this.$router.push('/inicio')
@@ -164,7 +163,6 @@ export default {
             }
             ).catch((error) => {
                 if (error.response.status >= 400 && error.response.status < 500) {
-                    console.log("Entramos al error.")
                     this.$notifier.showMessage({ content: `${error.response.data.detail}`, color: 'error' })
                     this.loading4 = false
                 }
@@ -247,4 +245,3 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 0;
 }
 </style>
-

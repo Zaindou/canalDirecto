@@ -161,13 +161,13 @@ export default {
 
     setTimeout(() => {
       this.showTimeoutWarning()
-    }, 20 * 60 * 1000) // 20 minutes
+    }, 20 * 60 * 3000)
 
     setTimeout(() => {
       localStorage.clear()
-      location.reload()
+      location.$router.push('/')
       this.showCloseWarning()
-    }, 30 * 60 * 1000) // 30 minutes
+    }, 30 * 60 * 6000)
   },
 
   beforeDestroy() {
@@ -203,7 +203,6 @@ export default {
         }
       } catch (error) {
         if (error.response.data.message == null || error.response.data.message === 'undefined') {
-          console.log(error, 'error')
           this.$notifier.showMessage({ content: 'Error inesperado, por favor intenta nuevamente.', color: 'error' })
         } else {
           this.$notifier.showMessage({ content: `${error.response.data.message}`, color: 'error' })

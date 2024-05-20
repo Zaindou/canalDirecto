@@ -488,8 +488,6 @@ export default {
 
       monthlyScores = monthlyScores.map(score => Math.round(score));
 
-      console.log(monthlyScores)
-
       return monthlyScores;
     },
 

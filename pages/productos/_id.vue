@@ -95,8 +95,8 @@
                                             <br>
                                         </div>
                                         <span style="color: #62AC21;"><b class="subtitle-1">¿Cuánto te acerca a tu
-                                                objetivo?:</b> {{ Math.round(this.producto.aumento_puntaje_porcentaje)
-                                            }}%</span>
+                                                objetivo?:</b> {{ Math.round(this.producto.aumento_puntaje_porcentaje
+        ) }}%</span>
                                         <br>
                                         <span style="color: #62AC21;"><b class="subtitle-1">¿Con cuántos puntos
                                                 quedarías respecto a tu objetivo?</b> {{
@@ -248,9 +248,9 @@
                                 <v-date-picker v-model="fechaPagoCuotaInicial" :min="minDate" :max="maxDate" no-title
                                     @input="menu = false"></v-date-picker>
                             </v-menu>
-                            <v-select v-model="diaPagoMesAMes" :items="[5, 16, 28]" label="Día de pago mes a mes"
-                                prepend-inner-icon="mdi-calendar-cursor" outlined hide-details="auto"
-                                class="mb-2"></v-select>
+                            <v-select v-if="cuotasSeleccionadas > 1" v-model="diaPagoMesAMes" :items="[5, 16, 28]"
+                                label="Día de pago mes a mes" prepend-inner-icon="mdi-calendar-cursor" outlined
+                                hide-details="auto" class="mb-2"></v-select>
                         </v-col>
                         <v-divider class="my-4" vertical="true" aria-orientation="vertical"> </v-divider>
                         <v-col cols="7" md="6">
@@ -260,9 +260,11 @@
                             <br>
                             <span><b>Fecha cuota inicial:</b> {{ fechaPagoCuotaInicial }}</span>
                             <br>
-                            <span><b>Valor cuota mes a mes:</b> {{ valorCuotaMensual }}</span>
+                            <span v-if="cuotasSeleccionadas > 1"><b>Valor cuota mes a mes:</b> {{ valorCuotaMensual
+                                }}</span>
                             <br>
-                            <span><b>Día de pago mensual:</b> {{ diaPagoMesAMes }}</span>
+                            <span v-if="cuotasSeleccionadas > 1"><b>Día de pago mensual:</b> {{ diaPagoMesAMes
+                                }}</span>
                         </v-col>
                     </v-row>
                     <v-alert class="mt-3" color="#dff0e9">
@@ -430,7 +432,7 @@ export default {
             this.loading4 = true;
             const headers = {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token b3f089a7c5e7b6fe73725c091ecfeeb23d7205b9'
+                'Authorization': 'Token 102f3176da1514c43cfe85bc6615b48e67821683'
             };
 
             const data = {
@@ -441,8 +443,8 @@ export default {
                     principalResult: 'Acuerdo Vigente',
                     detailResult: 'Acuerdo Nuevo',
                     explanation: 'El cliente acepto propuesta',
-                    location: 'a0704000009pLZTAA2',
-                    channel: 'Email',
+                    location: this.localClientData.ubicacion_id,
+                    channel: 'Landing Page',
                     observations: 'Acuerdo realizado mediante Canal Directo.',
                     user: this.localClientData.id_cliente_sf,
                 },
