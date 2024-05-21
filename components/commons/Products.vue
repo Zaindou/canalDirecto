@@ -8,7 +8,7 @@
                     <br>Número de producto: {{ producto.producto }}
                     <br>Estado de producto: {{ producto.estado }}
                     <br>Saldo reportado: {{
-                        formatCurrency(producto.saldo_total) }}
+        formatCurrency(getMaxSaldo(producto)) }}
                 </div>
             </v-expansion-panel-header>
 
@@ -139,6 +139,11 @@ export default {
                 // Para productos 'Al día', ordenar solo por saldo total
                 return b.saldo_total - a.saldo_total;
             });
+        },
+
+        getMaxSaldo(producto) {
+            // Retorna el mayor valor entre saldo_total y valor_total_sf
+            return Math.max(producto.saldo_total || 0, producto.valor_total_sf || 0);
         },
 
         compareSaldo(saldoA, saldoB) {

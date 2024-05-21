@@ -123,17 +123,19 @@ export default {
             immediate: true,
             handler(newValue) {
                 if (newValue) {
-                    this.sortedProducts = newValue
+                    this.sortedProducts = newValue;
 
                     this.saldoMora = this.sortedProducts.reduce((total, producto) => {
                         if (producto.estado !== "Al día") {
-                            return total + producto.saldo_total;
+                            // Sumar valor_total_sf si no es null, de lo contrario sumar saldo_total
+                            return total + (producto.valor_total_sf !== null ? producto.valor_total_sf : producto.saldo_total);
                         }
                         return total;
                     }, 0);
                 }
             }
         }
+
 
     },
     mounted() {

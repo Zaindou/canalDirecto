@@ -19,7 +19,8 @@
                     <span><b class="subtitle-1">Número de producto:</b> {{ producto ? producto.producto : 'Cargando...'
                         }}</span>
                     <br>
-                    <span><b class="subtitle-1">Saldo reportado:</b> {{ producto ? formatCurrency(producto.saldo_total)
+                    <span><b class="subtitle-1">Saldo reportado:</b> {{ producto ?
+            formatCurrency(this.getMaxSaldo(producto))
             : 'Cargando...' }}</span>
                     <br>
                     <div v-if="producto && contactoProducto">
@@ -66,7 +67,7 @@
             producto.estado : 'Cargando...' }}</span>
                                         <br>
                                         <span><b class="subtitle-1">Saldo total:</b> {{ producto ?
-            formatCurrency(producto.saldo_total) : 'Cargando...' }}</span>
+            formatCurrency(getMaxSaldo(producto)) : 'Cargando...' }}</span>
                                         <br>
                                         <span><b class="subtitle-1">% saldo de tus deudas:</b> {{ producto ?
             producto.participacion_mora : '' }}%</span>
@@ -376,6 +377,10 @@ export default {
                 minimumFractionDigits: 0,
             }).format(value);
         },
+        getMaxSaldo(producto) {
+            // Retorna el mayor valor entre saldo_total y valor_total_sf
+            return Math.max(producto.saldo_total || 0, producto.valor_total_sf || 0);
+        },
         formattedDate() {
             if (this.localClientData && this.localClientData.fecha_diagnostico) {
                 const date = new Date(this.localClientData.fecha_diagnostico);
@@ -409,7 +414,8 @@ export default {
                     this.valorTotalPagar = this.formatCurrency(ofertaSeleccionada.saldo_total);
                     this.valorCuotaInicial = this.formatCurrency(ofertaSeleccionada.cuota_inicial);
                     this.valorCuotaMensual = this.formatCurrency(ofertaSeleccionada.cuota);
-                    this.porcentajeAhorro = `${((1 - ofertaSeleccionada.monto_final_oferta / this.producto.saldo_total) * 100).toFixed(2)}%`;
+                    let valor = this.getMaxSaldo(this.producto);
+                    this.porcentajeAhorro = `${((1 - ofertaSeleccionada.monto_final_oferta / valor) * 100).toFixed(2)}%`;
                 }
             }
         },

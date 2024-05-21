@@ -7,47 +7,39 @@
       </v-btn>
     </div>
     <div>
-      <p style="color: #666666; line-height: normal;"> En esta sección podrás simular como seria el comportamiento de
-        tu perfil crediticio.
+      <p style="color: #666666; line-height: normal;"> En esta sección podrás simular como seria el comportamiento de tu
+        perfil crediticio.
       </p>
     </div>
     <div v-if="localClientData && localClientData.productos_mora > 0">
       <v-card v-for="(product, index) in products" :key="index" class="mb-3 step-1">
         <v-row no-gutters align="center" class="pa-4">
-
           <v-row align="center">
-
             <v-col cols="1">
               <v-checkbox v-model="product.selected"
-                @change="showAlert(product.selected, index); saveSelectedOptions()"></v-checkbox>
+                @change="showAlert(product.selected, index); updateChart()"></v-checkbox>
             </v-col>
-
             <v-col class="product-title">{{ product.name }}</v-col>
-
           </v-row>
-
           <v-col cols="12" class="">
             <v-row>
               <v-col>
-                <div class="text-product">Saldo reportado: <span class="text-normal">${{ product.balance
-                    }}</span></div>
+                <div class="text-product">Saldo reportado: <span class="text-normal">${{ product.balance }}</span></div>
               </v-col>
             </v-row>
             <v-row>
               <v-col cols="6" class="d-flex ">
                 <span class="mr-2 step-2">Cantidad cuotas:</span>
                 <v-select class="cuota-step" v-model="product.selectedQuota" :items="quotas" dense hide-details outlined
-                  @change="saveSelectedOptions"></v-select>
+                  @change="updateChart"></v-select>
               </v-col>
               <v-col cols="6" class="d-flex align-center">
                 <span class="mr-2 text-product">Desde:</span>
                 <v-select class="step-3" v-model="product.selectedDate" :items="dates" dense hide-details outlined
-                  @change="saveSelectedOptions"></v-select>
+                  @change="updateChart"></v-select>
               </v-col>
             </v-row>
           </v-col>
-
-          <!-- Tercera columna para el botón -->
           <v-col cols="12" class="d-flex justify-center align-center mt-3 como-solucionar-step">
             <nuxt-link :to="`/productos/${product.id_producto}`" class="button-text">
               <v-btn color="#62ac21" dark>
@@ -55,7 +47,6 @@
               </v-btn>
             </nuxt-link>
           </v-col>
-
         </v-row>
         <v-alert v-if="showAlerts[index]" type="warning" text>
           Si tienes obligaciones en mora, afectará tus posibilidades de acceder a créditos, incluso con un
@@ -68,30 +59,9 @@
         No tienes deudas en mora, ¡Felicidades! Esto te permitirá acceder a créditos con mayor facilidad.
       </v-alert>
     </div>
-
-    <!-- DEV UTIL -->
-    <!-- <div class="score-details">
-      <h3>Detalle del Aumento de Puntaje)</h3>
-      <div v-for="(product, index) in products" :key="index" class="product-detail">
-        <div>{{ product.name }}</div>
-        <div v-if="product.selectedQuota >= 1 && product.selectedQuota <= 3">
-          Primeros 3 meses: +{{ calculateMonthlyScoreIncrease(product, 'first') }} puntos/mes
-        </div>
-        <div v-if="product.selectedQuota >= 1 && product.selectedQuota <= 3">
-          Siguientes 3 meses: +{{ calculateMonthlyScoreIncrease(product, 'next') }} puntos/mes
-        </div>
-        <div v-else>
-          Aumento mensual: +{{ calculateMonthlyScoreIncrease(product, 'normal') }} puntos/mes
-        </div>
-      </div>
-    </div> -->
-
     <div class="d-flex justify-center align-center step-4">
       <v-card class="mx-auto mt-1"
         :style="{ background: 'linear-gradient(to bottom, #00263C 0%, #005a7d 0%, #00A2E4 49%)' }">
-        <!-- <v-card-title class="text-h5" style="color: white;">
-                    Mi Gráfico
-                </v-card-title> -->
         <v-card-text>
           <p class="mt-2"
             style="color: white; font-size: 1.2em; font-weight: 400; text-align: center; line-break:auto;">
@@ -100,7 +70,6 @@
             crédito una vez
             comiences a pagar tus
             obligaciones. </p>
-
           <div class="chart-container" style="position: relative; height:45vh; width:85vw">
             <canvas ref="creditScoreChart"></canvas>
           </div>
@@ -117,14 +86,16 @@
     </v-btn>
   </v-container>
 </template>
+
 <script>
 import { useMainStore } from '@/store/mainStore';
 import Header from '/components/commons/Header.vue';
-import FinancialTips from '/components/commons/tipsFinancial.vue'
+import FinancialTips from '/components/commons/tipsFinancial.vue';
 
 export default {
   components: {
-    Header, FinancialTips
+    Header,
+    FinancialTips
   },
   data: () => ({
     productos: null,
@@ -159,7 +130,7 @@ export default {
           return {
             ...product,
             name: product.entidad,
-            balance: product.saldo_total.toLocaleString(),
+            balance: Math.max(product.saldo_total || 0, product.valor_total_sf || 0).toLocaleString(), // Calcula el saldo máximo
             selected: localProduct.selected !== undefined ? localProduct.selected : true,
             selectedQuota: localProduct.selectedQuota || 1,
             selectedDate: localProduct.selectedDate || null,
@@ -221,7 +192,6 @@ export default {
     },
     calculateScoreForQuota(puntajePorCuota, selectedQuota) {
       return puntajePorCuota / selectedQuota;
-
     },
     calculateTotalScore() {
       const totalScore = this.products
@@ -229,7 +199,6 @@ export default {
         .reduce((total, product) => {
           return total + this.calculateScoreForQuota(product.puntaje_por_cuota, product.selectedQuota);
         }, 0);
-
 
       return totalScore;
     },
@@ -245,217 +214,207 @@ export default {
         );
       }
     },
-    findIntersection() {
-      const scoreData = this.calculateScoreData();
+    findIntersection(scoreData) {
       for (let i = 0; i < scoreData.length; i++) {
         if (scoreData[i] >= this.goalScore) {
           return { x: this.dates[i], y: this.goalScore };
         }
       }
       return null;
-    }
-    ,
-    setupChart() {
-      const ctx = this.$refs.creditScoreChart.getContext('2d');
-      const intersection = this.findIntersection();
-
-      this.chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: this.generateMonthLabels(), // Asegura que esto genera las etiquetas correctas
-          datasets: [{
-            label: 'Objetivo Alcanzado',
-            data: [intersection],
-            borderColor: '#47cc31',
-            backgroundColor: '#ffffff',
-            pointRadius: 5,
-            pointHoverRadius: 7,
-            fill: false,
-            pointBorderColor: '#39a327',
-            pointBackgroundColor: '#ffffff',
-            pointBorderWidth: 2,
-            pointHoverBorderWidth: 2,
-            showLine: false,
-          },
-          {
-            label: 'Puntaje Meta',
-            // Usa un array lleno del valor de goalScore para la longitud de this.dates
-            data: Array(this.dates.length).fill(this.goalScore),
-            borderColor: '#FF0000',
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(153, 102, 255, 0.2)',
-              'rgba(255, 159, 64, 0.2)'
-            ],
-            borderWidth: 5,
-            borderDash: [8, 8],
-            pointRadius: 0,
-            fill: false,
-            color: '#FFFFFF',
-          }, {
-            label: 'Proyección simulada',
-            data: this.calculateScoreData(),
-            borderColor: '#00B3FF',
-            pointRadius: function (context) {
-              var index = context.dataIndex;
-              var count = context.dataset.data.length - 1;
-              return index === 0 || index === count ? 5 : 0;
-            },
-            borderWidth: 8,
-            pointBackgroundColor: '#FFFFFF',
-            pointBorderColor: '#00B3FF',
-            pointBorderWidth: 5,
-            fill: false,
-          },
-
-          ],
-        },
-        options: {
-          scales: {
-            yAxes: [{
-              ticks: {
-                min: 0,
-                max: 900,
-                suggestedMax: 900,
-                stepSize: 100, // El tamaño del paso entre los rangos de puntajes
-                fontColor: '#FFFFFF',
-              },
-              gridLines: {
-                color: 'rgba(255, 255, 255, 0.2)',
-              }
-            }],
-            xAxes: [{
-              type: 'category',
-              labels: this.dates, // Usar las fechas calculadas como etiquetas
-              stepSize: 1,
-              ticks: {
-                fontColor: '#FFFFFF',
-              },
-              gridLines: {
-                color: 'rgba(255, 255, 255, 0.1)',
-              },
-              beginAtZero: true,
-            }],
-          },
-          legend: {
-            display: true,
-            position: 'bottom',
-            labels: {
-              fontColor: '#FFFFFF',
-              fontSize: 15,
-              padding: 10,
-              usePointStyle: true,
-              pointStyle: 'circle',
-              boxWidth: 10
-            }
-          },
-          tooltips: {
-            enabled: true,
-            mode: 'nearest',
-            intersect: false,
-            callbacks: {
-              title: function (tooltipItems, data) {
-                if (tooltipItems[0].datasetIndex === 0) {
-                  return 'Objetivo alcanzado';
-                } else if (tooltipItems[0].datasetIndex === 1) {
-                  return 'Puntaje Meta';
-                } else {
-                  return 'Proyección simulada';
-                }
-              },
-              label: function (tooltipItem, data) {
-                let label = data.datasets[tooltipItem.datasetIndex].label || '';
-                if (label) {
-                  label += ': ';
-                }
-                label += tooltipItem.yLabel;
-                return label;
-              }
-            },
-            fontColor: '#00263C',
-            backgroundColor: '#00263C',
-          },
-          responsive: true,
-          maintainAspectRatio: false,
-          chartArea: {
-            // backgroundColor: '#00263C',
-
-          },
-        },
-
-
-      });
-
-      Chart.plugins.register({
-        beforeDraw: function (chart) {
-          if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
-            var ctx = chart.chart.ctx;
-            var chartArea = chart.chartArea;
-
-            ctx.save();
-            ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
-            ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
-            ctx.restore();
-          }
-        },
-
-      });
-
     },
-    updateChart() {
-      if (!this.chart) {
-        // Si la instancia de la gráfica no está definida, salimos del método
-        return;
-      }
-      if (this.chart && this.products.some(product => product.selected)) {
+    setupChart() {
+      this.$nextTick(() => {
+        const ctx = this.$refs.creditScoreChart.getContext('2d');
         const scoreData = this.calculateScoreData();
         const intersection = this.findIntersection(scoreData);
 
-        // Actualizar los datos de las proyecciones simuladas.
+        this.chart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: this.generateMonthLabels(),
+            datasets: [
+              {
+                label: 'Objetivo Alcanzado',
+                data: [intersection],
+                borderColor: '#47cc31',
+                backgroundColor: '#ffffff',
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                fill: false,
+                pointBorderColor: '#39a327',
+                pointBackgroundColor: '#ffffff',
+                pointBorderWidth: 2,
+                pointHoverBorderWidth: 2,
+                showLine: false,
+              },
+              {
+                label: 'Puntaje Meta',
+                data: Array(this.dates.length).fill(this.goalScore),
+                borderColor: '#FF0000',
+                backgroundColor: [
+                  'rgba(255, 99, 132, 0.2)',
+                  'rgba(54, 162, 235, 0.2)',
+                  'rgba(255, 206, 86, 0.2)',
+                  'rgba(75, 192, 192, 0.2)',
+                  'rgba(153, 102, 255, 0.2)',
+                  'rgba(255, 159, 64, 0.2)'
+                ],
+                borderWidth: 5,
+                borderDash: [8, 8],
+                pointRadius: 0,
+                fill: false,
+                color: '#FFFFFF',
+              },
+              {
+                label: 'Proyección simulada',
+                data: scoreData,
+                borderColor: '#00B3FF',
+                pointRadius: function (context) {
+                  var index = context.dataIndex;
+                  var count = context.dataset.data.length - 1;
+                  return index === 0 || index === count ? 5 : 0;
+                },
+                borderWidth: 8,
+                pointBackgroundColor: '#FFFFFF',
+                pointBorderColor: '#00B3FF',
+                pointBorderWidth: 5,
+                fill: false,
+              },
+            ],
+          },
+          options: {
+            scales: {
+              yAxes: [
+                {
+                  ticks: {
+                    min: 0,
+                    max: 900,
+                    suggestedMax: 900,
+                    stepSize: 100,
+                    fontColor: '#FFFFFF',
+                  },
+                  gridLines: {
+                    color: 'rgba(255, 255, 255, 0.2)',
+                  }
+                }
+              ],
+              xAxes: [
+                {
+                  type: 'category',
+                  labels: this.dates,
+                  stepSize: 1,
+                  ticks: {
+                    fontColor: '#FFFFFF',
+                  },
+                  gridLines: {
+                    color: 'rgba(255, 255, 255, 0.1)',
+                  },
+                  beginAtZero: true,
+                }
+              ],
+            },
+            legend: {
+              display: true,
+              position: 'bottom',
+              labels: {
+                fontColor: '#FFFFFF',
+                fontSize: 15,
+                padding: 10,
+                usePointStyle: true,
+                pointStyle: 'circle',
+                boxWidth: 10
+              }
+            },
+            tooltips: {
+              enabled: true,
+              mode: 'nearest',
+              intersect: false,
+              callbacks: {
+                title: function (tooltipItems, data) {
+                  if (tooltipItems[0].datasetIndex === 0) {
+                    return 'Objetivo alcanzado';
+                  } else if (tooltipItems[0].datasetIndex === 1) {
+                    return 'Puntaje Meta';
+                  } else {
+                    return 'Proyección simulada';
+                  }
+                },
+                label: function (tooltipItem, data) {
+                  let label = data.datasets[tooltipItem.datasetIndex].label || '';
+                  if (label) {
+                    label += ': ';
+                  }
+                  label += tooltipItem.yLabel;
+                  return label;
+                }
+              },
+              fontColor: '#00263C',
+              backgroundColor: '#00263C',
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            chartArea: {
+              // backgroundColor: '#00263C',
+            },
+          },
+        });
+
+        Chart.plugins.register({
+          beforeDraw: function (chart) {
+            if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
+              var ctx = chart.chart.ctx;
+              var chartArea = chart.chartArea;
+
+              ctx.save();
+              ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
+              ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
+              ctx.restore();
+            }
+          },
+        });
+      });
+    },
+    updateChart() {
+      if (!this.chart) {
+        return;
+      }
+      if (this.chart.data.datasets && this.chart.data.datasets.length > 2) {
+        const scoreData = this.calculateScoreData();
+        const intersection = this.findIntersection(scoreData);
+
         this.chart.data.datasets[2].data = scoreData;
 
-        // Actualizar el conjunto de datos de la intersección si existe una.
         if (intersection) {
-          if (this.chart.data.datasets.length > 2) {
-            this.chart.data.datasets[0].data = [intersection];
-          }
-        } else if (this.chart.data.datasets.length > 2) {
-          this.chart.data.datasets.pop();
+          this.chart.data.datasets[0].data = [intersection];
+        } else {
+          this.chart.data.datasets[0].data = [];
         }
 
-        // Reflejar los cambios en el gráfico.
         this.chart.update();
       }
     },
-
     calculateScoreData() {
       let initialScore = this.score;
       let monthlyScores = new Array(this.dates.length).fill(initialScore);
+      const allProductsSelected = this.products.every(product => product.selected);
 
       this.products.forEach(product => {
         if (product.selected) {
-          let startMonthIndex = this.dates.indexOf(product.selectedDate) + 2; // Comenzamos desde el mes siguiente
+          let startMonthIndex = this.dates.indexOf(product.selectedDate) + 2;
           let endMonthIndex = startMonthIndex + product.selectedQuota;
 
           if (product.selectedQuota >= 1 && product.selectedQuota <= 3) {
-            // Para plazos de 1 a 3 meses, dividimos el puntaje de manera diferente
             let firstThreeMonthsScore = product.puntaje_por_cuota * 0.6;
             let nextThreeMonthsScore = product.puntaje_por_cuota * 0.4;
 
-            // Distribuir el 60% del puntaje en los primeros 3 meses
             for (let i = startMonthIndex; i < startMonthIndex + 3 && i < this.dates.length; i++) {
               monthlyScores[i] += firstThreeMonthsScore / 3;
             }
 
-            // Distribuir el 40% del puntaje en los siguientes 3 meses
             for (let i = startMonthIndex + 3; i < startMonthIndex + 6 && i < this.dates.length; i++) {
               monthlyScores[i] += nextThreeMonthsScore / 3;
             }
           } else {
-            // Para plazos mayores a 3 meses, usamos el cálculo normal
             for (let i = startMonthIndex; i < endMonthIndex && i < this.dates.length; i++) {
               monthlyScores[i] += this.calculateScoreForQuota(product.puntaje_por_cuota, product.selectedQuota);
             }
@@ -463,35 +422,25 @@ export default {
         }
       });
 
-      // Acumular el puntaje mensual
       for (let i = 1; i < monthlyScores.length; i++) {
         monthlyScores[i] = monthlyScores[i - 1] + (monthlyScores[i] - initialScore);
       }
 
-      // let lastDebtPaymentIndex = Math.max(...this.products.map(product => this.dates.indexOf(product.selectedDate) + 2 + product.selectedQuota));
-      // Determinar el último índice de pago de deuda
-      let lastPaymentIndex = this.products.reduce((maxIndex, product) => {
-        let productEndIndex = this.dates.indexOf(product.selectedDate) + 2 + product.selectedQuota;
-        return Math.max(maxIndex, productEndIndex);
-      }, 0);
+      if (allProductsSelected) {
+        let lastPaymentIndex = this.products.reduce((maxIndex, product) => {
+          let productEndIndex = this.dates.indexOf(product.selectedDate) + 2 + product.selectedQuota;
+          return Math.max(maxIndex, productEndIndex);
+        }, 0);
 
-      // Aplicar el incremento del 15% solo si el puntaje no alcanza el objetivo después de pagar todas las deudas
-      if (monthlyScores[lastPaymentIndex - 1] < this.goalScore) {
         for (let i = lastPaymentIndex; i < monthlyScores.length; i++) {
           monthlyScores[i] = Math.min(Math.round(monthlyScores[i - 1] * 1.15), 730);
         }
       }
 
-
-      // Continuar incrementando el puntaje en un 15% cada mes después del último mes en el que se pagaron las deudas
-
-
       monthlyScores = monthlyScores.map(score => Math.round(score));
 
       return monthlyScores;
     },
-
-
     dateMatchesProductStart(dateLabel, product) {
       const [month, year] = dateLabel.split('/');
       const startDate = new Date(`${month} 1 ${year}`);
@@ -510,9 +459,9 @@ export default {
 
       return labels;
     },
-
-
-
+    maxBalance() {
+      return Math.max(...this.products.map(p => Math.max(p.saldo_total || 0, p.valor_total_sf || 0)));
+    }
   },
   watch: {
     'mainStore.productos': {
@@ -520,9 +469,8 @@ export default {
       handler(newValue) {
         if (newValue) {
           this.productos = newValue;
-          this.score = newValue[0].puntaje_crediticio || 0; // Puntaje inicial
-          this.goalScore = newValue[0].puntaje_objetivo || 0; // Puntaje meta
-          // this.updateChart();
+          this.score = newValue[0].puntaje_crediticio || 0;
+          this.goalScore = newValue[0].puntaje_objetivo || 0;
         }
       },
     },
@@ -537,7 +485,7 @@ export default {
       deep: true
     },
     'mainStore.clientData': {
-      immediate: true, // Ejecuta el watcher inmediatamente
+      immediate: true,
       handler(newValue) {
         this.localClientData = newValue;
       }
@@ -581,14 +529,11 @@ export default {
             title: "Continuar",
             intro: "¡Continua con tu presupuesto!",
             position: 'top',
-
           }
-
         ],
         nextLabel: 'Siguiente',
         prevLabel: 'Anterior',
         doneLabel: 'Listo',
-        // showProgress: true,
         dontShowAgain: false,
         dontShowAgainLabel: 'No volver a mostrar',
         showBullets: false,
@@ -598,7 +543,6 @@ export default {
         exitOnOverlayClick: false,
         showButtons: true,
       }).start();
-
     }
     localStorage.setItem('tourSimulador', 'true');
   },
@@ -641,15 +585,12 @@ export default {
   padding: 0 0 0 0 !important;
 }
 
-/* Estilos específicos para móviles */
 @media (max-width: 599px) {
   .button-text-mobile {
     font-size: 0.62rem;
     max-width: 160px;
-    /* Limita el ancho máximo del botón */
     padding: 0.5rem 0.5rem;
   }
-
 }
 
 .chart-container {
@@ -659,17 +600,12 @@ export default {
 @media (min-width: 960px) {
   .main-container {
     max-width: 1200px;
-    /* Ajusta el ancho máximo del contenedor */
     margin: auto;
-    /* Centra el contenedor */
   }
-
 
   .chart-container {
     height: 60vh;
-    /* Ajusta la altura del contenedor del gráfico */
     width: 90vw;
-    /* Ajusta el ancho del contenedor del gráfico */
   }
 }
 </style>
