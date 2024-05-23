@@ -142,7 +142,7 @@
                                         <br>
                                         <span><b class="subtitle-1">% saldo de tus deudas:</b> {{ producto ?
             producto.participacion_mora : '' }}%</span>
-                                        <v-select class="mt-4" :items="plazosNegociacion" label="Número de cuotas"
+                                        <v-select class="mt-4" :items="plazosSimulacion" label="Número de cuotas"
                                             v-model="cuotasSeleccionadas" outlined></v-select>
                                         <v-divider class="mb-4"></v-divider>
                                         <span style="color: #62AC21;"><b class="subtitle-1">Tu objetivo es:</b> {{
@@ -337,6 +337,7 @@ export default {
         producto: null,
         opcionesDeCuotas: Array.from({ length: 36 }, (_, i) => i + 1),
         plazosNegociacion: [],
+        plazosSimulacion: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 36],
         puntajePorCuota: 0,
         puntajeTotalDespuesDeSaldar: 0,
         cuotasSeleccionadas: 1,

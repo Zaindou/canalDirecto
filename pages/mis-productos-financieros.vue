@@ -114,7 +114,7 @@ export default {
             immediate: true,
             handler(newValue) {
                 this.localClientData = newValue;
-                this.saldoProductos = newValue ? newValue.saldo_total_productos : 0;
+                // this.saldoProductos = newValue ? newValue.saldo_total_productos : 0;
                 this.saldoMoraProductos = newValue ? newValue.saldo_total_productos_mora : 'No tienes saldo en mora.';
                 this.fechaDiagnostico = newValue ? this.formattedDate() : null;
             }
@@ -131,6 +131,10 @@ export default {
                             return total + (producto.valor_total_sf !== null ? producto.valor_total_sf : producto.saldo_total);
                         }
                         return total;
+                    }, 0);
+
+                    this.saldoProductos = this.sortedProducts.reduce((total, producto) => {
+                        return total + producto.saldo_total;
                     }, 0);
                 }
             }
