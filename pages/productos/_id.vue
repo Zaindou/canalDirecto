@@ -8,8 +8,10 @@
             </v-btn>
         </div>
         <div>
-            <p style="color: #666666; line-height: normal;">Descubre la solución que mejor se adapte a tu situación y
-                negocia directamente con tu acreedor para llegar a un acuerdo financiero que beneficie tus finanzas.</p>
+            <p style="color: #666666; line-height: normal;">
+                Descubre la solución que mejor se adapte a tu situación y negocia directamente con tu acreedor para
+                llegar a un acuerdo financiero que beneficie tus finanzas.
+            </p>
         </div>
         <div>
             <v-card>
@@ -19,24 +21,18 @@
                     <span><b class="subtitle-1">Número de producto:</b> {{ producto ? producto.producto : 'Cargando...'
                         }}</span>
                     <br>
-                    <span><b class="subtitle-1">Saldo reportado:</b> {{ producto ?
-            formatCurrency(this.getMaxSaldo(producto))
+                    <span><b class="subtitle-1">Saldo reportado:</b> {{ producto ? formatCurrency(getMaxSaldo(producto))
             : 'Cargando...' }}</span>
                     <br>
                     <div v-if="producto && contactoProducto">
-                        <span v-if="contactoProducto.nombre_comercial">
-                            <b class="subtitle-1">Nombre comercial:</b> {{ contactoProducto.nombre_comercial }}
-                        </span>
+                        <span v-if="contactoProducto.nombre_comercial"><b class="subtitle-1">Nombre comercial:</b> {{
+            contactoProducto.nombre_comercial }}</span>
                         <br v-if="contactoProducto.nombre_comercial">
-                        <span v-if="contactoProducto.enlace_web">
-                            <b class="subtitle-1">Página web:</b> Encuentra información <a
-                                :href="contactoProducto.enlace_web" target="_blank">aquí</a>
-                        </span>
+                        <span v-if="contactoProducto.enlace_web"><b class="subtitle-1">Página web:</b> Encuentra
+                            información <a :href="contactoProducto.enlace_web" target="_blank">aquí</a></span>
                         <br v-if="contactoProducto.enlace_web">
-                        <span v-if="contactoProducto.enlace_portal">
-                            <b class="subtitle-1">Portal clientes:</b> Portal transaccional <a
-                                :href="contactoProducto.enlace_portal" target="_blank">aquí</a>
-                        </span>
+                        <span v-if="contactoProducto.enlace_portal"><b class="subtitle-1">Portal clientes:</b> Portal
+                            transaccional <a :href="contactoProducto.enlace_portal" target="_blank">aquí</a></span>
                         <br v-if="contactoProducto.enlace_portal">
                     </div>
                 </v-card-text>
@@ -44,14 +40,16 @@
         </div>
         <div class="mt-2 asesor">
             <v-expansion-panels>
-                <v-expansion-panel v-if="this.producto.es_producto_qnt">
+                <v-expansion-panel v-if="producto.es_producto_qnt">
                     <v-expansion-panel-header>
                         <div class="panel-header-content">
                             <img :src="`/icons/negociarLinea.svg`" class="icono-svg" />
                             <div class="panel-text-content">
                                 <div class="panel-title">Negociar en línea</div>
-                                <p class="panel-description">Conoce las ofertas para saldar esta obligación en línea,
-                                    selecciona el plan que más se ajuste a tus necesidades.</p>
+                                <p class="panel-description">
+                                    Conoce las ofertas para saldar esta obligación en línea, selecciona el plan que más
+                                    se ajuste a tus necesidades.
+                                </p>
                             </div>
                         </div>
                     </v-expansion-panel-header>
@@ -87,23 +85,22 @@
                                         <v-divider class="mb-1 mt-4"></v-divider>
                                         <br>
                                         <span style="color: #62AC21;"><b class="subtitle-1">¿Cuánto aumenta tu
-                                                puntaje?:</b> {{ Math.round(this.producto.puntaje_por_cuota) }}
-                                            puntos</span>
+                                                puntaje?:</b> {{ Math.round(producto.puntaje_por_cuota) }} puntos</span>
                                         <br>
-                                        <div v-if="Math.round(this.producto.puntaje_por_cuota) != puntajePorCuota">
+                                        <div v-if="Math.round(producto.puntaje_por_cuota) != puntajePorCuota">
                                             <span style="color: #62AC21;"><b class="subtitle-1">¿Cuánto aumenta tu
                                                     puntaje mes a mes?:</b> {{ puntajePorCuota }} puntos</span>
                                             <br>
                                         </div>
                                         <span style="color: #62AC21;"><b class="subtitle-1">¿Cuánto te acerca a tu
-                                                objetivo?:</b> {{ Math.round(this.producto.aumento_puntaje_porcentaje
-        ) }}%</span>
+                                                objetivo?:</b> {{ Math.round(producto.aumento_puntaje_porcentaje)
+                                            }}%</span>
                                         <br>
                                         <span style="color: #62AC21;"><b class="subtitle-1">¿Con cuántos puntos
                                                 quedarías respecto a tu objetivo?</b> {{
-            Math.round(this.producto.puntaje_por_cuota +
-                localClientData.puntaje_crediticio) }} de {{ localClientData ?
-            localClientData.objetivo_score : 'Cargando...' }}</span>
+            Math.round(producto.puntaje_por_cuota + localClientData.puntaje_crediticio)
+        }} de {{ localClientData ? localClientData.objetivo_score : 'Cargando...'
+                                            }}</span>
                                     </v-card-text>
                                     <v-btn block dark
                                         style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)"
@@ -121,8 +118,10 @@
                             <img :src="`/icons/simularProducto.svg`" class="icono-svg" />
                             <div class="panel-text-content">
                                 <div class="panel-title">Simular producto</div>
-                                <p class="panel-description">Simula tu producto y encuentra cómo resolver esta
-                                    obligación ayudaria a tu perfil de crédito.</p>
+                                <p class="panel-description">
+                                    Simula tu producto y encuentra cómo resolver esta obligación ayudaría a tu perfil de
+                                    crédito.
+                                </p>
                             </div>
                         </div>
                     </v-expansion-panel-header>
@@ -155,22 +154,22 @@
                                         <br>
                                         <span style="color: #62AC21;"><b class="subtitle-1">¿Cuánto aumenta tu puntaje
                                                 al saldar esta obligación?:</b> {{
-            Math.round(this.producto.puntaje_por_cuota) }} puntos</span>
+            Math.round(producto.puntaje_por_cuota) }} puntos</span>
                                         <br>
-                                        <div v-if="Math.round(this.producto.puntaje_por_cuota) != puntajePorCuota">
+                                        <div v-if="Math.round(producto.puntaje_por_cuota) != puntajePorCuota">
                                             <span style="color: #62AC21;"><b class="subtitle-1">¿Cuánto aumenta tu
                                                     puntaje mes a mes?:</b> {{ puntajePorCuota }} puntos</span>
                                             <br>
                                         </div>
                                         <span style="color: #62AC21;"><b class="subtitle-1">¿Cuánto te acerca a tu
-                                                objetivo?:</b> {{ Math.round(this.producto.aumento_puntaje_porcentaje)
+                                                objetivo?:</b> {{ Math.round(producto.aumento_puntaje_porcentaje)
                                             }}%</span>
                                         <br>
                                         <span style="color: #62AC21;"><b class="subtitle-1">¿Con cuántos puntos
                                                 quedarías respecto a tu objetivo?</b> {{
-            Math.round(this.producto.puntaje_por_cuota +
-                localClientData.puntaje_crediticio) }} de {{ localClientData ?
-            localClientData.objetivo_score : 'Cargando...' }}</span>
+            Math.round(producto.puntaje_por_cuota + localClientData.puntaje_crediticio)
+        }} de {{ localClientData ? localClientData.objetivo_score : 'Cargando...'
+                                            }}</span>
                                     </v-card-text>
                                 </v-card>
                             </v-col>
@@ -183,15 +182,17 @@
                             <img :src="`/icons/contactoRecomendado.svg`" class="icono-svg" />
                             <div class="panel-text-content">
                                 <div class="panel-title">Contacto recomendado</div>
-                                <p class="panel-description">QNT te relaciona con la persona que podria ayudarte a
-                                    saldar esta obligación, estás a solo una llamada.</p>
+                                <p class="panel-description">
+                                    QNT te relaciona con la persona que podría ayudarte a saldar esta obligación, estás
+                                    a solo una llamada.
+                                </p>
                             </div>
                         </div>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
-                        <p style="color: rgb(155, 155, 155); line-height: normal;">En QNT te recomendamos contactarte
-                            con {{ contactoProducto.nombre_comercial }} para que puedas negociar tus obligaciones en
-                            mora con:
+                        <p style="color: rgb(155, 155, 155); line-height: normal;">
+                            En QNT te recomendamos contactarte con {{ contactoProducto.nombre_comercial }} para que
+                            puedas negociar tus obligaciones en mora con:
                             <br>{{ contactoProducto.contacto_recomendado }}
                         </p>
                     </v-expansion-panel-content>
@@ -202,15 +203,18 @@
                             <img :src="`/icons/whatsappIcon.svg`" class="icono-svg" />
                             <div class="panel-text-content">
                                 <div class="panel-title">Hablar por Whatsapp</div>
-                                <p class="panel-description">Quieres chatear con tu acreedor para solucionar tu
-                                    obligación financiera. Ingresa aqui.</p>
+                                <p class="panel-description">
+                                    Quieres chatear con tu acreedor para solucionar tu obligación financiera. Ingresa
+                                    aquí.
+                                </p>
                             </div>
                         </div>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
-                        <p style="color: rgb(155, 155, 155); line-height: normal;">Si prefieres, puedes contactar a {{
-            contactoProducto.nombre_comercial }} por Whatsapp para que puedas negociar tus obligaciones
-                            en mora.</p>
+                        <p style="color: rgb(155, 155, 155); line-height: normal;">
+                            Si prefieres, puedes contactar a {{ contactoProducto.nombre_comercial }} por Whatsapp para
+                            que puedas negociar tus obligaciones en mora.
+                        </p>
                         <div style="text-align: center;">
                             <a :href="contactoProducto.enlace_whatsapp" target="_blank">
                                 <v-btn color="green" dark>
@@ -264,8 +268,7 @@
                             <span v-if="cuotasSeleccionadas > 1"><b>Valor cuota mes a mes:</b> {{ valorCuotaMensual
                                 }}</span>
                             <br>
-                            <span v-if="cuotasSeleccionadas > 1"><b>Día de pago mensual:</b> {{ diaPagoMesAMes
-                                }}</span>
+                            <span v-if="cuotasSeleccionadas > 1"><b>Día de pago mensual:</b> {{ diaPagoMesAMes }}</span>
                         </v-col>
                     </v-row>
                     <v-alert class="mt-3" color="#dff0e9">
@@ -415,8 +418,7 @@ export default {
                     this.valorTotalPagar = this.formatCurrency(ofertaSeleccionada.saldo_total);
                     this.valorCuotaInicial = this.formatCurrency(ofertaSeleccionada.cuota_inicial);
                     this.valorCuotaMensual = this.formatCurrency(ofertaSeleccionada.cuota);
-                    let valor = this.getMaxSaldo(this.producto);
-                    this.porcentajeAhorro = `${((1 - ofertaSeleccionada.monto_final_oferta / valor) * 100).toFixed(2)}%`;
+                    this.porcentajeAhorro = `${((1 - ofertaSeleccionada.monto_final_oferta / this.producto.saldo_total) * 100).toFixed(2)}%`;
                 }
             }
         },
@@ -478,8 +480,8 @@ export default {
                     motivationDebt: 'Cierre de negocio',
                     sourceIncome: 'Compra de cartera',
                     office: 'Canal Directo',
-                    capital: this.producto.saldo_total,
-                    totalDebt: null,
+                    capital: this.producto.saldo_capital_sf,
+                    totalDebt: this.producto.saldo_total,
                 },
                 proposal: {
                     firstFee: 0,
@@ -550,6 +552,13 @@ export default {
     mounted() {
         const mainStore = useMainStore();
         mainStore.loadFromLocalStorage();
+
+        // Recuperar el valor de selectedQuota de localStorage
+        const storedProducts = JSON.parse(localStorage.getItem('selectedProducts')) || [];
+        const selectedProduct = storedProducts.find(p => p.id_producto === this.idProducto);
+        if (selectedProduct) {
+            this.cuotasSeleccionadas = selectedProduct.selectedQuota || 1;
+        }
     },
 };
 </script>

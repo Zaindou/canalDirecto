@@ -17,7 +17,7 @@
           <v-row align="center">
             <v-col cols="1">
               <v-checkbox v-model="product.selected"
-                @change="showAlert(product.selected, index); updateChart()"></v-checkbox>
+                @change="showAlert(product.selected, index); updateChart(); saveSelectedOptions()"></v-checkbox>
             </v-col>
             <v-col class="product-title">{{ product.name }}</v-col>
           </v-row>
@@ -31,12 +31,12 @@
               <v-col cols="6" class="d-flex ">
                 <span class="mr-2 step-2">Cantidad cuotas:</span>
                 <v-select class="cuota-step" v-model="product.selectedQuota" :items="quotas" dense hide-details outlined
-                  @change="updateChart"></v-select>
+                  @change="updateChart(); saveSelectedOptions()"></v-select>
               </v-col>
               <v-col cols="6" class="d-flex align-center">
                 <span class="mr-2 text-product">Desde:</span>
                 <v-select class="step-3" v-model="product.selectedDate" :items="dates" dense hide-details outlined
-                  @change="updateChart"></v-select>
+                  @change="updateChart(); saveSelectedOptions()"></v-select>
               </v-col>
             </v-row>
           </v-col>
@@ -100,7 +100,7 @@ export default {
   data: () => ({
     productos: null,
     products: [],
-    quotas: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+    quotas: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 36],
     dates: [],
     showAlerts: [],
     score: null,
@@ -209,6 +209,7 @@ export default {
           (newVal, oldVal) => {
             if (newVal !== oldVal) {
               this.calculateTotalScore();
+              this.saveSelectedOptions(); // Guardar cambios en localStorage
             }
           }
         );
