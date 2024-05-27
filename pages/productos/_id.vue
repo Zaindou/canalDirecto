@@ -346,7 +346,8 @@
                     <!-- Removed the close button -->
                 </v-card-title>
                 <v-card-text>
-                    <p>¡Has aceptado el plan de pagos! Ahora puedes realizar tus dando click a <b>Realizar pagos</b>
+                    <p>¡Has aceptado el plan de pagos! Ahora puedes realizar tus pagos dando click a <b>Realizar
+                            pagos</b>
                     </p>
 
                     <p>Recuerda que tu primer pago es el <b>{{ formattedDate(fechaPagoCuotaInicial) }}</b> por un valor
