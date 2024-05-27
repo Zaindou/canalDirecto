@@ -339,26 +339,29 @@
         </v-dialog>
 
         <!-- Alerta de felicitación -->
-        <v-dialog v-model="mostrarFelicitacion" max-width="600px">
+        <v-dialog v-model="mostrarFelicitacion" max-width="600px" persistent>
             <v-card>
                 <v-card-title class="d-flex justify-space-between align-center">
                     <span class="headline" style="color: #0b2f44;">¡Felicitaciones!</span>
-                    <v-btn icon @click="cerrarFelicitacion"><v-icon>mdi-close</v-icon></v-btn>
+                    <!-- Removed the close button -->
                 </v-card-title>
                 <v-card-text>
-                    <p>¡Has aceptado el plan de pagos! Ahora puedes realizar tus pagos en el siguiente enlace:</p>
-                    <a href="https://qnt.com.co/pagos-qnt/" target="_blank">Realizar pagos</a>
-                    <p>Recuerda que tu primer pago es el <b>{{ fechaPagoCuotaInicial }}</b> por un valor de <b>{{
-            valorCuotaInicial }}</b>.</p>
+                    <p>¡Has aceptado el plan de pagos! Ahora puedes realizar tus dando click a <b>Realizar pagos</b>
+                    </p>
+
+                    <p>Recuerda que tu primer pago es el <b>{{ formattedDate(fechaPagoCuotaInicial) }}</b> por un valor
+                        de <b>{{
+                            valorCuotaInicial }}</b>.</p>
                 </v-card-text>
                 <v-card-actions class="d-flex justify-end">
-                    <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)"
-                        @click="redireccionar">
-                        Ir al inicio
+                    <v-btn block dark href="https://qnt.com.co/pagos-qnt/" target="_blank"
+                        style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%); color: white;">
+                        Realizar pagos
                     </v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
+
     </v-container>
 </template>
 
@@ -486,6 +489,38 @@ export default {
         redireccionar() {
             this.$router.push('/inicio');
         },
+        async fetchData() {
+            let token, cedula;
+            if (process.client) {
+                token = localStorage.getItem('auth_token');
+                cedula = localStorage.getItem('numero_identificacion');
+            }
+
+            try {
+                const response = await axios.get(`/diagnostico/client-data/${cedula}`, {
+                    headers: {
+                        Authorization: `Token ${token}`
+                    }
+                });
+
+                this.clientData = response.data.informacionCliente;
+                this.productos = response.data.wazeQnt.all_products;
+                this.productosAcuerdo = response.data.wazeQnt.products_with_agreement;
+                this.productosOferta = response.data.wazeQnt.products_with_offer;
+                this.otrosProductos = response.data.wazeQnt.other_products;
+
+                const mainStore = useMainStore();
+                mainStore.setClientData(this.clientData);
+                mainStore.setProductos(this.productos);
+                // Uncomment the following lines if needed
+                // mainStore.setProductosAcuerdo(this.productosAcuerdo);
+                // mainStore.setProductosOferta(this.productosOferta);
+                // mainStore.setOtrosProductos(this.otrosProductos);
+            } catch (error) {
+                // Log any errors to the console
+                console.error('Error fetching client data:', error);
+            }
+        },
         async aceptarPlanDePagos() {
             this.loading4 = true;
             const headers = {
@@ -551,6 +586,7 @@ export default {
             await axios.post('/diagnostico/acuerdo/', data, { headers })
                 .then(response => {
                     this.cerrarModal();
+                    this.fetchData();
                     this.loading4 = false;
                     this.abrirFelicitacion();
                     setTimeout(this.redireccionar, 10000); // Redirigir después de 10 segundos
@@ -559,6 +595,7 @@ export default {
                     console.error('Error:', error);
                 });
         },
+
     },
     watch: {
         'mainStore.productos': {
