@@ -24,6 +24,51 @@
                     <span><b class="subtitle-1">Saldo reportado:</b> {{ producto ? formatCurrency(getMaxSaldo(producto))
             : 'Cargando...' }}</span>
                     <br>
+                    <div v-if="producto && producto.en_negociacion">
+                        <v-alert type="info" class="mt-3">
+                            Este producto tiene un plan de pago en curso
+                        </v-alert>
+                        <div v-if="producto.detalles_acuerdo">
+                            <span><b class="subtitle-1">Fecha de creación:</b> {{
+            formattedDate(producto.detalles_acuerdo.date)
+        }}</span>
+                            <br>
+                            <span><b class="subtitle-1">Valor total a pagar:</b> {{
+                formatCurrency(producto.detalles_acuerdo.amount)
+            }}</span>
+                            <br>
+                            <span><b class="subtitle-1">Día de pago:</b> {{ producto.detalles_acuerdo.paymentDay
+                                }}</span>
+                            <br>
+                            <span><b class="subtitle-1">Fecha de pago cuota inicial :</b>
+                                {{ formattedDate(producto.detalles_acuerdo.firstFeeDate) }}</span>
+                            <br>
+                            <v-divider class="my-3"></v-divider>
+                            <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)"
+                                elevation="2" class="mt-6" @click="mostrarDetallesPlan = !mostrarDetallesPlan">
+                                Ver detalles del plan de pago
+                            </v-btn>
+                            <v-expansion-panels v-if="mostrarDetallesPlan" class="mt-3">
+                                <v-expansion-panel v-for="fee in producto.detalles_acuerdo.feeList" :key="fee.id">
+                                    <v-expansion-panel-header>
+                                        {{ fee.name }} - {{ formatCurrency(fee.amount) }}
+                                    </v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <v-row>
+                                            <v-col cols="12">
+                                                <span><b>Estado:</b> {{ fee.state }}</span>
+                                                <br>
+                                                <span><b>Fecha de pago:</b> {{ fee.payment_date }}</span>
+                                                <br>
+                                                <span><b>Pago pendiente:</b> {{ formatCurrency(fee.payment_balance)
+                                                    }}</span>
+                                            </v-col>
+                                        </v-row>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                            </v-expansion-panels>
+                        </div>
+                    </div>
                     <div v-if="producto && contactoProducto">
                         <span v-if="contactoProducto.nombre_comercial"><b class="subtitle-1">Nombre comercial:</b> {{
             contactoProducto.nombre_comercial }}</span>
@@ -40,7 +85,7 @@
         </div>
         <div class="mt-2 asesor">
             <v-expansion-panels>
-                <v-expansion-panel v-if="producto.es_producto_qnt">
+                <v-expansion-panel v-if="producto.es_producto_qnt && !producto.en_negociacion">
                     <v-expansion-panel-header>
                         <div class="panel-header-content">
                             <img :src="`/icons/negociarLinea.svg`" class="icono-svg" />
@@ -357,6 +402,7 @@ export default {
         email: '',
         numeroCelular: '',
         loading4: false,
+        mostrarDetallesPlan: false,
     }),
     computed: {
         mainStore() {

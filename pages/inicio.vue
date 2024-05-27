@@ -1,12 +1,14 @@
 <template>
     <v-container class="pa-7 main-container">
         <Loader v-if="loading4" />
+        <WhatsappButton phoneNumber="+1234567890" />
         <Header></Header>
         <div>
             <h4 class="title-name mb-3">Hola, {{ formattedName }}</h4>
-            <p style="color: #666666; line-height: normal;">¡Felicitaciones! Has comenzado tu diagnóstico, el cual obtuvo
+            <p style="color: #666666; line-height: normal;">¡Felicitaciones! Has comenzado tu diagnóstico, el cual
+                obtuvo
                 los datos del día <b>{{
-                    formattedDate }}.</b>
+            formattedDate }}.</b>
             </p>
         </div>
         <v-window v-model="window" cycle class="carousel-container">
@@ -77,7 +79,7 @@
                     </v-btn>
                 </v-card-title>
                 <v-card-text class="py-2" style="font-weight: 400; font-size: 1em;">{{ currentCard.modalText
-                }}</v-card-text>
+                    }}</v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)"
@@ -105,11 +107,13 @@ import recomendaciones from '/components/commons/Recomendaciones.vue';
 import Header from '/components/commons/Header.vue';
 import OpcionesFinancieras from '/components/commons/opcionesFinancieras.vue';
 import Loader from '~/components/commons/LoaderForm.vue'
+import WhatsappButton from '~/components/WhatsappButton.vue'
+
 
 
 export default {
     components: {
-        OpcionesFinancieras, recomendaciones, Header, Loader
+        OpcionesFinancieras, recomendaciones, Header, Loader, WhatsappButton
     },
     data: () => ({
         localClientData: null,
