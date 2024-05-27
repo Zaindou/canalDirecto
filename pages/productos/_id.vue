@@ -58,7 +58,7 @@
                                             <v-col cols="12">
                                                 <span><b>Estado:</b> {{ fee.state }}</span>
                                                 <br>
-                                                <span><b>Fecha de pago:</b> {{ fee.payment_date }}</span>
+                                                <span><b>Fecha de pago:</b> {{ formattedDate(fee.payment_date) }}</span>
                                                 <br>
                                                 <span><b>Pago pendiente:</b> {{ formatCurrency(fee.payment_balance)
                                                     }}</span>
@@ -349,7 +349,7 @@
                     <p>¡Has aceptado el plan de pagos! Ahora puedes realizar tus pagos en el siguiente enlace:</p>
                     <a href="https://qnt.com.co/pagos-qnt/" target="_blank">Realizar pagos</a>
                     <p>Recuerda que tu primer pago es el <b>{{ fechaPagoCuotaInicial }}</b> por un valor de <b>{{
-                            valorCuotaInicial }}</b>.</p>
+            valorCuotaInicial }}</b>.</p>
                 </v-card-text>
                 <v-card-actions class="d-flex justify-end">
                     <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)"
@@ -431,18 +431,21 @@ export default {
             // Retorna el mayor valor entre saldo_total y valor_total_sf
             return Math.max(producto.saldo_total || 0, producto.valor_total_sf || 0);
         },
-        formattedDate() {
-            if (this.localClientData && this.localClientData.fecha_diagnostico) {
-                const date = new Date(this.localClientData.fecha_diagnostico);
-                const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-
-                const day = date.getDate();
-                const month = months[date.getMonth()];
-                const year = date.getFullYear();
-
-                return `${day} de ${month} de ${year}`;
+        formattedDate(date) {
+            // Verificar si 'date' es una instancia de Date, si no, convertirla
+            if (!(date instanceof Date)) {
+                date = new Date(date);
             }
-            return 'Hoy es un buen día...';
+
+            const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+            const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
+            const dayOfWeek = days[date.getDay()];
+            const day = date.getDate();
+            const month = months[date.getMonth()];
+            const year = date.getFullYear();
+
+            return `${dayOfWeek}, ${day} de ${month} de ${year}`;
         },
         calcularPuntajePorCuota() {
             if (this.producto && this.cuotasSeleccionadas) {
