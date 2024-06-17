@@ -312,7 +312,7 @@ export default {
                 this.transactionState = this.transactionData.x_cod_transaction_state;
                 console.log('Transaction data:', this.transactionData, 'Transaction state:', this.transactionState)
 
-                if (this.transactionState === '1') {
+                if (this.transactionState == '1') {
                     console.log('Transaction accepted')
                     const formData = {
                         numero_identificacion: localStorage.getItem('numero_identificacion'),
