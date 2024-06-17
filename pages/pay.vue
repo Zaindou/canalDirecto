@@ -263,8 +263,8 @@ export default {
             await this.handleSubmit3(formData);
         },
         async checkPaymentStatus(invoice_id, handler) {
-            const maxRetries = 15;
-            const delay = 7000; // 7 segundos
+            const maxRetries = 20;
+            const delay = 3000; // 7 segundos
             let attempts = 0;
 
             const checkStatus = async () => {
