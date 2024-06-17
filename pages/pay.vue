@@ -235,7 +235,7 @@ export default {
                         extra2: this.amountToPay,
                         extra3: "extra3",
                         confirmation: "https://civil-first-elk.ngrok-free.app/diagnostico/pay/confirmation/",
-                        response: "https://test.dahouse.co/pay",
+                        response: "https://diagnosticot.qnt.com.co/pay",
                         name_billing: "Jhon Doe",
                         address_billing: "Carrera 19 numero 14 91",
                         type_doc_billing: "cc",
