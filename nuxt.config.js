@@ -28,6 +28,7 @@ export default {
 
     ],
     script: [
+      {src: 'https://checkout.epayco.co/checkout.js', defer: true},
       {
         hid: "gtm-script1",
         src: "https://www.googletagmanager.com/gtm.js?id=GTM-KSS39MH",
@@ -50,6 +51,7 @@ export default {
     __dangerouslyDisableSanitizersByTagID: {
       "gtm-script2": ["innerHTML"],
     },
+    
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -74,7 +76,7 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
-    "@nuxtjs/axios",
+    "@nuxtjs/axios","@nuxtjs/dotenv"
   ],
   proxy: {
     "/diagnostico": {

@@ -526,7 +526,7 @@ export default {
             this.loading4 = true;
             const headers = {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token 102f3176da1514c43cfe85bc6615b48e67821683'
+                'Authorization': 'Token 998a0e9e391388729ce8ef685d758fb9579d31b5'
             };
 
             const data = {
@@ -560,7 +560,7 @@ export default {
                         nivel: 'suggested_offer',
                         plan: 'ESTANDAR',
                     },
-                    paymentDay: this.diaPagoMesAMes,
+                    paymentDay: this.diaPagoMesAMes ? this.diaPagoMesAMes : this.fechaPagoCuotaInicial.split('-')[2],
                     firstFeeDate: this.fechaPagoCuotaInicial,
                     motivationDebt: 'Cierre de negocio',
                     sourceIncome: 'Compra de cartera',

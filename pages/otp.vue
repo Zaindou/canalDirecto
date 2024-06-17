@@ -174,6 +174,8 @@ export default {
                             numero_identificacion: localStorage.getItem('numero_identificacion'),
                         };
                         this.handleSubmit3(formData);
+                    } else if (response.data.STATUS_CODE === 'PAY_DIAGNOSTIC') {
+                        this.$router.push({ name: 'pay' });
                     } else {
                         this.e1 = 3;
                     }
