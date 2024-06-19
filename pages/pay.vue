@@ -1,7 +1,7 @@
 <template>
     <div>
         <Loader v-if="loading4" />
-        <v-stepper v-if="showPayment" v-model="e1">
+        <v-stepper v-model="e1">
             <div class="image-container">
                 <v-img v-if="e1 != 4" src="../QNT-MOBILE.webp" class="mobile-image" alt="QNT" />
                 <v-img v-if="e1 != 4" src="../QNT_STEP1.jpg" max-width="1000" class="desktop-image" alt="QNT" />
@@ -30,7 +30,7 @@
                     </v-icon>
                 </v-stepper-step>
             </v-stepper-header>
-            <div class="pa-4">
+            <div v-if="showPayment" class="pa-4">
                 <div class="info-container">
                     <p class="info-text">
                         Para acceder a tu diagnóstico financiero personalizado, tan solo tienes que invertir <strong
@@ -60,15 +60,84 @@
                     Continuar
                 </v-btn>
             </div>
+            <div v-else>
+                <v-container>
+                    <v-row>
+                        <v-col cols="12" class="text-center">
+                            <v-icon large :color="transactionIconColor">
+                                {{ transactionIcon }}
+                            </v-icon>
+                            <v-alert v-if="transactionMessage" :type="transactionType" dismissible>
+                                <p>{{ transactionMessage }}</p>
+                            </v-alert>
+                        </v-col>
+                        <v-col cols="12">
+                            <v-card>
+                                <v-card-title>Detalles de tu transacción</v-card-title>
+                                <v-card-text>
+                                    <v-list dense>
+                                        <v-list-item>
+                                            <v-list-item-content>
+                                                <v-list-item-title>Referencia de la transacción</v-list-item-title>
+                                                <v-list-item-subtitle>{{ transactionData.x_id_invoice
+                                                    }}</v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                        <v-list-item
+                                            v-if="transactionState == '1' || transactionState == '2' || transactionState == '3'">
+                                            <v-list-item-content>
+                                                <v-list-item-title>Monto</v-list-item-title>
+                                                <v-list-item-subtitle>{{ transactionData.x_amount }} {{
+            transactionData.x_currency_code
+        }}</v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                        <v-list-item
+                                            v-if="transactionState == '1' || transactionState == '2' || transactionState == '3'">
+                                            <v-list-item-content>
+                                                <v-list-item-title>Banco</v-list-item-title>
+                                                <v-list-item-subtitle>{{ transactionData.x_bank_name
+                                                    }}</v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                        <v-list-item
+                                            v-if="transactionState == '1' || transactionState == '2' || transactionState == '3'">
+                                            <v-list-item-content>
+                                                <v-list-item-title>Fecha y hora transacción</v-list-item-title>
+                                                <v-list-item-subtitle>{{ transactionData.x_fecha_transaccion
+                                                    }}</v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                        <v-list-item
+                                            v-if="transactionState == '1' || transactionState == '2' || transactionState == '3'">
+                                            <v-list-item-content>
+                                                <v-list-item-title>Estado</v-list-item-title>
+                                                <v-list-item-subtitle>{{ transactionData.x_response
+                                                    }}</v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                        <v-list-item v-if="transactionState == '2'">
+                                            <v-list-item-content>
+                                                <v-list-item-title>Transacción Rechazada</v-list-item-title>
+                                                <v-list-item-subtitle>Tu transacción ha sido rechazada. Serás redirigido
+                                                    en 10 segundos.</v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                        <v-list-item v-if="transactionState == '3'">
+                                            <v-list-item-content>
+                                                <v-list-item-title>Transacción Pendiente</v-list-item-title>
+                                                <v-list-item-subtitle>Tu transacción está pendiente. Por favor
+                                                    espera...</v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                    </v-list>
+                                </v-card-text>
+                            </v-card>
+                        </v-col>
+                    </v-row>
+                </v-container>
+            </div>
         </v-stepper>
-        <div v-else>
-            <h1>Payment Response</h1>
-            <p v-if="transactionState === '1'">La transacción fue <strong>aceptada</strong>.</p>
-            <p v-if="transactionState === '2'">La transacción fue <strong>rechazada</strong>.</p>
-            <p v-if="transactionState === '3'">La transacción está <strong>pendiente</strong>.</p>
-            <p v-if="!transactionState">Estado de la transacción desconocido.</p>
-            <pre>{{ transactionData }}</pre>
-        </div>
     </div>
 </template>
 
@@ -236,13 +305,13 @@ export default {
                         extra3: "extra3",
                         confirmation: "https://civil-first-elk.ngrok-free.app/diagnostico/pay/confirmation/",
                         response: "https://diagnosticot.qnt.com.co/pay",
-                        name_billing: "Jhon Doe",
-                        address_billing: "Carrera 19 numero 14 91",
+                        name_billing: "",
+                        address_billing: "",
                         type_doc_billing: "cc",
-                        mobilephone_billing: "3050000001",
-                        number_doc_billing: "100000",
-                        email_billing: "jhondoe@epayco.com",
-                        methodsDisable: config.methods_disable
+                        mobilephone_billing: "",
+                        number_doc_billing: "",
+                        email_billing: "",
+                        methodsDisable: ""
                     };
 
                     handler.open(data);
@@ -310,17 +379,30 @@ export default {
                 const response = await axios.get(`https://secure.epayco.co/validation/v1/reference/${ref_payco}`);
                 this.transactionData = response.data.data;
                 this.transactionState = this.transactionData.x_cod_transaction_state;
-                console.log('Transaction data:', this.transactionData, 'Transaction state:', this.transactionState)
 
                 if (this.transactionState == '1') {
+                    this.loading4 = true;
                     console.log('Transaction accepted')
                     const formData = {
                         numero_identificacion: localStorage.getItem('numero_identificacion'),
                     };
                     await this.handleSubmit3(formData);
+                    this.loading4 = false;
+                } else if (this.transactionState == '3') {
+                    this.loading4 = true;
+                    this.showPayment = false;
+                    setTimeout(() => {
+                        location.reload();
+                    }, 20000);
+
                 } else {
+                    this.loading4 = true;
+                    this.showPayment = false;
                     console.log('Transaction rejected')
-                    this.showPayment = false; // Mostrar la respuesta de pago si no es aceptada
+                    setTimeout(() => {
+                        this.$router.push('/');
+                    }, 10000);
+                    this.loading4 = false;
                 }
             } catch (error) {
                 console.error('Error fetching transaction data:', error);
