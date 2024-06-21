@@ -145,6 +145,7 @@
 import axios from 'axios';
 import Loader from '~/components/commons/LoaderForm.vue';
 import { useMainStore } from '@/store/mainStore';
+import { encryptData } from '~/utils/encryption';
 
 export default {
     components: {
@@ -333,12 +334,18 @@ export default {
         },
         async checkPaymentStatus(invoice_id, handler) {
             const maxRetries = 20;
-            const delay = 3000; // 7 segundos
+            const delay = 6000;
             let attempts = 0;
+
+            let numeroIdentificacion = localStorage.getItem('numero_identificacion')
+            let numeroCelular = localStorage.getItem('phone')
+
+            const encryptedNumeroIdentificacion = encodeURIComponent(encryptData(numeroIdentificacion));
+            const encryptedNumeroCelular = encodeURIComponent(encryptData(numeroCelular));
 
             const checkStatus = async () => {
                 try {
-                    const checkResponse = await axios.get(`/diagnostico/pay/check-payment-status/${invoice_id}`);
+                    const checkResponse = await axios.get(`/diagnostico/pay/check-payment-status/${invoice_id}/${encryptedNumeroIdentificacion}/${encryptedNumeroCelular}/`);
                     if (checkResponse.status === 200) {
                         this.transactionState = '1'; // Estado aceptado
                         this.transactionData = checkResponse.data;

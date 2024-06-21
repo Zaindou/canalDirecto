@@ -320,7 +320,13 @@ input[type=number]::-webkit-outer-spin-button {
     border-radius: 5px !important;
 }
 
-/* .col {
-    padding: 10px !important;
-} */
+.no-scroll input[type="number"]::-webkit-outer-spin-button,
+.no-scroll input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.no-scroll input[type="number"] {
+    -moz-appearance: textfield;
+}
 </style>
