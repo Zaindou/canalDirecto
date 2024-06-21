@@ -286,7 +286,7 @@ export default {
                 if (response.ok) {
                     var handler = ePayco.checkout.configure({
                         key: 'f50dd5b8e84f416926707d303540223b',
-                        test: true
+                        test: false
                     });
 
                     var data = {
