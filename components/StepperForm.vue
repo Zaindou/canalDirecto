@@ -49,9 +49,12 @@
               <div class="d-flex align-center justify-between" style="margin-bottom: 0px !important;">
                 <v-checkbox class="checkbox-label mr-0" v-model="terminosCondiciones" color="rgb(0, 93, 145)"
                   required></v-checkbox>
-                <label class="" color="rgb(0, 93, 145)" outlined @click="termsAndConditionsRedirect">Acepto
-                  los <a id="linkTerms" class="text-decoration-underline">términos y condiciones legales </a> y las <a
-                    id="linkTerms" class="text-decoration-underline">condiciones de contacto</a></label>
+                <label class="" color="rgb(0, 93, 145)" outlined>Acepto
+                  los <a id="linkTerms" class="text-decoration-underline"
+                    href="https://qnt.com.co/tyc-dignostico/">términos
+                    y condiciones legales </a> y las <a id="linkTerms" href="https://qnt.com.co/c-contacto/"
+                    class="text-decoration-underline">condiciones de
+                    contacto</a></label>
               </div>
               <!-- Reducción del margen superior en la segunda fila de checkbox -->
               <!-- <div class="d-flex align-center justify-between" style="margin-top: 0px !important;">
@@ -385,13 +388,6 @@ export default {
       }
 
     },
-    termsAndConditionsRedirect() {
-      window.open('https://qnt.com.co/tyc-dignostico/', '_blank')
-    },
-    contactRedirect() {
-      window.open('https://qnt.com.co/c-contacto/', '_blank')
-    },
-
     finalizeAndRedirect() {
       localStorage.clear()
       window.location.href = 'https://www.qnt.com.co'
@@ -410,7 +406,6 @@ export default {
     }
 
   }
-
 }
 </script>
 

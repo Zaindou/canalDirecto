@@ -84,7 +84,7 @@
             </v-card>
         </div>
         <div class="mt-2 asesor">
-            <v-expansion-panels>
+            <v-expansion-panels v-model="panelAbierto" multiple>
                 <v-expansion-panel v-if="producto.es_producto_qnt && !producto.en_negociacion">
                     <v-expansion-panel-header>
                         <div class="panel-header-content">
@@ -407,6 +407,7 @@ export default {
         numeroCelular: '',
         loading4: false,
         mostrarDetallesPlan: false,
+        panelAbierto: [0], // 
     }),
     computed: {
         mainStore() {
