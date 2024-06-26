@@ -127,8 +127,7 @@ export default {
 
                     this.saldoMora = this.sortedProducts.reduce((total, producto) => {
                         if (producto.estado !== "Al día") {
-                            // Sumar valor_total_sf si no es null, de lo contrario sumar saldo_total
-                            return total + (producto.valor_total_sf !== null ? producto.valor_total_sf : producto.saldo_total);
+                            return total + producto.saldo_total;
                         }
                         return total;
                     }, 0);
