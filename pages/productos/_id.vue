@@ -221,7 +221,7 @@
                         </v-row>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
-                <v-expansion-panel v-if="producto && contactoProducto">
+                <v-expansion-panel v-if="producto && contactoProducto && contactoProducto.contacto_recomendado">
                     <v-expansion-panel-header>
                         <div class="panel-header-content">
                             <img :src="`/icons/contactoRecomendado.svg`" class="icono-svg" />
@@ -687,7 +687,7 @@ a {
 }
 
 .v-expansion-panel-header>*:not(.v-expansion-panel-header__icon) {
-    flex: 0 0 auto;
+    flex: 0 0 0 0;
 }
 
 .panel-header-content {
