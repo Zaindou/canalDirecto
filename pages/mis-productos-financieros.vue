@@ -65,6 +65,7 @@ import { useMainStore } from '@/store/mainStore';
 
 
 export default {
+    middleware: 'auth',
     components: {
         IconoCredito,
         IconoMora,

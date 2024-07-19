@@ -6,13 +6,19 @@ export const useMainStore = defineStore('main', {
     productos: null,
   }),
   actions: {
-    setClientData(data) {
+    setClientData(data, nuxt) {
       this.clientData = data;
-      localStorage.setItem('clientData', JSON.stringify(data));
+      if (process.client) {
+        localStorage.setItem('clientData', JSON.stringify(data));
+      }
+
     },
-    setProductos(data) {
+    setProductos(data, nuxt) {
       this.productos = data;
-      localStorage.setItem('productos', JSON.stringify(data));
+      if (process.client) {
+        localStorage.setItem('productos', JSON.stringify(data));
+      }
+
     },
     loadFromLocalStorage() {
       if (process.client) {
@@ -25,6 +31,18 @@ export const useMainStore = defineStore('main', {
           this.productos = JSON.parse(productos);
         }
       }
-    }
+    },
+    setClientDataCookie(nuxt) {
+      nuxt.$cookies.set('clientData', JSON.stringify(this.clientData), {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7 // 1 semana
+      });
+    },
+    setTokenCookie(nuxt, token) {
+      nuxt.$cookies.set('token', token, {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 1 // 1 semana
+      });
+    },
   }
 });

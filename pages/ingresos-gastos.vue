@@ -64,6 +64,7 @@ import Loader from '~/components/commons/LoaderForm.vue'
 import { useMainStore } from '@/store/mainStore';
 
 export default {
+    middleware: 'otpandpay',
     components: {
         Loader
     },

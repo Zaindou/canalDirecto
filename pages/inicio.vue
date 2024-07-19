@@ -112,6 +112,7 @@ import WhatsappButton from '~/components/WhatsappButton.vue'
 
 
 export default {
+    middleware: 'auth',
     components: {
         OpcionesFinancieras, recomendaciones, Header, Loader, WhatsappButton
     },

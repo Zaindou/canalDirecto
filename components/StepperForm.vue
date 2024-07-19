@@ -183,6 +183,9 @@ export default {
         this.numero_identificacion = formData.numero_identificacion
         const response = await axios.post('diagnostico/register', formData)
 
+        const mainStore = useMainStore();
+        mainStore.setTokenCookie(this.$nuxt, response.data.token);
+
         if (response.status >= 200 && response.status < 300) {
           localStorage.setItem('auth_token', response.data.token)
           localStorage.setItem('numero_identificacion', formData.numero_identificacion)
@@ -273,6 +276,7 @@ export default {
       const mainStore = useMainStore();
       mainStore.setClientData(this.clientData);
       mainStore.setProductos(this.productos);
+      mainStore.setClientDataCookie(this.$nuxt);
       // mainStore.setProductosAcuerdo(this.productosAcuerdo);
       // mainStore.setProductosOferta(this.productosOferta);
       // mainStore.setOtrosProductos(this.otrosProductos);

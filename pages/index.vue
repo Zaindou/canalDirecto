@@ -1,4 +1,3 @@
-import $ from 'jquery';
 <template>
   <v-container class="remove-padding">
     <StepperForm />

@@ -1,6 +1,12 @@
 import colors from "vuetify/es5/util/colors";
 
 export default {
+  ssr: true,
+  target: 'server',
+
+  router: {
+    //  middleware: [],
+  },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: "QNT - Diagnóstico financiero",
@@ -76,7 +82,7 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
-    "@nuxtjs/axios","@nuxtjs/dotenv"
+    "@nuxtjs/axios","@nuxtjs/dotenv",'cookie-universal-nuxt',
   ],
   proxy: {
     "/diagnostico": {

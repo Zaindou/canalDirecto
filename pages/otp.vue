@@ -78,6 +78,7 @@ import { useMainStore } from '@/store/mainStore';
 import { set } from 'vue';
 
 export default {
+    middleware: 'otpandpay',
     components: {
         Loader
     },

@@ -63,6 +63,8 @@ import FinancialTips from '/components/commons/tipsFinancial.vue'
 import { useMainStore } from '@/store/mainStore';
 
 export default {
+    middleware: 'auth',
+
     components: {
         Header, FinancialTips
     },
