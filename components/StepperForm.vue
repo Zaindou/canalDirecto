@@ -50,11 +50,8 @@
                 <v-checkbox class="checkbox-label mr-0" v-model="terminosCondiciones" color="rgb(0, 93, 145)"
                   required></v-checkbox>
                 <label class="" color="rgb(0, 93, 145)" outlined>Acepto
-                  los <a id="linkTerms" class="text-decoration-underline"
-                    href="https://qnt.com.co/tyc-dignostico/">términos
-                    y condiciones legales </a> y las <a id="linkTerms" href="https://qnt.com.co/c-contacto/"
-                    class="text-decoration-underline">condiciones de
-                    contacto</a></label>
+                  la <a id="linkTerms" class="text-decoration-underline"
+                    href="https://qnt.com.co/tyc-dignostico/">política de tratamiento de datos. </a> </label>
               </div>
               <!-- Reducción del margen superior en la segunda fila de checkbox -->
               <!-- <div class="d-flex align-center justify-between" style="margin-top: 0px !important;">
