@@ -46,6 +46,19 @@
             prepend-inner-icon="mdi-email" outlined placeholder="rebancarizandome@qnt.com.co" hide-details="auto" />
         </v-col>
 
+        <v-col cols="12" md="6">
+          <v-text-field v-model="password" :type="showPassword ? 'text' : 'password'" :rules="passwordRules"
+            label="Contraseña" prepend-inner-icon="mdi-lock" append-icon="mdi-eye"
+            @click:append="showPassword = !showPassword" hide-details="auto" required outlined />
+        </v-col>
+
+        <v-col cols="12" md="6">
+          <v-text-field v-model="confirmPassword" :type="showConfirmPassword ? 'text' : 'password'"
+            :rules="confirmPasswordRules" label="Confirmar Contraseña" prepend-inner-icon="mdi-lock-check"
+            append-icon="mdi-eye" @click:append="showConfirmPassword = !showConfirmPassword" hide-details="auto"
+            required outlined />
+        </v-col>
+
         <v-container class="info-container" style="margin-bottom: 0px !important;">
           <div class="p position-relative">
             Cuéntanos el objetivo financiero que quieres alcanzar
@@ -79,6 +92,10 @@ export default {
     primerApellido: '',
     numeroCelular: '',
     correoElectronico: '',
+    password: '',
+    confirmPassword: '',
+    showPassword: false,
+    showConfirmPassword: false,
     terminosCondiciones: true,
 
     showAlert: false,
@@ -130,12 +147,23 @@ export default {
     ],
     selectRule: [
       v => !!v || 'El objetivo financiero es requerido',
+    ],
 
+    passwordRules: [
+      v => !!v || 'La contraseña es requerida.',
+      v => v.length >= 8 || 'La contraseña debe tener al menos 8 caracteres.',
+      v => /[A-Z]/.test(v) || 'La contraseña debe tener al menos una letra mayúscula.',
+      v => /[!@#\$%\^\&*\)\(+=._-]+/.test(v) || 'La contraseña debe tener al menos un carácter especial.'
     ]
-
   }),
 
   computed: {
+    confirmPasswordRules() {
+      return [
+        v => !!v || 'La confirmación de la contraseña es requerida.',
+        v => v === this.password || 'Las contraseñas no coinciden.'
+      ];
+    },
     getMaxDate() {
       return new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10)
     }
@@ -170,12 +198,10 @@ export default {
     },
 
     submitForm() {
-
-      if (this.primerNombre === '' || this.primerApellido === '' || this.numeroIdentificacion === '' || this.fechaExpedicion === '' || this.numeroCelular === '' || this.correoElectronico === '' || this.terminosCondiciones === false, this.selectedOption === null) {
+      if (this.primerNombre === '' || this.primerApellido === '' || this.numeroIdentificacion === '' || this.fechaExpedicion === '' || this.numeroCelular === '' || this.correoElectronico === '' || this.password === '' || this.confirmPassword === '' || this.terminosCondiciones === false || this.selectedOption === null) {
         this.valid = false
         this.showAlert = true
         this.$notifier.showMessage({ content: "Por favor verifica tus datos diligenciados.", color: 'error' })
-
       } else {
         this.valid = true
       }
@@ -189,13 +215,14 @@ export default {
             tipo_identificacion: this.tipoIdentificacion,
             numero_celular: this.numeroCelular,
             correo_electronico: this.correoElectronico,
+            password: this.password,
+            password_confirm: this.confirmPassword,
             objetivo_financiero: this.selectedOption,
             terminos_condiciones: this.terminosCondiciones
           })
       }
     }
   }
-
 }
 </script>
 

@@ -148,6 +148,7 @@ import { useMainStore } from '@/store/mainStore';
 import { encryptData } from '~/utils/encryption';
 
 export default {
+    middleware: 'otpandpay',
     components: {
         Loader
     },
@@ -304,8 +305,8 @@ export default {
                         extra1: config.invoice_id,
                         extra2: this.amountToPay,
                         extra3: "extra3",
-                        confirmation: "https://diagnostico.qnt.com.co/diagnostico/pay/confirmation/",
-                        response: "https://diagnostico.qnt.com.co/pay",
+                        confirmation: "https://civil-first-elk.ngrok-free.app/diagnostico/pay/confirmation/",
+                        response: "https://test.dahouse.co/pay",
                         name_billing: "",
                         address_billing: "",
                         type_doc_billing: "cc",
@@ -345,7 +346,7 @@ export default {
 
             const checkStatus = async () => {
                 try {
-                    const checkResponse = await axios.get(`/diagnostico/pay/check-payment-status/${invoice_id}/${encryptedNumeroIdentificacion}/${encryptedNumeroCelular}/`);
+                    const checkResponse = await axios.get(`/qnt/pay/check-payment-status/${invoice_id}/${encryptedNumeroIdentificacion}/${encryptedNumeroCelular}/`);
                     if (checkResponse.status === 200) {
                         this.transactionState = '1'; // Estado aceptado
                         this.transactionData = checkResponse.data;

@@ -174,45 +174,82 @@ export default {
     this.saveStepToLocalStorage()
   },
   methods: {
+    handleErrors(error) {
+      let errorMessage = 'Error inesperado, por favor intenta nuevamente.';
+
+      if (error.response && error.response.data) {
+        const errors = error.response.data;
+        if (typeof errors === 'object') {
+          errorMessage = '';
+          for (let key in errors) {
+            if (errors[key] instanceof Array) {
+              errors[key].forEach(msg => {
+                errorMessage += `${msg} `;
+              });
+            } else {
+              errorMessage += `${errors[key]} `;
+            }
+          }
+        } else if (typeof errors === 'string') {
+          errorMessage = errors;
+        }
+      }
+
+      return errorMessage.trim();
+    },
     async handleSubmit(formData) {
       try {
-        this.loading4 = true
-        this.numero_identificacion = formData.numero_identificacion
-        const response = await axios.post('diagnostico/register', formData)
+        this.loading4 = true;
+        this.numero_identificacion = formData.numero_identificacion;
 
+        // Realizar la solicitud de registro
+        const response = await axios.post('diagnostico/register', formData);
+
+        // Obtener la tienda principal
         const mainStore = useMainStore();
         mainStore.setTokenCookie(this.$nuxt, response.data.token);
 
+        // Verificar si la solicitud fue exitosa
         if (response.status >= 200 && response.status < 300) {
-          localStorage.setItem('auth_token', response.data.token)
-          localStorage.setItem('numero_identificacion', formData.numero_identificacion)
-          this.$axios.setToken(response.data.token, 'Token')
+          localStorage.setItem('auth_token', response.data.token);
+          localStorage.setItem('numero_identificacion', formData.numero_identificacion);
+          this.$axios.setToken(response.data.token, 'Token');
 
-          if (response.data.status_code === 'NEW_DIAGNOSTIC') {
-            this.$notifier.showMessage({ content: '¡Hemos enviado un código de verificación!', color: 'success' })
-            this.$router.push('/otp')
-          } else if (response.data.status_code === 'REDIRECT_TO_STEP3') {
-            this.$notifier.showMessage({ content: '¡Bienvenido de nuevo, te redirigimos a tus datos financieros!', color: 'success' })
-            this.e1 = 3
-            await this.fetchData()
-          } else if (response.data.status_code === 'REDIRECT_TO_DIAGNOSTIC') {
-            this.$notifier.showMessage({ content: '¡Bienvenido de nuevo, te redirigimos a tu diagnóstico!', color: 'success' })
-            await this.fetchData()
-            this.$router.push('/inicio')
+          // Manejar los diferentes códigos de estado
+          switch (response.data.status_code) {
+            case 'REDIRECT_TO_DIAGNOSTIC':
+              this.$notifier.showMessage({ content: '¡Bienvenido a tu diagnostico financiero!', color: 'success' });
+              await this.fetchData();
+              this.$router.push('/inicio');
+              break;
+            case 'NEW_DIAGNOSTIC':
+              this.$notifier.showMessage({ content: '¡Hemos enviado un código de verificación!', color: 'success' });
+              this.$router.push('/otp');
+              break;
+            case 'REDIRECT_TO_STEP3':
+              this.$notifier.showMessage({ content: '¡Bienvenido de nuevo, te redirigimos a tus datos financieros!', color: 'success' });
+              this.e1 = 3;
+              await this.fetchData();
+              break;
+            case 'EXISTING_USER':
+              this.$notifier.showMessage({ content: '¡Por favor inicia sesión!', color: 'success' });
+              // await this.fetchData();
+              this.$router.push('/ingreso');
+              break;
+            default:
+              this.$notifier.showMessage({ content: 'Respuesta desconocida del servidor', color: 'error' });
+              this.e1 = 1;
           }
         } else {
-          this.$notifier.showMessage({ content: data.response.message, color: 'error' })
-          this.e1 = 1
+          this.$notifier.showMessage({ content: response.data.message, color: 'error' });
+          this.e1 = 1;
         }
       } catch (error) {
-        if (error.response.data.message == null || error.response.data.message === 'undefined') {
-          this.$notifier.showMessage({ content: 'Error inesperado, por favor intenta nuevamente.', color: 'error' })
-        } else {
-          this.$notifier.showMessage({ content: `${error.response.data.message}`, color: 'error' })
-        }
-        this.e1 = 1
+        const errorMessage = this.handleErrors(error);
+        this.$notifier.showMessage({ content: errorMessage, color: 'error' });
+        this.e1 = 1;
       } finally {
-        this.loading4 = false
+        this.loading4 = false;
       }
     },
     async handleSubmit3(formData) {
