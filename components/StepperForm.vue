@@ -117,6 +117,18 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <!-- Modal para mostrar el mensaje de código enviado -->
+      <v-dialog v-model="showModal" max-width="500px">
+        <v-card>
+          <v-card-title class="headline">Código enviado</v-card-title>
+          <v-card-text>Código de verificación enviado a {{ maskedEmail }} y {{ maskedPhone }}</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)" elevation="2"
+              @click="closeModal">Continuar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
   </v-stepper>
 </template>
@@ -144,7 +156,11 @@ export default {
       loading4: false,
       otp: null,
       numero_identificacion: null,
-      dialog: true
+      dialog: true,
+      showModal: false,
+      maskedEmail: '',
+      maskedPhone: '',
+
 
     }
   },
@@ -214,6 +230,11 @@ export default {
           localStorage.setItem('auth_token', response.data.token);
           localStorage.setItem('numero_identificacion', formData.numero_identificacion);
           this.$axios.setToken(response.data.token, 'Token');
+          const { token, status_code, email, phone, numero_identificacion } = response.data
+          this.$cookies.set('numero_identificacion', numero_identificacion, {
+            secure: true,
+            sameSite: 'Strict',
+          });
 
           // Manejar los diferentes códigos de estado
           switch (response.data.status_code) {
@@ -221,6 +242,12 @@ export default {
               this.$notifier.showMessage({ content: '¡Bienvenido a tu diagnostico financiero!', color: 'success' });
               await this.fetchData();
               this.$router.push('/inicio');
+              break;
+            case 'PASSWORD_RESET_REQUIRED':
+              this.$notifier.showMessage({ content: 'Ups, por seguridad debemos restablecer tu contraseña. Código de verificación enviado.', color: 'success' });
+              this.maskedEmail = email
+              this.maskedPhone = phone
+              this.showModal = true
               break;
             case 'NEW_DIAGNOSTIC':
               this.$notifier.showMessage({ content: '¡Hemos enviado un código de verificación!', color: 'success' });
@@ -251,6 +278,10 @@ export default {
       } finally {
         this.loading4 = false;
       }
+    },
+    closeModal() {
+      this.showModal = false
+      this.$router.push('/verificar-codigo');
     },
     async handleSubmit3(formData) {
       const token = localStorage.getItem('auth_token')

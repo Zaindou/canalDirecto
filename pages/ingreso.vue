@@ -104,13 +104,13 @@ export default {
                 if (status_code === 'REDIRECT_TO_DIAGNOSTIC') {
                     await this.fetchData()
                     this.$router.push('/inicio')
+
                 } else if (status_code === 'PAY_DIAGNOSTIC') {
                     await this.fetchData()
 
                     this.$router.push('/pay')
                 } else if (status_code === 'NEW_DIAGNOSTIC') {
                     await this.fetchData()
-
                     this.$router.push('/otp')
                 } else {
                     this.$router.push('/registro')
