@@ -166,6 +166,31 @@ export default {
             this.amountToPay = Math.max(configValue - discountValue, 0);
             this.isFree = this.amountToPay === 0;
         },
+        async fetchData() {
+            let token, cedula
+            if (process.client) {
+                token = localStorage.getItem('auth_token')
+                cedula = localStorage.getItem('numero_identificacion')
+            }
+
+            const response = await axios.get(`/diagnostico/client-data/${cedula}`, {
+                headers: {
+                    Authorization: `Token ${token}`
+                }
+            })
+
+            this.clientData = response.data.informacionCliente
+            this.productos = response.data.wazeQnt.all_products
+            this.productosAcuerdo = response.data.wazeQnt.products_with_agreement
+            this.productosOferta = response.data.wazeQnt.products_with_offer
+            this.otrosProductos = response.data.wazeQnt.other_products
+
+            const mainStore = useMainStore();
+            mainStore.setClientData(this.clientData);
+            mainStore.setProductos(this.productos);
+            mainStore.setClientDataCookie(this.$nuxt);
+
+        },
         async handleSubmit3(formData) {
             const token = localStorage.getItem('auth_token');
             const config = {
@@ -179,7 +204,9 @@ export default {
                 if (response.status >= 200 && response.status < 301) {
                     this.$notifier.showMessage({ content: '¡Hemos cargado tus datos financieros correctamente ;)!', color: 'success' });
                     this.showPayment = false;
+                    await this.fetchData();
                     this.$router.push('/inicio');
+                    this.loading4 = false;
                 }
             } catch (error) {
                 if (error.response.data.detail === "Error en el servidor [<class 'decimal.DivisionByZero'>], por favor comuniquese con el administrador") {
