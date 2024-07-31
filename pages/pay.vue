@@ -10,24 +10,15 @@
             <v-divider />
             <v-stepper-header>
                 <v-stepper-step :complete="e1 > 1" step="1" aria-hidden="true">
-                    <v-icon large :color="iconColor(1)">
-                        mdi-face-recognition
-                    </v-icon>
+                    <v-icon large :color="iconColor(1)">mdi-face-recognition</v-icon>
                 </v-stepper-step>
-
                 <v-divider />
-
                 <v-stepper-step :complete="e1 > 2" step="2">
-                    <v-icon large :color="iconColor(2)">
-                        mdi-bank-outline
-                    </v-icon>
+                    <v-icon large :color="iconColor(2)">mdi-bank-outline</v-icon>
                 </v-stepper-step>
-
                 <v-divider />
                 <v-stepper-step :complete="e1 === 4" step="4">
-                    <v-icon large :color="iconColor(4)">
-                        mdi-tooltip-check-outline
-                    </v-icon>
+                    <v-icon large :color="iconColor(4)">mdi-tooltip-check-outline</v-icon>
                 </v-stepper-step>
             </v-stepper-header>
             <div v-if="showPayment" class="pa-4">
@@ -45,97 +36,64 @@
                         <li>Centro de soluciones para saldar tus deudas con tu acreedor</li>
                         <li>Recomendaciones personalizadas para mejorar tu puntaje de crédito</li>
                     </ul>
-                    <v-text-field label="¿Tienes un código promocional?" v-model="promoCode" clearable outlined
-                        @blur="validatePromoCode"></v-text-field>
-                    <p v-if="promoMessage" :class="{ 'success-text': promoValid, 'error-text': !promoValid }">{{
-            promoMessage }}</p>
-                </div>
-                <v-btn v-if="!isFree" block dark
-                    style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)" elevation="2"
-                    class="buttonsteps" @click="openCheckout">
-                    Pagar
-                </v-btn>
-                <v-btn v-else block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)"
-                    elevation="2" class="buttonsteps" @click="continueWithoutPayment">
-                    Continuar
-                </v-btn>
-            </div>
-            <div v-else>
-                <v-container>
-                    <v-row>
-                        <v-col cols="12" class="text-center">
-                            <v-icon large :color="transactionIconColor">
-                                {{ transactionIcon }}
-                            </v-icon>
-                            <v-alert v-if="transactionMessage" :type="transactionType" dismissible>
-                                <p>{{ transactionMessage }}</p>
+                    <v-card class="coupon-card" outlined>
+                        <v-card-text>
+                            <v-row align="center">
+                                <v-col cols="12" sm="8">
+                                    <v-text-field v-model="promoCode" label="Código promocional" outlined dense
+                                        hide-details></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="4">
+                                    <v-btn block dark
+                                        style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)"
+                                        elevation="2" block @click="validatePromoCode" :loading="loading4">
+                                        Aplicar
+                                    </v-btn>
+                                </v-col>
+                            </v-row>
+                            <v-alert v-if="promoMessage" :type="promoValid ? 'success' : 'error'" dense class="mt-2">
+                                {{ promoMessage }}
                             </v-alert>
-                        </v-col>
-                        <v-col cols="12">
-                            <v-card>
-                                <v-card-title>Detalles de tu transacción</v-card-title>
-                                <v-card-text>
-                                    <v-list dense>
-                                        <v-list-item>
-                                            <v-list-item-content>
-                                                <v-list-item-title>Referencia de la transacción</v-list-item-title>
-                                                <v-list-item-subtitle>{{ transactionData.x_id_invoice
-                                                    }}</v-list-item-subtitle>
-                                            </v-list-item-content>
-                                        </v-list-item>
-                                        <v-list-item
-                                            v-if="transactionState == '1' || transactionState == '2' || transactionState == '3'">
-                                            <v-list-item-content>
-                                                <v-list-item-title>Monto</v-list-item-title>
-                                                <v-list-item-subtitle>{{ transactionData.x_amount }} {{
-            transactionData.x_currency_code
-        }}</v-list-item-subtitle>
-                                            </v-list-item-content>
-                                        </v-list-item>
-                                        <v-list-item
-                                            v-if="transactionState == '1' || transactionState == '2' || transactionState == '3'">
-                                            <v-list-item-content>
-                                                <v-list-item-title>Banco</v-list-item-title>
-                                                <v-list-item-subtitle>{{ transactionData.x_bank_name
-                                                    }}</v-list-item-subtitle>
-                                            </v-list-item-content>
-                                        </v-list-item>
-                                        <v-list-item
-                                            v-if="transactionState == '1' || transactionState == '2' || transactionState == '3'">
-                                            <v-list-item-content>
-                                                <v-list-item-title>Fecha y hora transacción</v-list-item-title>
-                                                <v-list-item-subtitle>{{ transactionData.x_fecha_transaccion
-                                                    }}</v-list-item-subtitle>
-                                            </v-list-item-content>
-                                        </v-list-item>
-                                        <v-list-item
-                                            v-if="transactionState == '1' || transactionState == '2' || transactionState == '3'">
-                                            <v-list-item-content>
-                                                <v-list-item-title>Estado</v-list-item-title>
-                                                <v-list-item-subtitle>{{ transactionData.x_response
-                                                    }}</v-list-item-subtitle>
-                                            </v-list-item-content>
-                                        </v-list-item>
-                                        <v-list-item v-if="transactionState == '2'">
-                                            <v-list-item-content>
-                                                <v-list-item-title>Transacción Rechazada</v-list-item-title>
-                                                <v-list-item-subtitle>Tu transacción ha sido rechazada. Serás redirigido
-                                                    en 10 segundos.</v-list-item-subtitle>
-                                            </v-list-item-content>
-                                        </v-list-item>
-                                        <v-list-item v-if="transactionState == '3'">
-                                            <v-list-item-content>
-                                                <v-list-item-title>Transacción Pendiente</v-list-item-title>
-                                                <v-list-item-subtitle>Tu transacción está pendiente. Por favor
-                                                    espera...</v-list-item-subtitle>
-                                            </v-list-item-content>
-                                        </v-list-item>
-                                    </v-list>
-                                </v-card-text>
-                            </v-card>
-                        </v-col>
-                    </v-row>
-                </v-container>
+                        </v-card-text>
+                    </v-card>
+                    <v-card class="price-card mt-4" outlined>
+                        <v-card-text>
+                            <v-row justify="space-between">
+                                <v-col cols="6">
+                                    <span class="subtitle-1">Precio original:</span>
+                                </v-col>
+                                <v-col cols="6" class="text-right">
+                                    <span class="subtitle-1" :class="{ 'text-decoration-line-through': discount > 0 }">
+                                        $7,000
+                                    </span>
+                                </v-col>
+                            </v-row>
+                            <v-row v-if="discount > 0" justify="space-between">
+                                <v-col cols="6">
+                                    <span class="subtitle-1">Descuento:</span>
+                                </v-col>
+                                <v-col cols="6" class="text-right">
+                                    <span class="subtitle-1 success--text">
+                                        -{{ discountType === 'percentage' ? `${discount}%` : `$${discount}` }}
+                                    </span>
+                                </v-col>
+                            </v-row>
+                            <v-divider class="my-2"></v-divider>
+                            <v-row justify="space-between">
+                                <v-col cols="6">
+                                    <span class="subtitle-1 font-weight-bold">Total a pagar:</span>
+                                </v-col>
+                                <v-col cols="6" class="text-right">
+                                    <span class="subtitle-1 font-weight-bold primary--text">${{
+            amountToPay.toLocaleString() }}</span>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </div>
+                <v-btn block color="primary" class="mt-4" :loading="loading4" @click="handlePaymentClick">
+                    {{ isFree ? 'Continuar con diagnóstico gratuito' : `Pagar $${amountToPay.toLocaleString()}` }}
+                </v-btn>
             </div>
         </v-stepper>
     </div>
@@ -160,20 +118,13 @@ export default {
             loading4: false,
             e1: 2,
             showPayment: true,
-            clientData: null,
-            productos: [],
-            transactionState: null,
-            transactionData: {},
             discount: 0,
             discountType: null,
             isFree: false,
-            amountToPay: 7000 // Default amount to pay
+            amountToPay: 7000
         }
     },
     methods: {
-        onInput(value) {
-            this.otp = value;
-        },
         async validatePromoCode() {
             if (!this.promoCode) {
                 this.promoMessage = '';
@@ -182,6 +133,7 @@ export default {
             }
 
             try {
+                this.loading4 = true;
                 const response = await axios.post('/diagnostico/validate-promo-code/', { promo_code: this.promoCode });
                 if (response.data.valid) {
                     this.promoMessage = 'Código promocional aplicado con éxito.';
@@ -196,10 +148,12 @@ export default {
             } catch (error) {
                 this.promoMessage = 'Código promocional no válido o expirado.';
                 this.promoValid = false;
+            } finally {
+                this.loading4 = false;
             }
         },
         applyDiscount(discount, type) {
-            const configValue = 7000; // Valor del diagnóstico, puede ser dinámico si lo obtienes de otro lado
+            const configValue = 7000;
             let discountValue = 0;
 
             if (type === 'percentage') {
@@ -219,78 +173,51 @@ export default {
                 }
             }
             this.loading4 = true;
-            await axios.post('diagnostico/register/financial', formData, config).then(async (response) => {
+            try {
+                const response = await axios.post('diagnostico/register/financial', formData, config);
                 if (response.status >= 200 && response.status < 301) {
                     this.$notifier.showMessage({ content: '¡Hemos cargado tus datos financieros correctamente ;)!', color: 'success' });
-                    await this.fetchData();
-                    this.showPayment = false; // Ocultar la sección de pago y mostrar diagnóstico financiero
-                    this.$router.push('/inicio'); // Redirigir al flujo del diagnóstico
+                    this.showPayment = false;
+                    this.$router.push('/inicio');
                 }
-                this.loading4 = false;
-            }).catch((error) => {
+            } catch (error) {
                 if (error.response.data.detail === "Error en el servidor [<class 'decimal.DivisionByZero'>], por favor comuniquese con el administrador") {
                     this.$notifier.showMessage({ content: "Un paso más, ya casi completamos tu diagnóstico!", color: 'success' });
                     this.$router.push('/ingresos-gastos');
-                    this.loading4 = false;
-                } else if (error.response.status >= 400 && error.response.status === 500) {
-                    console.log(error.response.data.detail, "error");
-                    this.$notifier.showMessage({ content: `${error.response.data.detail}`, color: 'error' });
-                    this.loading4 = false;
-                    this.$router.push('/ingresos-gastos');
                 } else {
                     this.$notifier.showMessage({ content: `${error.response.data.detail}`, color: 'error' });
-                    this.loading4 = false;
+                    this.$router.push('/ingresos-gastos');
                 }
-            });
-        },
-        async fetchData() {
-            let token, cedula;
-            if (process.client) {
-                token = localStorage.getItem('auth_token');
-                cedula = localStorage.getItem('numero_identificacion');
+            } finally {
+                this.loading4 = false;
             }
-
-            const response = await axios.get(`/diagnostico/client-data/${cedula}`, {
-                headers: {
-                    Authorization: `Token ${token}`
-                }
-            });
-
-            this.clientData = response.data.informacionCliente;
-            this.productos = response.data.wazeQnt.all_products;
-            this.productosAcuerdo = response.data.wazeQnt.products_with_agreement;
-            this.productosOferta = response.data.wazeQnt.products_with_offer;
-            this.otrosProductos = response.data.wazeQnt.other_products;
-
-            const mainStore = useMainStore();
-            mainStore.setClientData(this.clientData);
-            mainStore.setProductos(this.productos);
         },
         iconColor(step) {
-            let color;
-            if (this.e1 === step) {
-                color = '#00263C';
-            } else if (this.e1 > step) {
-                color = '#87BD29';
-            } else if (this.e1 === 4) {
-                color = '#87BD29';
-            } else {
-                color = '';
-            }
-            return color;
+            if (this.e1 === step) return '#00263C';
+            if (this.e1 > step || this.e1 === 4) return '#87BD29';
+            return '';
         },
+        handlePaymentClick() {
+            if (this.isFree) {
+                this.continueWithoutPayment();
+            } else {
+                this.openCheckout();
+            }
+        },
+
         async openCheckout() {
             try {
+                this.loading4 = true;
                 const response = await fetch('/diagnostico/pay/payment-config/');
                 const config = await response.json();
 
                 if (response.ok) {
-                    var handler = ePayco.checkout.configure({
+                    const handler = window.ePayco.checkout.configure({
                         key: 'f50dd5b8e84f416926707d303540223b',
                         test: false
                     });
 
-                    var data = {
+                    const data = {
                         name: config.name,
                         description: config.description,
                         invoice: config.invoice_id,
@@ -312,19 +239,20 @@ export default {
                         type_doc_billing: "cc",
                         mobilephone_billing: "",
                         number_doc_billing: "",
-                        email_billing: "",
-                        methodsDisable: ""
+                        email_billing: ""
                     };
 
                     handler.open(data);
-
-                    // Verificar el estado del pago y redirigir
                     this.checkPaymentStatus(config.invoice_id, handler);
                 } else {
                     console.error('Error fetching payment config:', config.error);
+                    this.$notifier.showMessage({ content: 'Error al cargar la configuración de pago', color: 'error' });
                 }
             } catch (error) {
                 console.error('Error fetching payment config:', error);
+                this.$notifier.showMessage({ content: 'Error al iniciar el proceso de pago', color: 'error' });
+            } finally {
+                this.loading4 = false;
             }
         },
         async continueWithoutPayment() {
@@ -342,27 +270,21 @@ export default {
             let numeroCelular = localStorage.getItem('phone')
 
             const encryptedNumeroIdentificacion = encodeURIComponent(encryptData(numeroIdentificacion));
-            const encryptedNumeroCelular = encodeURIComponent(encryptData(numeroCelular));
+            // const encryptedNumeroCelular = encodeURIComponent(encryptData(numeroCelular));
 
             const checkStatus = async () => {
                 try {
-                    const checkResponse = await axios.get(`/qnt/pay/check-payment-status/${invoice_id}/${encryptedNumeroIdentificacion}/${encryptedNumeroCelular}/`);
+                    const checkResponse = await axios.get(`/diagnostico/pay/check-payment-status/${invoice_id}/${encryptedNumeroIdentificacion}/`);
                     if (checkResponse.status === 200) {
-                        this.transactionState = '1'; // Estado aceptado
-                        this.transactionData = checkResponse.data;
-                        handler.close(); // Cerrar el modal de ePayco
+                        handler.close();
                         const formData = {
                             numero_identificacion: localStorage.getItem('numero_identificacion'),
                         };
                         await this.handleSubmit3(formData);
                     } else if (checkResponse.data.message === 'Transacción pendiente' && attempts < maxRetries) {
-                        this.transactionState = '3'; // Estado pendiente
-                        this.transactionData = checkResponse.data;
                         attempts++;
                         setTimeout(checkStatus, delay);
                     } else {
-                        this.transactionState = '2'; // Estado rechazado
-                        this.transactionData = checkResponse.data;
                         console.error('Error checking payment status:', checkResponse.data.message);
                     }
                 } catch (error) {
@@ -370,15 +292,14 @@ export default {
                         attempts++;
                         setTimeout(checkStatus, delay);
                     } else {
-                        this.transactionState = '2'; // Estado rechazado
-                        this.transactionData = { message: error.message };
                         console.error('Error checking payment status:', error);
                     }
                 }
             };
 
             setTimeout(checkStatus, delay);
-        }
+        },
+
     },
     async mounted() {
         const ref_payco = this.$route.query.ref_payco;
@@ -390,7 +311,6 @@ export default {
 
                 if (this.transactionState == '1') {
                     this.loading4 = true;
-                    console.log('Transaction accepted')
                     const formData = {
                         numero_identificacion: localStorage.getItem('numero_identificacion'),
                     };
@@ -420,28 +340,15 @@ export default {
 };
 </script>
 
-<style>
-/* Estilos del componente */
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-.v-otp-input {
-    margin: 0 auto;
-    width: 100%;
-    max-width: 500px;
-}
-
+<style scoped>
 .info-container {
-    margin-bottom: 1rem;
+    max-width: 500px;
+    margin: 0 auto;
 }
 
 .info-text {
     color: #7d7d7d;
     font-size: 1.1rem;
-    font-weight: 400;
     text-align: center;
     margin-bottom: 1rem;
 }
@@ -453,36 +360,16 @@ input[type=number]::-webkit-outer-spin-button {
 .info-list {
     color: #7d7d7d;
     font-size: 1rem;
-    font-weight: 400;
     margin-bottom: 1rem;
     padding-left: 20px;
 }
 
-.b-green {
-    color: #87BD29;
+.coupon-card {
+    margin-bottom: 1rem;
+    border: 1px solid #e0e0e0;
 }
 
-.resendotp {
-    background-color: #E1F4FC;
-    border-radius: 5px;
-    margin-bottom: 2rem;
-    margin-top: 30px;
-    max-width: 500px;
-    padding: 15px !important;
-}
-
-.buttonsteps {
-    font-weight: bold;
-    padding: 20px !important;
-    color: white !important;
-    border-radius: 5px !important;
-}
-
-.success-text {
-    color: green;
-}
-
-.error-text {
-    color: red;
+.price-card {
+    background-color: #f5f5f5;
 }
 </style>

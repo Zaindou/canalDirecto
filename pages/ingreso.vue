@@ -98,7 +98,9 @@ export default {
                 const { token, status_code } = response.data
                 localStorage.setItem('auth_token', token)
                 localStorage.setItem('numero_identificacion', this.identificacion)
+                localStorage.setItem('objetivo_financiero', response.data.objetivo_financiero)
                 mainStore.setTokenCookie(this.$nuxt, response.data.token);
+
                 this.$notifier.showMessage({ content: 'Inicio de sesión exitoso', color: 'success' })
 
                 if (status_code === 'REDIRECT_TO_DIAGNOSTIC') {
@@ -106,8 +108,6 @@ export default {
                     this.$router.push('/inicio')
 
                 } else if (status_code === 'PAY_DIAGNOSTIC') {
-                    await this.fetchData()
-
                     this.$router.push('/pay')
                 } else if (status_code === 'NEW_DIAGNOSTIC') {
                     await this.fetchData()
