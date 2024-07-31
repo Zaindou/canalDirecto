@@ -91,7 +91,8 @@
                         </v-card-text>
                     </v-card>
                 </div>
-                <v-btn block color="primary" class="mt-4" :loading="loading4" @click="handlePaymentClick">
+                <v-btn style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)" elevation="2" block
+                    color="primary" class="mt-4" :loading="loading4" @click="handlePaymentClick">
                     {{ isFree ? 'Continuar con diagnóstico gratuito' : `Pagar $${amountToPay.toLocaleString()}` }}
                 </v-btn>
             </div>
@@ -232,8 +233,8 @@ export default {
                         extra1: config.invoice_id,
                         extra2: this.amountToPay,
                         extra3: "extra3",
-                        confirmation: "https://civil-first-elk.ngrok-free.app/diagnostico/pay/confirmation/",
-                        response: "https://test.dahouse.co/pay",
+                        confirmation: "https://diagnosticot.qnt.com.co/diagnostico/pay/confirmation/",
+                        response: "https://diagnosticot.qnt.com.co/pay",
                         name_billing: "",
                         address_billing: "",
                         type_doc_billing: "cc",
