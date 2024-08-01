@@ -120,10 +120,17 @@
       <!-- Modal para mostrar el mensaje de código enviado -->
       <v-dialog v-model="showModal" max-width="500px">
         <v-card>
-          <v-card-title class="headline">Código enviado</v-card-title>
-          <v-card-text>Código de verificación enviado a {{ maskedEmail }} y {{ maskedPhone }}</v-card-text>
+          <v-card-title style="color: #00263C !important;">Código enviado</v-card-title>
+          <v-card-text>
+            Hemos enviado un código para que recuperes tu contraseña al correo <b>{{ maskedEmail }}</b> y teléfono <b>{{
+    maskedPhone }}</b>
+            <p class="mt-2" style="color:#ff557c !important;">Si no tienes acceso a este correo o teléfono por favor
+              envia un correo a
+              <b>serviciocliente@qnt.com.co</b>, para
+              ayudarte a restablecer tu información.
+            </p>
+          </v-card-text>
           <v-card-actions>
-            <v-spacer></v-spacer>
             <v-btn block dark style="background-image:linear-gradient(81deg, #00263CAB 0%, #00A2E4 87%)" elevation="2"
               @click="closeModal">Continuar</v-btn>
           </v-card-actions>
