@@ -1,9 +1,11 @@
 <template>
   <v-container fluid class="pa-0 fill-height background-container">
+    <div class="blur-overlay"></div>
     <v-row no-gutters align="center" justify="center" class="fill-height">
       <v-col cols="12" sm="8" md="6" lg="4" xl="3" class="text-center">
         <div class="content-wrapper">
-          <h1 class="text-h5 font-weight-bold white--text text-center mb-4">
+          <img src="/logo-white.png" alt="Logo" class="logo mb-4">
+          <h1 class="text-h6 font-weight-bold white--text text-center mb-4">
             Bienvenid@ a tu diagnóstico financiero
           </h1>
           <p class="white--text subtitle-1 mb-6">
@@ -62,6 +64,49 @@
   letter-spacing: normal !important;
   width: 100% !important;
   max-width: 300px !important;
+}
+
+.logo {
+  max-width: 300px;
+  height: auto;
+  margin: 0 auto;
+  /* display: block; */
+}
+
+
+
+@media (min-width: 1024px) {
+  .background-container {
+    background-size: 100%;
+    /* Cubre el ancho completo */
+  }
+
+  .content-wrapper {
+    padding: 40px;
+  }
+
+  .background-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7)) !important;
+  }
+
+  .blur-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: inherit;
+    filter: blur(8px);
+    /* Ajusta este valor según necesites */
+    transform: scale(1);
+    /* Expande ligeramente para cubrir los bordes */
+  }
 }
 
 @media (max-width: 600px) {
