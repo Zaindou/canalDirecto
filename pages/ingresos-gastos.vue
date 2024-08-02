@@ -141,6 +141,7 @@ export default {
             const mainStore = useMainStore();
             mainStore.setClientData(this.clientData);
             mainStore.setProductos(this.productos);
+            mainStore.setClientDataCookie(this.$nuxt);
 
         },
         async handleSubmit3(formData) {
