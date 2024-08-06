@@ -29,7 +29,7 @@
 
 <style scoped>
 .background-container {
-  background-image: url('/bg.png');
+  background-image: url('/bg-mobile.png');
   background-size: cover;
   background-position: top center;
   background-repeat: no-repeat;
@@ -70,15 +70,12 @@
   max-width: 300px;
   height: auto;
   margin: 0 auto;
-  /* display: block; */
 }
-
-
 
 @media (min-width: 1024px) {
   .background-container {
-    background-size: 100%;
-    /* Cubre el ancho completo */
+    background-image: url('/bg-desktop.png');
+    background-size: cover;
   }
 
   .content-wrapper {
@@ -86,12 +83,6 @@
   }
 
   .background-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7)) !important;
   }
 
@@ -103,9 +94,7 @@
     left: 0;
     background: inherit;
     filter: blur(8px);
-    /* Ajusta este valor según necesites */
     transform: scale(1);
-    /* Expande ligeramente para cubrir los bordes */
   }
 }
 
